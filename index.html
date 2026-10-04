@@ -5,15 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0F172A">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
 
 <title>NEXWORLD</title>
 
 <style>
 :root{
   --bg:#0F172A;
-  --bg2:#111827;
-  --panel:rgba(30,41,59,.76);
+  --panel:rgba(30,41,59,.78);
+  --panel2:#111827;
   --border:rgba(255,255,255,.09);
   --text:#f8fafc;
   --muted:#94a3b8;
@@ -56,7 +55,7 @@ button{
   position:sticky;
   top:0;
   z-index:50;
-  background:rgba(15,23,42,.92);
+  background:rgba(15,23,42,.94);
   backdrop-filter:blur(18px);
   border-bottom:1px solid var(--border);
 }
@@ -66,8 +65,8 @@ button{
   margin:auto;
   padding:14px 16px;
   display:flex;
-  justify-content:space-between;
   align-items:center;
+  justify-content:space-between;
 }
 
 .logo{
@@ -76,6 +75,7 @@ button{
   letter-spacing:2px;
   background:linear-gradient(90deg,var(--cyan),var(--pink));
   -webkit-background-clip:text;
+  background-clip:text;
   color:transparent;
 }
 
@@ -102,19 +102,18 @@ main{
 }
 
 .hero{
-  padding:24px 18px;
-  margin-bottom:18px;
+  padding:23px 18px;
+  margin-bottom:16px;
   border-radius:25px;
   border:1px solid var(--border);
   background:
     linear-gradient(135deg,rgba(34,211,238,.12),rgba(244,114,182,.06)),
     var(--panel);
-  box-shadow:0 20px 55px rgba(0,0,0,.2);
 }
 
 .hero h1{
-  margin:0 0 8px;
-  font-size:31px;
+  margin:0 0 7px;
+  font-size:30px;
 }
 
 .hero p{
@@ -125,21 +124,21 @@ main{
 
 .search{
   width:100%;
-  margin-top:18px;
+  margin-top:17px;
   padding:14px 16px;
   border-radius:15px;
   border:1px solid var(--border);
-  background:rgba(0,0,0,.2);
+  background:rgba(0,0,0,.22);
   color:white;
   outline:none;
 }
 
 .search:focus{
   border-color:rgba(34,211,238,.5);
+  box-shadow:0 0 0 3px rgba(34,211,238,.06);
 }
 
-.tabs,
-.filters{
+.tabs,.filters{
   display:flex;
   gap:8px;
   overflow-x:auto;
@@ -154,7 +153,7 @@ main{
 
 .tab{
   flex:0 0 auto;
-  padding:10px 15px;
+  padding:10px 16px;
   border-radius:999px;
   color:var(--muted);
   background:rgba(255,255,255,.04);
@@ -187,7 +186,7 @@ main{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  margin:8px 2px 13px;
+  margin:8px 2px 12px;
 }
 
 .section-title h2{
@@ -210,7 +209,7 @@ main{
   overflow:hidden;
   border-radius:18px;
   border:1px solid var(--border);
-  background:linear-gradient(180deg,rgba(30,41,59,.78),rgba(15,23,42,.9));
+  background:linear-gradient(180deg,rgba(30,41,59,.8),rgba(15,23,42,.92));
 }
 
 .logo-box{
@@ -231,7 +230,7 @@ main{
 .placeholder{
   font-size:34px;
   font-weight:900;
-  color:rgba(255,255,255,.15);
+  color:rgba(255,255,255,.14);
 }
 
 .live{
@@ -250,11 +249,11 @@ main{
   position:absolute;
   right:8px;
   top:7px;
-  width:30px;
-  height:30px;
+  width:31px;
+  height:31px;
   border-radius:50%;
-  background:rgba(0,0,0,.4);
   border:1px solid var(--border);
+  background:rgba(0,0,0,.4);
   color:white;
 }
 
@@ -283,14 +282,44 @@ main{
   text-overflow:ellipsis;
 }
 
-.watch{
-  width:100%;
+.source-tag{
+  margin-top:5px;
+  color:rgba(255,255,255,.42);
+  font-size:9px;
+}
+
+.card-buttons{
+  display:grid;
+  grid-template-columns:1fr 42px;
+  gap:7px;
   margin-top:10px;
+}
+
+.watch{
   padding:9px;
   border:0;
   border-radius:11px;
   background:linear-gradient(90deg,var(--cyan),#38bdf8);
   color:#001018;
+  font-weight:900;
+}
+
+.info{
+  border:1px solid var(--border);
+  border-radius:11px;
+  background:rgba(255,255,255,.04);
+  color:white;
+}
+
+.load-more{
+  display:block;
+  width:100%;
+  margin:18px 0 25px;
+  padding:14px;
+  border:1px solid rgba(34,211,238,.3);
+  border-radius:14px;
+  background:rgba(34,211,238,.08);
+  color:var(--cyan);
   font-weight:900;
 }
 
@@ -301,29 +330,6 @@ main{
   border:1px dashed var(--border);
   border-radius:20px;
   color:var(--muted);
-}
-
-.loading{
-  grid-column:1/-1;
-  padding:30px 15px;
-  text-align:center;
-  border:1px solid var(--border);
-  border-radius:20px;
-  background:rgba(255,255,255,.025);
-}
-
-.spinner{
-  width:35px;
-  height:35px;
-  margin:auto;
-  border-radius:50%;
-  border:3px solid rgba(255,255,255,.08);
-  border-top-color:var(--cyan);
-  animation:spin .8s linear infinite;
-}
-
-@keyframes spin{
-  to{transform:rotate(360deg)}
 }
 
 .panel{
@@ -396,6 +402,71 @@ main{
   color:var(--muted);
 }
 
+/* MODAL FICHE */
+
+.detail-modal{
+  position:fixed;
+  inset:0;
+  z-index:90;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  background:rgba(0,0,0,.75);
+}
+
+.detail-modal.open{
+  display:flex;
+}
+
+.detail-box{
+  width:100%;
+  max-width:650px;
+  max-height:88vh;
+  overflow:auto;
+  padding:18px;
+  border-radius:25px 25px 0 0;
+  border:1px solid var(--border);
+  background:
+    linear-gradient(135deg,rgba(34,211,238,.07),transparent),
+    #0b1220;
+}
+
+.detail-logo{
+  height:150px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:18px;
+  background:#111827;
+  margin-bottom:15px;
+}
+
+.detail-logo img{
+  max-width:75%;
+  max-height:80%;
+  object-fit:contain;
+}
+
+.detail-title{
+  font-size:23px;
+  font-weight:900;
+}
+
+.detail-meta{
+  margin-top:8px;
+  color:var(--muted);
+  line-height:1.6;
+}
+
+.detail-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin-top:16px;
+}
+
+/* PLAYER */
+
 .player-modal{
   position:fixed;
   inset:0;
@@ -404,7 +475,7 @@ main{
   align-items:center;
   justify-content:center;
   padding:12px;
-  background:rgba(0,0,0,.92);
+  background:rgba(0,0,0,.94);
 }
 
 .player-modal.open{
@@ -472,7 +543,7 @@ video{
   bottom:0;
   height:72px;
   padding:8px 10px calc(8px + env(safe-area-inset-bottom));
-  background:rgba(15,23,42,.95);
+  background:rgba(15,23,42,.96);
   backdrop-filter:blur(20px);
   border-top:1px solid var(--border);
 }
@@ -542,9 +613,7 @@ video{
 <header class="header">
   <div class="header-inner">
 
-    <div class="logo">
-      NEXWORLD
-    </div>
+    <div class="logo">NEXWORLD</div>
 
     <div class="status">
       <span class="status-dot"></span>
@@ -554,9 +623,10 @@ video{
   </div>
 </header>
 
+
 <main>
 
-<section id="homePage">
+<section>
 
   <div class="hero">
 
@@ -571,11 +641,12 @@ video{
       id="search"
       class="search"
       type="search"
-      placeholder="Rechercher une chaîne..."
+      placeholder="🔎 Rechercher une chaîne..."
       autocomplete="off"
     >
 
   </div>
+
 
   <div class="tabs">
 
@@ -600,7 +671,7 @@ video{
 </section>
 
 
-<!-- ================= TV ================= -->
+<!-- TV -->
 
 <section id="tvPage">
 
@@ -664,9 +735,7 @@ video{
 
   <div class="section-title">
 
-    <h2>
-      📺 Télévision en direct
-    </h2>
+    <h2>📺 Télévision en direct</h2>
 
     <span id="counter" class="counter">
       0 chaîne
@@ -675,34 +744,29 @@ video{
   </div>
 
 
-  <div id="tvGrid" class="grid">
+  <div id="tvGrid" class="grid"></div>
 
-    <div class="loading">
-
-      <div class="spinner"></div>
-
-      <div style="margin-top:12px">
-        Préparation de NEXWORLD TV...
-      </div>
-
-    </div>
-
-  </div>
+  <button
+    id="loadMore"
+    class="load-more hidden"
+  >
+    Afficher plus de chaînes
+  </button>
 
 </section>
 
 
-<!-- ================= FILMS ================= -->
+<!-- FILMS -->
 
 <section id="filmsPage" class="hidden">
 
   <div class="panel">
 
-    <h3>🎬 Films</h3>
+    <h3>🎬 NEXWORLD Films</h3>
 
-    <p style="color:var(--muted);line-height:1.5">
-      Le catalogue Films sera développé dans la
-      prochaine étape de NEXWORLD.
+    <p style="color:var(--muted);line-height:1.6">
+      Le catalogue Films arrive dans la prochaine
+      grande étape de NEXWORLD.
     </p>
 
   </div>
@@ -710,17 +774,18 @@ video{
 </section>
 
 
-<!-- ================= SERIES ================= -->
+<!-- SERIES -->
 
 <section id="seriesPage" class="hidden">
 
   <div class="panel">
 
-    <h3>📺 Séries</h3>
+    <h3>📺 NEXWORLD Séries</h3>
 
-    <p style="color:var(--muted);line-height:1.5">
-      Le catalogue Séries sera développé avec
-      saisons, épisodes, recherche et métadonnées.
+    <p style="color:var(--muted);line-height:1.6">
+      Saisons, épisodes, affiches, synopsis,
+      recherche et métadonnées seront ajoutés
+      dans la prochaine étape.
     </p>
 
   </div>
@@ -728,27 +793,27 @@ video{
 </section>
 
 
-<!-- ================= SOURCES ================= -->
+<!-- SOURCES -->
 
 <section id="sourcesPage" class="hidden">
 
   <div class="panel">
 
-    <h3>📥 Ajouter une playlist M3U / M3U8</h3>
+    <h3>📥 M3U / M3U8</h3>
 
     <div class="form-grid">
 
       <input
         id="m3uUrl"
         class="input"
-        placeholder="https://exemple.com/playlist.m3u"
+        placeholder="URL de votre playlist M3U/M3U8"
       >
 
       <button
-        id="loadM3uUrl"
+        id="loadM3u"
         class="primary"
       >
-        Charger l’URL
+        Charger la playlist
       </button>
 
       <input
@@ -770,58 +835,14 @@ video{
 
   <div class="panel">
 
-    <h3>🌍 TV mondiale</h3>
-
-    <p style="font-size:12px;color:var(--muted)">
-      Le chargement mondial est volontairement manuel :
-      cela évite de ralentir l'ouverture de NEXWORLD
-      sur téléphone.
-    </p>
+    <h3>🌍 Catalogue TV mondial</h3>
 
     <button
       id="loadWorld"
       class="primary"
     >
-      🌍 Charger les chaînes internationales
+      🌍 Charger le catalogue mondial
     </button>
-
-  </div>
-
-
-  <div class="panel">
-
-    <h3>📅 EPG / XMLTV</h3>
-
-    <div class="form-grid">
-
-      <input
-        id="xmltvUrl"
-        class="input"
-        placeholder="URL XMLTV / EPG"
-      >
-
-      <input
-        id="xmltvFile"
-        class="input"
-        type="file"
-        accept=".xml,.xmltv"
-      >
-
-      <button
-        id="loadXmltv"
-        class="primary"
-      >
-        Charger EPG
-      </button>
-
-    </div>
-
-    <div
-      id="epgStatus"
-      style="margin-top:9px;color:var(--muted);font-size:11px"
-    >
-      Aucun EPG chargé.
-    </div>
 
   </div>
 
@@ -859,10 +880,6 @@ video{
       </button>
 
     </div>
-
-    <p style="font-size:11px;color:var(--muted)">
-      Les accès doivent appartenir à l'utilisateur.
-    </p>
 
   </div>
 
@@ -910,9 +927,38 @@ video{
 </main>
 
 
-<!-- ================= PLAYER ================= -->
+<!-- FICHE CHAÎNE -->
 
-<div id="playerModal" class="player-modal">
+<div
+  id="detailModal"
+  class="detail-modal"
+>
+
+  <div class="detail-box">
+
+    <div
+      id="detailContent"
+    ></div>
+
+    <button
+      id="closeDetail"
+      class="secondary"
+      style="width:100%;margin-top:12px"
+    >
+      Fermer
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- PLAYER -->
+
+<div
+  id="playerModal"
+  class="player-modal"
+>
 
   <div class="player-box">
 
@@ -958,7 +1004,7 @@ video{
       </button>
 
       <button
-        id="reloadStream"
+        id="reload"
         class="secondary"
       >
         ↻ Recharger
@@ -970,8 +1016,6 @@ video{
 
 </div>
 
-
-<!-- ================= NAVIGATION ================= -->
 
 <nav class="bottom">
 
@@ -1011,82 +1055,57 @@ video{
 <script>
 "use strict";
 
-/* ==========================================================
-   NEXWORLD V3.2
-   ========================================================== */
 
-const STORAGE_SOURCES =
-  "nexworld_sources_v32";
+/* =========================================================
+   CONFIGURATION
+   ========================================================= */
 
-const STORAGE_FAVORITES =
-  "nexworld_favorites_v32";
+const WORLD =
+"https://iptv-org.github.io/iptv/index.m3u";
+
+const CI =
+"https://iptv-org.github.io/iptv/countries/ci.m3u";
+
+const FR =
+"https://iptv-org.github.io/iptv/countries/fr.m3u";
 
 
-/*
-  Sources publiques utilisées pour initialiser
-  NEXWORLD TV.
-
-  Le monde entier n'est PAS chargé automatiquement.
-*/
-
-const SOURCES = {
-
-  CI:
-    "https://iptv-org.github.io/iptv/countries/ci.m3u",
-
-  FR:
-    "https://iptv-org.github.io/iptv/countries/fr.m3u",
-
-  WORLD:
-    "https://iptv-org.github.io/iptv/index.m3u"
-
-};
+const PAGE_SIZE = 40;
 
 
 let channels = [];
 
-let epgPrograms = [];
+let filtered = [];
+
+let visibleCount = PAGE_SIZE;
 
 let currentChannel = null;
 
-let filteredList = [];
+let currentPage = "tv";
 
-let state = {
+let countryFilter = "all";
 
-  country:"all",
+let categoryFilter = "all";
 
-  category:"all",
-
-  search:"",
-
-  page:"tv"
-
-};
+let searchText = "";
 
 
-/* ==========================================================
-   UTILITAIRES
-   ========================================================== */
+/* =========================================================
+   OUTILS
+   ========================================================= */
 
 function $(id){
-
   return document.getElementById(id);
-
 }
 
 
-function escapeHtml(value){
+function escapeHtml(v){
 
-  return String(value ?? "")
-
+  return String(v ?? "")
     .replace(/&/g,"&amp;")
-
     .replace(/</g,"&lt;")
-
     .replace(/>/g,"&gt;")
-
     .replace(/"/g,"&quot;")
-
     .replace(/'/g,"&#039;");
 
 }
@@ -1102,27 +1121,29 @@ function toast(message){
 
   clearTimeout(window.__toast);
 
-  window.__toast = setTimeout(()=>{
-
-    el.classList.remove("show");
-
-  },2800);
+  window.__toast =
+    setTimeout(
+      ()=>{
+        el.classList.remove("show");
+      },
+      2800
+    );
 
 }
 
 
-function status(text){
+function setStatus(text){
 
   $("statusText").textContent = text;
 
 }
 
 
-/* ==========================================================
+/* =========================================================
    PAYS
-   ========================================================== */
+   ========================================================= */
 
-function country(value){
+function getCountry(value){
 
   const x =
     String(value || "")
@@ -1132,8 +1153,8 @@ function country(value){
 
   if(
     x==="ci" ||
-    x.includes("cote d'ivoire") ||
     x.includes("côte d'ivoire") ||
+    x.includes("cote d'ivoire") ||
     x.includes("ivory coast")
   ){
 
@@ -1159,7 +1180,6 @@ function country(value){
 
 
   const africa = [
-
     "dz","algeria","algérie",
     "ao","angola",
     "bj","benin","bénin",
@@ -1183,15 +1203,14 @@ function country(value){
     "tn","tunisia","tunisie",
     "ug","uganda",
     "zm","zambia"
-
   ];
 
 
   if(
     africa.some(
-      item =>
-        x===item ||
-        x.includes(item)
+      a =>
+        x===a ||
+        x.includes(a)
     )
   ){
 
@@ -1211,11 +1230,11 @@ function country(value){
 }
 
 
-/* ==========================================================
-   CATEGORIES
-   ========================================================== */
+/* =========================================================
+   CATÉGORIES
+   ========================================================= */
 
-function category(group,name){
+function getCategory(group,name){
 
   const x =
     (
@@ -1227,30 +1246,26 @@ function category(group,name){
 
   if(
     /sport|football|soccer|basket|tennis|golf|rugby|espn|bein/.test(x)
-  ){
+  )
     return "sports";
-  }
 
 
   if(
     /news|info|information|actualit|cnn|bbc|france ?24|aljazeera|euronews/.test(x)
-  ){
+  )
     return "news";
-  }
 
 
   if(
     /music|musique|radio|mtv|trace|hits/.test(x)
-  ){
+  )
     return "music";
-  }
 
 
   if(
     /kids|children|enfant|cartoon|animation|nick|disney/.test(x)
-  ){
+  )
     return "kids";
-  }
 
 
   return "entertainment";
@@ -1258,11 +1273,11 @@ function category(group,name){
 }
 
 
-/* ==========================================================
+/* =========================================================
    M3U
-   ========================================================== */
+   ========================================================= */
 
-function attributes(line){
+function parseAttributes(line){
 
   const result = {};
 
@@ -1294,7 +1309,7 @@ function parseM3U(text,source){
       .split("\n");
 
 
-  const list = [];
+  const result = [];
 
   let current = null;
 
@@ -1318,15 +1333,15 @@ function parseM3U(text,source){
     ){
 
       const attrs =
-        attributes(line);
+        parseAttributes(line);
 
 
       const comma =
         line.indexOf(",");
 
 
-      const rawName =
-        comma>=0
+      const name =
+        comma >= 0
           ? line.slice(comma+1).trim()
           : attrs["tvg-name"] ||
             "Chaîne";
@@ -1335,9 +1350,9 @@ function parseM3U(text,source){
       current = {
 
         name:
-          String(
+          (
             attrs["tvg-name"] ||
-            rawName
+            name
           ).trim(),
 
         logo:
@@ -1345,16 +1360,16 @@ function parseM3U(text,source){
           "",
 
         country:
-          country(
+          getCountry(
             attrs["tvg-country"] ||
             attrs["tvg-country-code"] ||
             ""
           ),
 
         category:
-          category(
+          getCategory(
             attrs["group-title"],
-            rawName
+            name
           ),
 
         group:
@@ -1383,15 +1398,17 @@ function parseM3U(text,source){
 
       current.url = line;
 
+
       if(
         current.url
       ){
 
-        list.push({
+        result.push({
           ...current
         });
 
       }
+
 
       current = null;
 
@@ -1400,35 +1417,108 @@ function parseM3U(text,source){
   }
 
 
-  return list;
+  return result;
 
 }
 
 
-/* ==========================================================
-   AJOUT CHAÎNES
-   ========================================================== */
+/* =========================================================
+   FAVORIS
+   ========================================================= */
 
-function addChannels(list){
+function getFavorites(){
 
-  const map = new Map();
+  try{
+
+    return JSON.parse(
+      localStorage.getItem(
+        "nexworld_favorites"
+      ) || "[]"
+    );
+
+  }catch{
+
+    return [];
+
+  }
+
+}
+
+
+function isFavorite(url){
+
+  return getFavorites()
+    .includes(url);
+
+}
+
+
+function toggleFavorite(url){
+
+  let list =
+    getFavorites();
+
+
+  if(
+    list.includes(url)
+  ){
+
+    list =
+      list.filter(
+        x=>x!==url
+      );
+
+    toast(
+      "Chaîne retirée des favoris."
+    );
+
+  }else{
+
+    list.push(url);
+
+    toast(
+      "Chaîne ajoutée aux favoris ⭐"
+    );
+
+  }
+
+
+  localStorage.setItem(
+    "nexworld_favorites",
+    JSON.stringify(list)
+  );
+
+
+  render();
+
+}
+
+
+window.toggleFavorite =
+  toggleFavorite;
+
+
+/* =========================================================
+   FUSION DES CHAÎNES
+   ========================================================= */
+
+function mergeChannels(list){
+
+  const map =
+    new Map();
 
 
   channels.forEach(ch=>{
-    map.set(ch.url,ch);
+    if(ch.url)
+      map.set(ch.url,ch);
   });
 
 
   list.forEach(ch=>{
 
     if(
-      !ch ||
-      !ch.url
-    )
-      return;
-
-
-    if(
+      ch &&
+      ch.url &&
       !map.has(ch.url)
     ){
 
@@ -1448,8 +1538,8 @@ function addChannels(list){
     );
 
 
-  status(
-    `${channels.length} chaîne${channels.length>1?"s":""}`
+  setStatus(
+    `${channels.length} chaînes`
   );
 
 
@@ -1458,179 +1548,105 @@ function addChannels(list){
 }
 
 
-/* ==========================================================
-   FAVORIS
-   ========================================================== */
-
-function favorites(){
-
-  try{
-
-    return JSON.parse(
-      localStorage.getItem(
-        STORAGE_FAVORITES
-      ) || "[]"
-    );
-
-  }catch{
-
-    return [];
-
-  }
-
-}
-
-
-function isFavorite(url){
-
-  return favorites()
-    .includes(url);
-
-}
-
-
-function toggleFavorite(url){
-
-  let list =
-    favorites();
-
-
-  if(
-    list.includes(url)
-  ){
-
-    list =
-      list.filter(
-        x=>x!==url
-      );
-
-    toast(
-      "Retirée des favoris."
-    );
-
-  }else{
-
-    list.push(url);
-
-    toast(
-      "Ajoutée aux favoris ⭐"
-    );
-
-  }
-
-
-  localStorage.setItem(
-    STORAGE_FAVORITES,
-    JSON.stringify(list)
-  );
-
-
-  render();
-
-}
-
-
-window.toggleFavorite =
-  toggleFavorite;
-
-
-/* ==========================================================
+/* =========================================================
    FILTRAGE
-   ========================================================== */
+   ========================================================= */
 
-function getFiltered(){
+function applyFilters(){
 
   const q =
-    state.search
+    searchText
       .toLowerCase()
       .trim();
 
 
-  return channels.filter(ch=>{
-
-    if(
-      state.country!=="all" &&
-      ch.country.code!==state.country
-    ){
-      return false;
-    }
-
-
-    if(
-      state.category!=="all"
-    ){
+  filtered =
+    channels.filter(ch=>{
 
       if(
-        state.category==="favorites"
-      ){
-
-        if(
-          !isFavorite(ch.url)
-        ){
-          return false;
-        }
-
-      }else{
-
-        if(
-          ch.category!==state.category
-        ){
-          return false;
-        }
-
-      }
-
-    }
-
-
-    if(q){
-
-      const text =
-        (
-          ch.name+
-          " "+
-          ch.group+
-          " "+
-          ch.country.label
-        ).toLowerCase();
-
-
-      if(
-        !text.includes(q)
-      ){
+        countryFilter!=="all" &&
+        ch.country.code!==countryFilter
+      )
         return false;
+
+
+      if(
+        categoryFilter!=="all"
+      ){
+
+        if(
+          categoryFilter==="favorites"
+        ){
+
+          if(
+            !isFavorite(ch.url)
+          )
+            return false;
+
+        }else{
+
+          if(
+            ch.category!==categoryFilter
+          )
+            return false;
+
+        }
+
       }
 
-    }
+
+      if(q){
+
+        const text =
+          (
+            ch.name+
+            " "+
+            ch.group+
+            " "+
+            ch.country.label+
+            " "+
+            ch.source
+          ).toLowerCase();
 
 
-    return true;
+        if(
+          !text.includes(q)
+        )
+          return false;
 
-  });
+      }
+
+
+      return true;
+
+    });
+
+
+  visibleCount =
+    PAGE_SIZE;
 
 }
 
 
-/* ==========================================================
-   AFFICHAGE
-   ========================================================== */
+/* =========================================================
+   AFFICHAGE PROGRESSIF
+   ========================================================= */
 
 function render(){
+
+  applyFilters();
+
 
   const grid =
     $("tvGrid");
 
 
-  filteredList =
-    getFiltered();
-
-
   $("counter").textContent =
-    `${filteredList.length} chaîne${filteredList.length>1?"s":""}`;
+    `${filtered.length.toLocaleString("fr-FR")} chaîne${filtered.length>1?"s":""}`;
 
 
   if(
-    !filteredList.length
+    !filtered.length
   ){
 
     grid.innerHTML = `
@@ -1646,147 +1662,380 @@ function render(){
         </div>
 
         <div style="font-size:11px;margin-top:8px">
-          Essayez une autre catégorie ou ajoutez
-          votre playlist dans « Mes sources ».
+          Modifiez votre recherche ou votre filtre.
         </div>
 
       </div>
 
     `;
 
+
+    $("loadMore")
+      .classList.add("hidden");
+
+
     return;
 
   }
 
 
+  const visible =
+    filtered.slice(
+      0,
+      visibleCount
+    );
+
+
   grid.innerHTML =
-    filteredList
-      .map((ch,index)=>{
+    visible
+      .map(
+        (ch,index)=>{
 
-        const fav =
-          isFavorite(ch.url);
-
-
-        let logo;
+          const favorite =
+            isFavorite(ch.url);
 
 
-        if(ch.logo){
+          const logo =
+            ch.logo
 
-          logo = `
+              ? `
 
-            <img
-              src="${escapeHtml(ch.logo)}"
-              alt=""
-              loading="lazy"
-              onerror="
-                this.style.display='none';
-                this.nextElementSibling.style.display='block'
-              "
-            >
+                <img
+                  src="${escapeHtml(ch.logo)}"
+                  alt=""
+                  loading="lazy"
+                  onerror="
+                    this.style.display='none';
+                    this.nextElementSibling.style.display='block'
+                  "
+                >
 
-            <div
-              class="placeholder"
-              style="display:none"
-            >
-              TV
-            </div>
+                <div
+                  class="placeholder"
+                  style="display:none"
+                >
+                  TV
+                </div>
 
-          `;
+              `
 
-        }else{
+              : `
 
-          logo = `
+                <div class="placeholder">
+                  TV
+                </div>
 
-            <div class="placeholder">
-              TV
-            </div>
+              `;
+
+
+          return `
+
+            <article class="card">
+
+              <div class="logo-box">
+
+                ${logo}
+
+                <span class="live">
+                  LIVE
+                </span>
+
+                <button
+                  class="fav ${favorite?"on":""}"
+                  onclick="
+                    toggleFavorite(
+                      decodeURIComponent('${encodeURIComponent(ch.url)}')
+                    )
+                  "
+                >
+                  ${favorite?"★":"☆"}
+                </button>
+
+              </div>
+
+
+              <div class="card-body">
+
+                <div class="card-title">
+                  ${escapeHtml(ch.name)}
+                </div>
+
+                <div class="meta">
+                  ${escapeHtml(ch.country.label)}
+                  ${ch.group
+                    ? " • "+escapeHtml(ch.group)
+                    : ""}
+                </div>
+
+                <div class="source-tag">
+                  📡 ${escapeHtml(ch.source)}
+                </div>
+
+
+                <div class="card-buttons">
+
+                  <button
+                    class="watch"
+                    onclick="playChannel(${index})"
+                  >
+                    ▶ Regarder
+                  </button>
+
+                  <button
+                    class="info"
+                    onclick="showDetails(${index})"
+                  >
+                    ⓘ
+                  </button>
+
+                </div>
+
+              </div>
+
+            </article>
 
           `;
 
         }
-
-
-        return `
-
-          <article class="card">
-
-            <div class="logo-box">
-
-              ${logo}
-
-              <span class="live">
-                LIVE
-              </span>
-
-              <button
-                class="fav ${fav?"on":""}"
-                onclick="
-                  toggleFavorite(
-                    decodeURIComponent('${encodeURIComponent(ch.url)}')
-                  )
-                "
-              >
-                ${fav?"★":"☆"}
-              </button>
-
-            </div>
-
-
-            <div class="card-body">
-
-              <div class="card-title">
-                ${escapeHtml(ch.name)}
-              </div>
-
-              <div class="meta">
-                ${escapeHtml(ch.country.label)}
-                ${ch.group
-                  ? " • "+escapeHtml(ch.group)
-                  : ""}
-              </div>
-
-
-              <button
-                class="watch"
-                onclick="playChannel(${index})"
-              >
-                ▶ Regarder
-              </button>
-
-            </div>
-
-          </article>
-
-        `;
-
-      })
+      )
       .join("");
+
+
+  if(
+    visibleCount <
+    filtered.length
+  ){
+
+    $("loadMore")
+      .classList.remove("hidden");
+
+    $("loadMore").textContent =
+      `Afficher plus — ${Math.min(
+        PAGE_SIZE,
+        filtered.length-visibleCount
+      )} chaînes`;
+
+  }else{
+
+    $("loadMore")
+      .classList.add("hidden");
+
+  }
 
 }
 
 
-/* ==========================================================
-   LECTURE
-   ========================================================== */
+$("loadMore")
+  .onclick =
+  ()=>{
 
-function playChannel(index){
+    visibleCount +=
+      PAGE_SIZE;
+
+    render();
+
+    setTimeout(
+      ()=>{
+        window.scrollBy({
+          top:180,
+          behavior:"smooth"
+        });
+      },
+      50
+    );
+
+  };
+
+
+/* =========================================================
+   FICHE CHAÎNE
+   ========================================================= */
+
+function showDetails(index){
 
   const ch =
-    filteredList[index];
+    filtered[index];
 
 
   if(!ch)
     return;
 
 
-  currentChannel = ch;
+  currentChannel =
+    ch;
 
 
-  $("playerTitle").textContent =
+  const favorite =
+    isFavorite(ch.url);
+
+
+  const logo =
+    ch.logo
+
+      ? `
+
+        <img
+          src="${escapeHtml(ch.logo)}"
+          alt=""
+        >
+
+      `
+
+      : `
+
+        <div class="placeholder">
+          TV
+        </div>
+
+      `;
+
+
+  $("detailContent").innerHTML = `
+
+    <div class="detail-logo">
+      ${logo}
+    </div>
+
+
+    <div class="detail-title">
+      ${escapeHtml(ch.name)}
+    </div>
+
+
+    <div class="detail-meta">
+
+      🌍 <strong>Pays :</strong>
+      ${escapeHtml(ch.country.label)}
+      <br>
+
+      🏷️ <strong>Catégorie :</strong>
+      ${escapeHtml(ch.category)}
+      <br>
+
+      📡 <strong>Source :</strong>
+      ${escapeHtml(ch.source)}
+
+      ${
+        ch.group
+          ? `<br>📂 <strong>Groupe :</strong>
+             ${escapeHtml(ch.group)}`
+          : ""
+      }
+
+      ${
+        ch.tvgId
+          ? `<br>🆔 <strong>TVG-ID :</strong>
+             ${escapeHtml(ch.tvgId)}`
+          : ""
+      }
+
+    </div>
+
+
+    <div class="detail-actions">
+
+      <button
+        class="primary"
+        id="detailWatch"
+      >
+        ▶ Regarder
+      </button>
+
+      <button
+        class="secondary"
+        id="detailFavorite"
+      >
+        ${favorite
+          ? "★ Favori"
+          : "☆ Ajouter"}
+      </button>
+
+    </div>
+
+  `;
+
+
+  $("detailModal")
+    .classList.add("open");
+
+
+  $("detailWatch")
+    .onclick =
+    ()=>{
+
+      closeDetails();
+
+      play(ch);
+
+    };
+
+
+  $("detailFavorite")
+    .onclick =
+    ()=>{
+
+      toggleFavorite(
+        ch.url
+      );
+
+      showDetails(
+        filtered.indexOf(ch)
+      );
+
+    };
+
+}
+
+
+function closeDetails(){
+
+  $("detailModal")
+    .classList.remove("open");
+
+}
+
+
+$("closeDetail")
+  .onclick =
+  closeDetails;
+
+
+$("detailModal")
+  .addEventListener(
+    "click",
+    e=>{
+
+      if(
+        e.target ===
+        $("detailModal")
+      )
+        closeDetails();
+
+    }
+  );
+
+
+window.showDetails =
+  showDetails;
+
+
+/* =========================================================
+   PLAYER
+   ========================================================= */
+
+function play(ch){
+
+  currentChannel =
+    ch;
+
+
+  $("playerTitle")
+    .textContent =
     ch.name;
 
 
-  $("playerMessage").textContent =
+  $("playerMessage")
+    .textContent =
     "Connexion au flux...";
 
 
@@ -1812,18 +2061,32 @@ function playChannel(index){
   video.play()
     .then(()=>{
 
-      $("playerMessage").textContent =
+      $("playerMessage")
+        .textContent =
         "Lecture en cours.";
 
     })
     .catch(()=>{
 
-      $("playerMessage").textContent =
-        "Appuyez sur ▶ dans le lecteur pour démarrer.";
+      $("playerMessage")
+        .textContent =
+        "Appuyez sur ▶ pour démarrer la lecture.";
 
     });
 
 }
+
+
+window.playChannel =
+  index=>{
+
+    const ch =
+      filtered[index];
+
+    if(ch)
+      play(ch);
+
+  };
 
 
 function closePlayer(){
@@ -1842,8 +2105,6 @@ function closePlayer(){
   $("playerModal")
     .classList.remove("open");
 
-  currentChannel = null;
-
 }
 
 
@@ -1852,21 +2113,12 @@ $("closePlayer")
   closePlayer;
 
 
-$("reloadStream")
+$("reload")
   .onclick =
   ()=>{
 
-    if(
-      currentChannel
-    ){
-
-      playChannel(
-        filteredList.indexOf(
-          currentChannel
-        )
-      );
-
-    }
+    if(currentChannel)
+      play(currentChannel);
 
   };
 
@@ -1899,17 +2151,11 @@ $("fullscreen")
 
         video.webkitEnterFullscreen();
 
-      }else{
-
-        toast(
-          "Plein écran non disponible."
-        );
-
       }
 
-    }catch(error){
+    }catch(e){
 
-      console.log(error);
+      console.log(e);
 
     }
 
@@ -1921,20 +2167,37 @@ $("video")
     "error",
     ()=>{
 
-      $("playerMessage").textContent =
-        "⚠️ Ce flux ne peut pas être lu par ce navigateur ou le serveur bloque la lecture.";
+      $("playerMessage")
+        .textContent =
+        "⚠️ Flux inaccessible ou format non compatible avec le navigateur.";
 
     }
   );
 
 
-/* ==========================================================
+$("playerModal")
+  .addEventListener(
+    "click",
+    e=>{
+
+      if(
+        e.target ===
+        $("playerModal")
+      )
+        closePlayer();
+
+    }
+  );
+
+
+/* =========================================================
    NAVIGATION
-   ========================================================== */
+   ========================================================= */
 
 function showPage(page){
 
-  state.page = page;
+  currentPage =
+    page;
 
 
   [
@@ -1943,9 +2206,12 @@ function showPage(page){
     "seriesPage",
     "sourcesPage"
   ]
-  .forEach(id=>{
-    $(id).classList.add("hidden");
-  });
+  .forEach(
+    id=>
+      $(id)
+        .classList
+        .add("hidden")
+  );
 
 
   const id =
@@ -1958,21 +2224,21 @@ function showPage(page){
           : "sourcesPage";
 
 
-  $(id).classList.remove(
-    "hidden"
-  );
+  $(id)
+    .classList
+    .remove("hidden");
 
 
   document
     .querySelectorAll("[data-page]")
-    .forEach(btn=>{
-
-      btn.classList.toggle(
-        "active",
-        btn.dataset.page===page
-      );
-
-    });
+    .forEach(
+      btn=>{
+        btn.classList.toggle(
+          "active",
+          btn.dataset.page===page
+        );
+      }
+    );
 
 
   window.scrollTo({
@@ -1985,84 +2251,27 @@ function showPage(page){
 
 document
   .querySelectorAll("[data-page]")
-  .forEach(btn=>{
-
-    btn.addEventListener(
-      "click",
-      ()=>showPage(
-        btn.dataset.page
-      )
-    );
-
-  });
-
-
-/* ==========================================================
-   FILTRES
-   ========================================================== */
-
-document
-  .querySelectorAll("[data-country]")
-  .forEach(btn=>{
-
-    btn.onclick = ()=>{
-
-      document
-        .querySelectorAll("[data-country]")
-        .forEach(x=>
-          x.classList.remove("active")
+  .forEach(
+    btn=>{
+      btn.onclick =
+        ()=>showPage(
+          btn.dataset.page
         );
+    }
+  );
 
 
-      btn.classList.add("active");
-
-
-      state.country =
-        btn.dataset.country;
-
-
-      render();
-
-    };
-
-  });
-
-
-document
-  .querySelectorAll("[data-cat]")
-  .forEach(btn=>{
-
-    btn.onclick = ()=>{
-
-      document
-        .querySelectorAll("[data-cat]")
-        .forEach(x=>
-          x.classList.remove("active")
-        );
-
-
-      btn.classList.add("active");
-
-
-      state.category =
-        btn.dataset.cat;
-
-
-      render();
-
-    };
-
-  });
-
+/* =========================================================
+   RECHERCHE
+   ========================================================= */
 
 $("search")
   .addEventListener(
     "input",
-    event=>{
+    e=>{
 
-      state.search =
-        event.target.value;
-
+      searchText =
+        e.target.value;
 
       render();
 
@@ -2070,11 +2279,84 @@ $("search")
   );
 
 
-/* ==========================================================
-   CHARGEMENT AVEC TIMEOUT
-   ========================================================== */
+/* =========================================================
+   FILTRES
+   ========================================================= */
 
-async function fetchText(url,timeout=12000){
+document
+  .querySelectorAll("[data-country]")
+  .forEach(
+    btn=>{
+
+      btn.onclick =
+        ()=>{
+
+          document
+            .querySelectorAll("[data-country]")
+            .forEach(
+              x=>
+                x.classList
+                 .remove("active")
+            );
+
+
+          btn.classList
+             .add("active");
+
+
+          countryFilter =
+            btn.dataset.country;
+
+
+          render();
+
+        };
+
+    }
+  );
+
+
+document
+  .querySelectorAll("[data-cat]")
+  .forEach(
+    btn=>{
+
+      btn.onclick =
+        ()=>{
+
+          document
+            .querySelectorAll("[data-cat]")
+            .forEach(
+              x=>
+                x.classList
+                 .remove("active")
+            );
+
+
+          btn.classList
+             .add("active");
+
+
+          categoryFilter =
+            btn.dataset.cat;
+
+
+          render();
+
+        };
+
+    }
+  );
+
+
+/* =========================================================
+   RÉSEAU
+   ========================================================= */
+
+async function fetchText(
+  url,
+  timeout=12000
+){
 
   const controller =
     new AbortController();
@@ -2102,7 +2384,9 @@ async function fetchText(url,timeout=12000){
       );
 
 
-    if(!response.ok){
+    if(
+      !response.ok
+    ){
 
       throw new Error(
         "HTTP "+response.status
@@ -2122,33 +2406,33 @@ async function fetchText(url,timeout=12000){
 }
 
 
-/* ==========================================================
-   CHARGER UNE SOURCE
-   ========================================================== */
+/* =========================================================
+   CHARGEMENT SOURCE
+   ========================================================= */
 
 async function loadSource(
   url,
-  sourceName
+  name
 ){
 
   try{
 
-    status(
-      "Chargement "+sourceName+"..."
+    setStatus(
+      "Chargement..."
     );
 
 
     const text =
       await fetchText(
         url,
-        12000
+        15000
       );
 
 
     const list =
       parseM3U(
         text,
-        sourceName
+        name
       );
 
 
@@ -2157,17 +2441,17 @@ async function loadSource(
     ){
 
       throw new Error(
-        "Aucune chaîne"
+        "Playlist vide"
       );
 
     }
 
 
-    addChannels(list);
+    mergeChannels(list);
 
 
     toast(
-      `${list.length} chaînes — ${sourceName}`
+      `${list.length.toLocaleString("fr-FR")} chaînes chargées`
     );
 
 
@@ -2176,7 +2460,7 @@ async function loadSource(
   }catch(error){
 
     console.warn(
-      sourceName,
+      name,
       error
     );
 
@@ -2188,144 +2472,127 @@ async function loadSource(
 }
 
 
-/* ==========================================================
-   CHARGEMENT INITIAL
-   ========================================================== */
+/* =========================================================
+   SOURCES
+   ========================================================= */
 
-async function initialLoad(){
+function getSources(){
 
-  status(
-    "Connexion TV..."
-  );
+  try{
 
-
-  /*
-    Première source :
-    Côte d'Ivoire
-  */
-
-  const ci =
-    await loadSource(
-      SOURCES.CI,
-      "Côte d’Ivoire"
+    return JSON.parse(
+      localStorage.getItem(
+        "nexworld_sources"
+      ) || "[]"
     );
 
+  }catch{
 
-  /*
-    Deuxième source :
-    France
-  */
-
-  const fr =
-    await loadSource(
-      SOURCES.FR,
-      "France"
-    );
-
-
-  /*
-    IMPORTANT :
-    même si Internet/source distante
-    échoue, NEXWORLD devient quand même
-    utilisable.
-  */
-
-  if(
-    channels.length
-  ){
-
-    status(
-      `${channels.length} chaînes disponibles`
-    );
-
-  }else{
-
-    status(
-      "TV prête"
-    );
-
-
-    $("tvGrid").innerHTML = `
-
-      <div class="empty">
-
-        <div style="font-size:42px">
-          📡
-        </div>
-
-        <div style="margin-top:10px">
-          Aucune chaîne distante disponible.
-        </div>
-
-        <div style="font-size:11px;margin-top:8px">
-          Ouvrez « Mes sources » pour importer
-          votre playlist M3U/M3U8 autorisée.
-        </div>
-
-      </div>
-
-    `;
+    return [];
 
   }
 
 }
 
 
-/* ==========================================================
-   TV MONDIALE
-   ========================================================== */
+function saveSource(source){
 
-$("loadWorld")
-  .onclick =
-  async ()=>{
-
-    const button =
-      $("loadWorld");
+  const list =
+    getSources();
 
 
-    button.disabled = true;
-
-    button.textContent =
-      "🌍 Chargement mondial...";
-
-
-    const success =
-      await loadSource(
-        SOURCES.WORLD,
-        "TV mondiale"
-      );
+  list.push({
+    ...source,
+    id:
+      Date.now()+
+      "_"+
+      Math.random()
+        .toString(36)
+        .slice(2)
+  });
 
 
-    button.disabled = false;
-
-    button.textContent =
-      "🌍 Charger les chaînes internationales";
-
-
-    if(success){
-
-      showPage("tv");
-
-      toast(
-        "Catalogue TV mondial chargé."
-      );
-
-    }else{
-
-      toast(
-        "Le catalogue mondial est inaccessible depuis ce navigateur. Essayez une playlist M3U personnelle."
-      );
-
-    }
-
-  };
+  localStorage.setItem(
+    "nexworld_sources",
+    JSON.stringify(list)
+  );
 
 
-/* ==========================================================
+  renderSources();
+
+}
+
+
+function renderSources(){
+
+  const box =
+    $("sourceList");
+
+
+  const list =
+    getSources();
+
+
+  if(
+    !list.length
+  ){
+
+    box.innerHTML = `
+
+      <div style="color:var(--muted)">
+        Aucune source personnelle.
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  box.innerHTML =
+    list
+      .map(
+        s=>`
+
+          <div class="source">
+
+            <strong>
+              ${escapeHtml(
+                s.name ||
+                s.type
+              )}
+            </strong>
+
+            <small>
+              ${escapeHtml(
+                s.type || ""
+              )}
+
+              ${
+                s.url
+                  ? " • "+
+                    escapeHtml(
+                      s.url
+                    )
+                  : ""
+              }
+            </small>
+
+          </div>
+
+        `
+      )
+      .join("");
+
+}
+
+
+/* =========================================================
    M3U URL
-   ========================================================== */
+   ========================================================= */
 
-$("loadM3uUrl")
+$("loadM3u")
   .onclick =
   async ()=>{
 
@@ -2349,31 +2616,24 @@ $("loadM3uUrl")
     const success =
       await loadSource(
         url,
-        "Ma playlist M3U"
+        "Ma playlist"
       );
 
 
     if(success){
 
       saveSource({
-
-        type:"m3u",
-
-        name:"Ma playlist M3U",
-
+        type:"M3U/M3U8",
+        name:"Ma playlist",
         url
-
       });
-
-
-      renderSources();
 
       showPage("tv");
 
     }else{
 
       toast(
-        "Impossible de charger cette playlist. CORS ou serveur inaccessible."
+        "Impossible de charger cette playlist depuis le navigateur."
       );
 
     }
@@ -2381,17 +2641,17 @@ $("loadM3uUrl")
   };
 
 
-/* ==========================================================
-   FICHIER M3U
-   ========================================================== */
+/* =========================================================
+   M3U FICHIER
+   ========================================================= */
 
 $("m3uFile")
   .addEventListener(
     "change",
-    async event=>{
+    async e=>{
 
       const file =
-        event.target.files?.[0];
+        e.target.files?.[0];
 
 
       if(!file)
@@ -2399,11 +2659,6 @@ $("m3uFile")
 
 
       try{
-
-        status(
-          "Lecture de "+file.name+"..."
-        );
-
 
         const text =
           await file.text();
@@ -2429,26 +2684,20 @@ $("m3uFile")
         }
 
 
-        addChannels(list);
+        mergeChannels(list);
 
 
         saveSource({
-
-          type:"m3u-local",
-
+          type:"M3U local",
           name:file.name
-
         });
-
-
-        renderSources();
 
 
         showPage("tv");
 
 
         toast(
-          `${list.length} chaînes importées.`
+          `${list.length} chaînes importées`
         );
 
 
@@ -2466,163 +2715,63 @@ $("m3uFile")
   );
 
 
-/* ==========================================================
-   SOURCES LOCALES
-   ========================================================== */
+/* =========================================================
+   MONDE
+   ========================================================= */
 
-function getSources(){
+$("loadWorld")
+  .onclick =
+  async ()=>{
 
-  try{
-
-    return JSON.parse(
-      localStorage.getItem(
-        STORAGE_SOURCES
-      ) || "[]"
-    );
-
-  }catch{
-
-    return [];
-
-  }
-
-}
+    const btn =
+      $("loadWorld");
 
 
-function saveSource(source){
-
-  const list =
-    getSources();
+    btn.disabled =
+      true;
 
 
-  list.push({
-
-    ...source,
-
-    id:
-      Date.now()+
-      "_"+
-      Math.random()
-        .toString(36)
-        .slice(2)
-
-  });
+    btn.textContent =
+      "🌍 Chargement...";
 
 
-  localStorage.setItem(
-    STORAGE_SOURCES,
-    JSON.stringify(list)
-  );
-
-}
-
-
-function deleteSource(id){
-
-  const list =
-    getSources()
-      .filter(
-        x=>x.id!==id
+    const success =
+      await loadSource(
+        WORLD,
+        "TV mondiale"
       );
 
 
-  localStorage.setItem(
-    STORAGE_SOURCES,
-    JSON.stringify(list)
-  );
+    btn.disabled =
+      false;
 
 
-  renderSources();
+    btn.textContent =
+      "🌍 Charger le catalogue mondial";
 
 
-  toast(
-    "Source supprimée."
-  );
+    if(success){
 
-}
+      showPage("tv");
 
+      toast(
+        "Catalogue mondial disponible."
+      );
 
-window.deleteSource =
-  deleteSource;
+    }else{
 
+      toast(
+        "Le catalogue mondial n'est pas accessible actuellement."
+      );
 
-function renderSources(){
+    }
 
-  const box =
-    $("sourceList");
-
-
-  const list =
-    getSources();
+  };
 
 
-  if(
-    !list.length
-  ){
-
-    box.innerHTML = `
-
-      <div class="empty">
-        Aucune source enregistrée.
-      </div>
-
-    `;
-
-    return;
-
-  }
-
-
-  box.innerHTML =
-    list.map(source=>`
-
-      <div class="source">
-
-        <strong>
-          ${escapeHtml(
-            source.name ||
-            source.type
-          )}
-        </strong>
-
-        <small>
-          ${escapeHtml(
-            source.type || ""
-          )}
-
-          ${
-            source.url
-              ? " • "+
-                escapeHtml(
-                  source.url
-                )
-              : ""
-          }
-        </small>
-
-        <div style="margin-top:9px">
-
-          <button
-            class="danger"
-            onclick="
-              deleteSource('${source.id}')
-            "
-          >
-            Supprimer
-          </button>
-
-        </div>
-
-      </div>
-
-    `).join("");
-
-}
-
-
-/* ==========================================================
+/* =========================================================
    XTREAM
-   ========================================================== */
+   ========================================================= */
 
 $("saveXtream")
   .onclick =
@@ -2639,7 +2788,8 @@ $("saveXtream")
         .trim();
 
     const pass =
-      $("xtPass").value;
+      $("xtPass")
+        .value;
 
 
     if(
@@ -2659,9 +2809,9 @@ $("saveXtream")
 
     saveSource({
 
-      type:"xtream-profile",
+      type:"Xtream",
 
-      name:"Xtream Codes",
+      name:"Profil Xtream",
 
       server,
 
@@ -2670,22 +2820,20 @@ $("saveXtream")
     });
 
 
-    $("xtPass").value = "";
-
-
-    renderSources();
+    $("xtPass").value =
+      "";
 
 
     toast(
-      "Profil Xtream enregistré."
+      "Profil enregistré."
     );
 
   };
 
 
-/* ==========================================================
+/* =========================================================
    STALKER
-   ========================================================== */
+   ========================================================= */
 
 $("saveStalker")
   .onclick =
@@ -2718,9 +2866,9 @@ $("saveStalker")
 
     saveSource({
 
-      type:"stalker-profile",
+      type:"Stalker / MAG",
 
-      name:"Stalker / MAG",
+      name:"Profil Stalker",
 
       portal,
 
@@ -2729,239 +2877,68 @@ $("saveStalker")
     });
 
 
-    renderSources();
-
-
     toast(
-      "Profil Stalker enregistré."
+      "Profil enregistré."
     );
 
   };
 
 
-/* ==========================================================
-   XMLTV
-   ========================================================== */
-
-function parseXMLTV(text){
-
-  const parser =
-    new DOMParser();
-
-
-  const doc =
-    parser.parseFromString(
-      text,
-      "text/xml"
-    );
-
-
-  const list = [];
-
-
-  doc
-    .querySelectorAll("programme")
-    .forEach(node=>{
-
-      const channel =
-        node.getAttribute(
-          "channel"
-        ) || "";
-
-
-      const start =
-        node.getAttribute(
-          "start"
-        ) || "";
-
-
-      const stop =
-        node.getAttribute(
-          "stop"
-        ) || "";
-
-
-      const title =
-        node.querySelector(
-          "title"
-        )?.textContent
-        ?.trim() || "";
-
-
-      if(
-        channel &&
-        title
-      ){
-
-        list.push({
-
-          channel,
-
-          start,
-
-          stop,
-
-          title
-
-        });
-
-      }
-
-    });
-
-
-  return list;
-
-}
-
-
-$("loadXmltv")
-  .onclick =
-  async ()=>{
-
-    const url =
-      $("xmltvUrl")
-        .value
-        .trim();
-
-
-    if(!url){
-
-      toast(
-        "Entrez une URL XMLTV."
-      );
-
-      return;
-
-    }
-
-
-    try{
-
-      const text =
-        await fetchText(
-          url,
-          12000
-        );
-
-
-      epgPrograms =
-        parseXMLTV(text);
-
-
-      $("epgStatus")
-        .textContent =
-        `${epgPrograms.length} programmes chargés.`;
-
-
-      toast(
-        "EPG chargé."
-      );
-
-
-    }catch(error){
-
-      console.warn(error);
-
-
-      toast(
-        "Impossible de charger cet EPG depuis le navigateur."
-      );
-
-    }
-
-  };
-
-
-$("xmltvFile")
-  .addEventListener(
-    "change",
-    async event=>{
-
-      const file =
-        event.target.files?.[0];
-
-
-      if(!file)
-        return;
-
-
-      try{
-
-        const text =
-          await file.text();
-
-
-        epgPrograms =
-          parseXMLTV(text);
-
-
-        $("epgStatus")
-          .textContent =
-          `${epgPrograms.length} programmes chargés depuis ${file.name}.`;
-
-
-        toast(
-          "EPG local chargé."
-        );
-
-      }catch(error){
-
-        toast(
-          "Impossible de lire ce XMLTV."
-        );
-
-      }
-
-    }
-  );
-
-
-/* ==========================================================
-   INITIALISATION
-   ========================================================== */
-
-$("playerModal")
-  .addEventListener(
-    "click",
-    event=>{
-
-      if(
-        event.target ===
-        $("playerModal")
-      ){
-
-        closePlayer();
-
-      }
-
-    }
-  );
-
-
-document.addEventListener(
-  "keydown",
-  event=>{
-
-    if(
-      event.key==="Escape" &&
-      $("playerModal")
-        .classList.contains("open")
-    ){
-
-      closePlayer();
-
-    }
-
-  }
-);
-
+/* =========================================================
+   DÉMARRAGE
+   ========================================================= */
 
 renderSources();
 
 render();
 
-initialLoad();
+
+async function start(){
+
+  setStatus(
+    "Connexion TV..."
+  );
+
+
+  /*
+    On commence par les chaînes
+    Côte d'Ivoire puis France.
+  */
+
+  await loadSource(
+    CI,
+    "Côte d’Ivoire"
+  );
+
+
+  await loadSource(
+    FR,
+    "France"
+  );
+
+
+  if(
+    channels.length
+  ){
+
+    setStatus(
+      `${channels.length.toLocaleString("fr-FR")} chaînes`
+    );
+
+  }else{
+
+    setStatus(
+      "TV prête"
+    );
+
+    render();
+
+  }
+
+}
+
+
+start();
 
 </script>
 
