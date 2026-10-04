@@ -1,435 +1,651 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0F172A">
-<title>NEXWORLD</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<title>NEXWORLD V5</title>
 
 <style>
 :root{
---bg:#0F172A;
---card:#111827e8;
---line:#ffffff18;
---text:#f8fafc;
---muted:#94a3b8;
---cyan:#22d3ee;
---green:#34d399;
---amber:#fbbf24
+  --bg:#0F172A;
+  --bg2:#111827;
+  --card:#172033;
+  --card2:#1d2940;
+  --line:#2a3852;
+  --text:#F8FAFC;
+  --muted:#94A3B8;
+  --cyan:#22D3EE;
+  --green:#34D399;
+  --amber:#FBBF24;
+  --pink:#F472B6;
+  --red:#FB7185;
+  --blue:#60A5FA;
+  --shadow:0 12px 35px rgba(0,0,0,.30);
 }
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html{
+  scroll-behavior:smooth;
+}
 
 body{
-margin:0;
-background:radial-gradient(circle at top,#172554,#0F172A 45%,#070b13);
-color:var(--text);
-font-family:system-ui,-apple-system,Segoe UI,sans-serif;
-padding-bottom:78px
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 15% 0%,rgba(34,211,238,.10),transparent 28%),
+    radial-gradient(circle at 90% 10%,rgba(96,165,250,.10),transparent 30%),
+    var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  padding-bottom:92px;
+}
+
+button,
+input{
+  font:inherit;
+}
+
+button{
+  border:0;
 }
 
 .app{
-max-width:1180px;
-margin:auto;
-padding:15px
+  width:100%;
+  max-width:1180px;
+  margin:auto;
+  padding:0 15px;
 }
+
+/* HEADER */
 
 header{
-position:sticky;
-top:0;
-z-index:20;
-margin:-15px -15px 15px;
-padding:14px 15px;
-background:#0f172add;
-backdrop-filter:blur(18px);
-border-bottom:1px solid var(--line)
+  position:sticky;
+  top:0;
+  z-index:100;
+  margin:0 -15px;
+  padding:
+    calc(12px + env(safe-area-inset-top))
+    15px
+    12px;
+  background:rgba(15,23,42,.90);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(148,163,184,.12);
 }
 
-.top,.section-title{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:10px
+.top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
 }
 
 .logo{
-font-size:25px;
-font-weight:900;
-letter-spacing:.08em
+  font-size:24px;
+  font-weight:900;
+  letter-spacing:.06em;
 }
 
 .logo span{
-color:var(--cyan)
+  color:var(--cyan);
 }
 
 .status{
-font-size:11px;
-color:var(--muted)
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-size:11px;
+  color:var(--muted);
+  white-space:nowrap;
 }
 
 .dot{
-display:inline-block;
-width:8px;
-height:8px;
-background:var(--green);
-border-radius:50%;
-margin-right:5px;
-box-shadow:0 0 12px var(--green)
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--amber);
+  box-shadow:0 0 12px rgba(251,191,36,.8);
+}
+
+.dot.ok{
+  background:var(--green);
+  box-shadow:0 0 12px rgba(52,211,153,.8);
+}
+
+.dot.error{
+  background:var(--red);
+  box-shadow:0 0 12px rgba(251,113,133,.8);
+}
+
+/* HERO */
+
+.hero{
+  padding:24px 0 12px;
 }
 
 .hero h1{
-font-size:clamp(28px,7vw,48px);
-margin:10px 0 3px
+  margin:0;
+  font-size:clamp(27px,7vw,42px);
+  line-height:1.05;
+  letter-spacing:-.04em;
+}
+
+.hero h1 span{
+  color:var(--cyan);
 }
 
 .hero p{
-color:var(--muted);
-line-height:1.5;
-margin:0
+  margin:10px 0 0;
+  color:var(--muted);
+  line-height:1.5;
+  font-size:14px;
 }
 
-.search{
-margin:15px 0
-}
-
-.search input,
-.form input,
-.form select{
-width:100%;
-padding:12px;
-border-radius:13px;
-border:1px solid var(--line);
-background:#0b1220;
-color:var(--text);
-outline:0
-}
-
-.tabs,.chips{
-display:flex;
-gap:8px;
-overflow:auto;
-scrollbar-width:none;
-padding:4px 0 10px
-}
-
-.tabs::-webkit-scrollbar,
-.chips::-webkit-scrollbar{
-display:none
-}
-
-.tab,.chip,.btn,.small{
-border:1px solid var(--line);
-background:#1e293bbd;
-color:var(--text);
-padding:9px 13px;
-border-radius:999px;
-white-space:nowrap
-}
-
-.tab.active,
-.chip.active{
-color:var(--cyan);
-border-color:#22d3ee55;
-background:#22d3ee15
-}
-
-.section{
-display:none
-}
-
-.section.active{
-display:block
-}
-
-.panel{
-background:var(--card);
-border:1px solid var(--line);
-border-radius:20px;
-padding:14px;
-margin-bottom:13px;
-box-shadow:0 18px 50px #0003
-}
-
-.section-title h2{
-font-size:18px;
-margin:0
-}
-
-.counter{
-font-size:11px;
-color:var(--muted)
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(2,minmax(0,1fr));
-gap:10px
-}
-
-@media(min-width:700px){
-.grid{
-grid-template-columns:repeat(4,minmax(0,1fr))
-}
-}
-
-.card{
-overflow:hidden;
-background:#020617cc;
-border:1px solid var(--line);
-border-radius:16px
-}
-
-.thumb{
-height:108px;
-background:linear-gradient(145deg,#172033,#0b1220);
-display:flex;
-align-items:center;
-justify-content:center;
-position:relative
-}
-
-.thumb img{
-width:100%;
-height:100%;
-object-fit:contain;
-padding:12px
-}
-
-.placeholder{
-font-size:28px;
-color:var(--muted)
-}
-
-.live{
-position:absolute;
-top:7px;
-left:7px;
-background:#ef4444;
-color:white;
-font-size:9px;
-font-weight:900;
-padding:4px 6px;
-border-radius:6px
-}
-
-.fav{
-position:absolute;
-top:6px;
-right:6px;
-border:0;
-border-radius:50%;
-width:30px;
-height:30px;
-background:#0008;
-color:white
-}
-
-.fav.on{
-color:var(--amber)
-}
-
-.card-body{
-padding:9px
-}
-
-.card-title{
-font-size:13px;
-font-weight:800;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis
-}
-
-.meta{
-font-size:10px;
-color:var(--muted);
-margin-top:4px;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis
-}
-
-.card-actions{
-display:flex;
-gap:6px;
-margin-top:8px
-}
-
-.small{
-flex:1;
-padding:8px 5px;
-border-radius:10px;
-font-size:11px
-}
-
-.play{
-color:var(--cyan)!important;
-border-color:#22d3ee44!important;
-background:#22d3ee12!important
-}
-
-.more{
-width:100%;
-margin-top:12px
-}
-
-.empty{
-text-align:center;
-color:var(--muted);
-padding:28px 10px
-}
-
-.notice{
-font-size:11px;
-line-height:1.55;
-color:var(--muted);
-background:#fbbf240d;
-border:1px solid #fbbf2425;
-padding:11px;
-border-radius:12px
-}
-
-.form{
-display:grid;
-gap:9px
-}
-
-.source{
-border:1px solid var(--line);
-border-radius:13px;
-padding:11px;
-margin-top:8px;
-background:#0f172a99
-}
-
-.source small{
-display:block;
-color:var(--muted);
-margin-top:3px
-}
+/* STATS */
 
 .stats{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:8px
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin:16px 0;
 }
 
 .stat{
-background:#0f172aa8;
-border:1px solid var(--line);
-padding:11px;
-border-radius:12px
+  min-width:0;
+  padding:14px 10px;
+  background:linear-gradient(
+    145deg,
+    rgba(255,255,255,.055),
+    rgba(255,255,255,.018)
+  );
+  border:1px solid rgba(148,163,184,.12);
+  border-radius:17px;
+  box-shadow:var(--shadow);
 }
 
 .stat strong{
-font-size:20px
+  display:block;
+  font-size:21px;
+  line-height:1;
 }
 
-.stat span{
-display:block;
-color:var(--muted);
-font-size:10px;
-margin-top:2px
+.stat small{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font-size:10px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
-.bottom{
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-z-index:30;
-background:#020617e8;
-backdrop-filter:blur(18px);
-border-top:1px solid var(--line)
+/* SEARCH */
+
+.search{
+  position:relative;
+  margin:16px 0;
 }
 
-.bottom-inner{
-max-width:700px;
-margin:auto;
-display:grid;
-grid-template-columns:repeat(5,1fr)
+.search input{
+  width:100%;
+  height:48px;
+  padding:0 16px 0 44px;
+  color:var(--text);
+  background:rgba(23,32,51,.92);
+  border:1px solid var(--line);
+  border-radius:15px;
+  outline:none;
 }
 
-.navbtn{
-border:0;
-background:0;
-color:var(--muted);
-padding:9px 3px;
-font-size:10px
+.search input:focus{
+  border-color:rgba(34,211,238,.6);
+  box-shadow:0 0 0 3px rgba(34,211,238,.08);
 }
 
-.navbtn b{
-display:block;
-font-size:18px
+.search-icon{
+  position:absolute;
+  left:16px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--muted);
 }
 
-.navbtn.active{
-color:var(--cyan)
+/* FILTERS */
+
+.filters{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding:3px 0 9px;
+  scrollbar-width:none;
 }
 
-.player{
-position:fixed;
-z-index:50;
-left:10px;
-right:10px;
-bottom:88px;
-background:#020617;
-border:1px solid var(--line);
-border-radius:17px;
-overflow:hidden;
-display:none;
-box-shadow:0 25px 80px #000a
+.filters::-webkit-scrollbar{
+  display:none;
 }
 
-.player.open{
-display:block
+.filter{
+  flex:0 0 auto;
+  padding:9px 13px;
+  border-radius:999px;
+  color:var(--muted);
+  background:#151f33;
+  border:1px solid var(--line);
+  cursor:pointer;
+  font-size:12px;
 }
 
-.player video{
-display:block;
-width:100%;
-max-height:52vh;
-background:#000
+.filter.active{
+  color:#06131a;
+  background:var(--cyan);
+  border-color:var(--cyan);
+  font-weight:800;
+}
+
+/* SECTIONS */
+
+.section{
+  margin-top:20px;
+}
+
+.section-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:11px;
+}
+
+.section-title{
+  margin:0;
+  font-size:18px;
+  font-weight:800;
+}
+
+.section-count{
+  color:var(--muted);
+  font-size:11px;
+}
+
+/* CHANNEL GRID */
+
+.channels{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:11px;
+}
+
+@media(min-width:650px){
+  .channels{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+}
+
+@media(min-width:950px){
+  .channels{
+    grid-template-columns:repeat(4,minmax(0,1fr));
+  }
+}
+
+.channel{
+  position:relative;
+  min-width:0;
+  padding:13px;
+  border-radius:18px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.06),
+      rgba(255,255,255,.018)
+    );
+  border:1px solid rgba(148,163,184,.13);
+  box-shadow:0 8px 25px rgba(0,0,0,.20);
+  cursor:pointer;
+  transition:.18s ease;
+}
+
+.channel:active{
+  transform:scale(.97);
+}
+
+.channel:hover{
+  border-color:rgba(34,211,238,.30);
+}
+
+.channel-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:7px;
+}
+
+.logo-box{
+  width:48px;
+  height:48px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 auto;
+  border-radius:13px;
+  overflow:hidden;
+  background:#0c1424;
+  border:1px solid rgba(148,163,184,.12);
+}
+
+.logo-box img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
+.logo-fallback{
+  color:var(--cyan);
+  font-size:20px;
+  font-weight:900;
+}
+
+.favorite{
+  width:31px;
+  height:31px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:#101a2b;
+  color:#64748B;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.favorite.active{
+  color:var(--amber);
+}
+
+.channel-name{
+  margin-top:11px;
+  font-size:14px;
+  font-weight:800;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.channel-meta{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:6px;
+  margin-top:7px;
+}
+
+.country{
+  color:var(--muted);
+  font-size:10px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.live{
+  color:var(--green);
+  font-size:9px;
+  font-weight:800;
+}
+
+/* EMPTY */
+
+.empty{
+  padding:35px 18px;
+  text-align:center;
+  border:1px dashed #334155;
+  border-radius:18px;
+  color:var(--muted);
+}
+
+.empty strong{
+  display:block;
+  color:var(--text);
+  margin-bottom:6px;
+}
+
+/* LOADING */
+
+.loading{
+  padding:25px;
+  text-align:center;
+  color:var(--muted);
+}
+
+.spinner{
+  width:28px;
+  height:28px;
+  margin:0 auto 10px;
+  border:3px solid #26334b;
+  border-top-color:var(--cyan);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+/* PLAYER */
+
+.player-overlay{
+  position:fixed;
+  inset:0;
+  z-index:300;
+  display:none;
+  background:rgba(2,6,23,.94);
+  backdrop-filter:blur(15px);
+}
+
+.player-overlay.open{
+  display:flex;
+  flex-direction:column;
 }
 
 .player-head{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:9px 11px
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:
+    calc(12px + env(safe-area-inset-top))
+    14px
+    12px;
+  border-bottom:1px solid rgba(148,163,184,.13);
 }
 
 .player-title{
-font-size:13px;
-font-weight:800;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis
+  min-width:0;
+}
+
+.player-title strong{
+  display:block;
+  font-size:15px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.player-title small{
+  color:var(--muted);
 }
 
 .close{
-border:0;
-background:#ffffff12;
-color:white;
-width:34px;
-height:34px;
-border-radius:10px
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  color:var(--text);
+  background:#1e293b;
+  cursor:pointer;
+  font-size:20px;
 }
 
+.video-wrap{
+  width:100%;
+  max-width:1100px;
+  margin:auto;
+  background:#000;
+}
+
+video{
+  display:block;
+  width:100%;
+  max-height:70vh;
+  background:#000;
+}
+
+.player-message{
+  max-width:700px;
+  margin:15px auto;
+  padding:14px;
+  text-align:center;
+  color:var(--muted);
+}
+
+/* TOAST */
+
 .toast{
-display:none;
-position:fixed;
-z-index:80;
-bottom:90px;
-left:50%;
-transform:translateX(-50%);
-background:#020617;
-border:1px solid var(--line);
-padding:10px 13px;
-border-radius:12px;
-font-size:12px;
-max-width:90%;
-text-align:center
+  position:fixed;
+  left:50%;
+  bottom:88px;
+  z-index:500;
+  transform:translate(-50%,20px);
+  opacity:0;
+  pointer-events:none;
+  max-width:calc(100% - 30px);
+  padding:11px 15px;
+  color:var(--text);
+  background:#111827;
+  border:1px solid #334155;
+  border-radius:13px;
+  box-shadow:var(--shadow);
+  font-size:12px;
+  text-align:center;
+  transition:.22s ease;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translate(-50%,0);
+}
+
+/* BOTTOM NAV */
+
+.bottom-nav{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:200;
+  padding:
+    8px
+    8px
+    calc(8px + env(safe-area-inset-bottom));
+  background:rgba(15,23,42,.94);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border-top:1px solid rgba(148,163,184,.13);
+}
+
+.nav-inner{
+  max-width:600px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:5px;
+}
+
+.nav-btn{
+  min-height:52px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  border-radius:13px;
+  color:#64748B;
+  background:transparent;
+  cursor:pointer;
+}
+
+.nav-btn span{
+  font-size:19px;
+  line-height:1;
+}
+
+.nav-btn small{
+  font-size:9px;
+}
+
+.nav-btn.active{
+  color:var(--cyan);
+  background:rgba(34,211,238,.08);
+}
+
+/* SOURCES */
+
+.source-card{
+  padding:15px;
+  margin-bottom:10px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:rgba(23,32,51,.7);
+}
+
+.source-card strong{
+  display:block;
+}
+
+.source-card small{
+  display:block;
+  color:var(--muted);
+  margin-top:5px;
+}
+
+/* ABOUT */
+
+.about{
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:rgba(23,32,51,.65);
+  line-height:1.6;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.about strong{
+  color:var(--text);
+}
+
+/* DESKTOP */
+
+@media(min-width:700px){
+  .app{
+    padding:0 22px;
+  }
+
+  header{
+    margin:0 -22px;
+    padding-left:22px;
+    padding-right:22px;
+  }
+
+  .hero{
+    padding-top:35px;
+  }
 }
 </style>
 </head>
@@ -439,1578 +655,1405 @@ text-align:center
 <div class="app">
 
 <header>
-<div class="top">
-<div class="logo">NEX<span>WORLD</span></div>
-<div class="status">
-<i class="dot"></i>
-<span id="status">Connexion…</span>
-</div>
-</div>
+  <div class="top">
+    <div class="logo">NEX<span>WORLD</span></div>
+
+    <div class="status">
+      <span id="statusDot" class="dot"></span>
+      <span id="status">Connexion...</span>
+    </div>
+  </div>
 </header>
 
-<div class="hero">
+<main>
 
-<h1>Le monde en streaming.</h1>
-
-<p>
-TV en direct, films, séries et vos propres sources.
-</p>
-
-<div class="search">
-<input
-id="search"
-type="search"
-placeholder="Rechercher une chaîne…">
-</div>
-
-</div>
-
-<div class="tabs">
-
-<button class="tab active" data-s="home">
-Accueil
-</button>
-
-<button class="tab" data-s="tv">
-TV
-</button>
-
-<button class="tab" data-s="films">
-Films
-</button>
-
-<button class="tab" data-s="series">
-Séries
-</button>
-
-<button class="tab" data-s="sources">
-Mes sources
-</button>
-
-</div>
-
-<section id="home" class="section active">
-
-<div class="panel">
-
-<div class="section-title">
-
-<h2>
-TV en direct
-</h2>
-
-<span id="homeCount" class="counter">
-—
-</span>
-
-</div>
-
-<div class="stats">
-
-<div class="stat">
-<strong id="total">0</strong>
-<span>chaînes</span>
-</div>
-
-<div class="stat">
-<strong id="favTotal">0</strong>
-<span>favoris</span>
-</div>
-
-<div class="stat">
-<strong>2</strong>
-<span>sources pays</span>
-</div>
-
-</div>
-
-</div>
-
-<div class="panel">
-
-<div class="section-title">
-<h2>À découvrir</h2>
-</div>
-
-<div id="homeGrid" class="grid"></div>
-
-<button id="homeMore" class="btn more">
-Afficher plus
-</button>
-
-</div>
-
+<section class="hero">
+  <h1>Le monde de la <span>TV</span></h1>
+  <p>
+    Retrouvez les chaînes disponibles depuis une interface simple,
+    rapide et adaptée au mobile.
+  </p>
 </section>
 
-<section id="tv" class="section">
+<section class="stats">
+  <div class="stat">
+    <strong id="channelCount">0</strong>
+    <small>Chaînes</small>
+  </div>
 
-<div class="panel">
+  <div class="stat">
+    <strong id="favoriteCount">0</strong>
+    <small>Favoris</small>
+  </div>
 
-<div class="section-title">
-
-<h2>
-TV en direct
-</h2>
-
-<span id="tvCount" class="counter">
-Chargement…
-</span>
-
-</div>
-
-<div id="countries" class="chips">
-
-<button class="chip active" data-c="ALL">
-Toutes
-</button>
-
-<button class="chip" data-c="CI">
-🇨🇮 Côte d’Ivoire
-</button>
-
-<button class="chip" data-c="FR">
-🇫🇷 France
-</button>
-
-<button class="chip" data-c="AFR">
-🌍 Afrique
-</button>
-
-<button class="chip" data-c="INT">
-🌐 International
-</button>
-
-</div>
-
-<div id="cats" class="chips">
-
-<button class="chip active" data-k="ALL">
-Toutes
-</button>
-
-<button class="chip" data-k="NEWS">
-Actualités
-</button>
-
-<button class="chip" data-k="SPORT">
-Sports
-</button>
-
-<button class="chip" data-k="MUSIC">
-Musique
-</button>
-
-<button class="chip" data-k="KIDS">
-Enfants
-</button>
-
-<button class="chip" data-k="ENT">
-Divertissement
-</button>
-
-<button class="chip" data-k="MOVIES">
-Films
-</button>
-
-</div>
-
-<div id="tvGrid" class="grid"></div>
-
-<button id="tvMore" class="btn more">
-Afficher plus
-</button>
-
-</div>
-
+  <div class="stat">
+    <strong id="sourceCount">0</strong>
+    <small>Sources</small>
+  </div>
 </section>
 
-<section id="films" class="section">
-
-<div class="panel">
-
-<div class="section-title">
-<h2>Films</h2>
-</div>
-
-<div class="empty">
-
-Catalogue cinéma à connecter aux métadonnées légales
-(TMDb et autres sources).
-
-</div>
-
-</div>
-
+<section class="search">
+  <span class="search-icon">⌕</span>
+  <input
+    id="search"
+    type="search"
+    placeholder="Rechercher une chaîne..."
+    autocomplete="off"
+  >
 </section>
 
-<section id="series" class="section">
-
-<div class="panel">
-
-<div class="section-title">
-<h2>Séries</h2>
-</div>
-
-<div class="empty">
-
-Catalogue séries à connecter aux métadonnées légales
-(TVmaze, TMDb et autres sources).
-
-</div>
-
-</div>
-
+<section>
+  <div class="filters">
+    <button class="filter active" data-filter="ALL">Toutes</button>
+    <button class="filter" data-filter="CI">🇨🇮 Côte d’Ivoire</button>
+    <button class="filter" data-filter="FR">🇫🇷 France</button>
+    <button class="filter" data-filter="AFR">🌍 Afrique</button>
+    <button class="filter" data-filter="INT">🌐 International</button>
+    <button class="filter" data-filter="FAV">★ Favoris</button>
+  </div>
 </section>
 
-<section id="sources" class="section">
+<section class="section" id="discoverSection">
+  <div class="section-head">
+    <h2 class="section-title">À découvrir</h2>
+    <span class="section-count" id="sectionCount">0</span>
+  </div>
 
-<div class="panel">
-
-<div class="section-title">
-<h2>Mes sources</h2>
-</div>
-
-<div class="notice">
-
-Ajoutez uniquement des playlists, comptes ou portails que vous êtes autorisé à utiliser.
-Le mot de passe Xtream n'est jamais sauvegardé dans cette version.
-
-</div>
-
-<br>
-
-<div class="form">
-
-<input
-id="sn"
-placeholder="Nom de la source">
-
-<select id="st">
-
-<option value="m3u">
-M3U / M3U8
-</option>
-
-<option value="xmltv">
-XMLTV / EPG
-</option>
-
-<option value="stalker">
-Stalker / MAG
-</option>
-
-<option value="xtream">
-Xtream Codes
-</option>
-
-</select>
-
-<input
-id="su"
-placeholder="URL de la source">
-
-<input
-id="si"
-placeholder="Identifiant (facultatif)">
-
-<input
-id="sp"
-type="password"
-placeholder="Mot de passe (non sauvegardé)">
-
-<input
-id="sm"
-placeholder="MAC (facultatif)">
-
-<button id="add" class="btn">
-Ajouter la source
-</button>
-
-</div>
-
-<div id="sourceList"></div>
-
-<br>
-
-<button id="reset" class="btn">
-Réinitialiser les données locales
-</button>
-
-</div>
-
+  <div id="channels" class="channels">
+    <div class="loading">
+      <div class="spinner"></div>
+      Chargement des chaînes...
+    </div>
+  </div>
 </section>
 
+<section class="section" id="sourcesSection" style="display:none">
+  <div class="section-head">
+    <h2 class="section-title">Sources</h2>
+  </div>
+
+  <div class="source-card">
+    <strong>🇨🇮 Côte d’Ivoire</strong>
+    <small>Playlist publique IPTV-org</small>
+  </div>
+
+  <div class="source-card">
+    <strong>🇫🇷 France</strong>
+    <small>Playlist publique IPTV-org</small>
+  </div>
+
+  <div class="source-card">
+    <strong>🌍 Monde</strong>
+    <small>Index international IPTV-org</small>
+  </div>
+</section>
+
+<section class="section" id="aboutSection" style="display:none">
+  <div class="section-head">
+    <h2 class="section-title">NEXWORLD</h2>
+  </div>
+
+  <div class="about">
+    <strong>NEXWORLD V5</strong><br><br>
+
+    Une interface de télévision en ligne pensée pour le mobile,
+    avec recherche, catégories, favoris et lecteur intégré.
+
+    <br><br>
+
+    Les chaînes affichées dépendent des sources publiques disponibles
+    et de leur disponibilité au moment du chargement.
+
+    <br><br>
+
+    NEXWORLD ne garantit pas la disponibilité permanente d'une chaîne
+    et ne revendique pas les droits sur les contenus diffusés par
+    des sources tierces.
+  </div>
+</section>
+
+</main>
 </div>
 
-<div id="player" class="player">
+<!-- PLAYER -->
 
-<div class="player-head">
+<div id="playerOverlay" class="player-overlay">
 
-<div id="pt" class="player-title">
-Lecture
-</div>
+  <div class="player-head">
 
-<button id="close" class="close">
-✕
-</button>
+    <div class="player-title">
+      <strong id="playerTitle">NEXWORLD</strong>
+      <small id="playerCountry">Lecture</small>
+    </div>
 
-</div>
+    <button id="closePlayer" class="close" type="button">
+      ×
+    </button>
 
-<video
-id="video"
-controls
-playsinline
-autoplay>
-</video>
+  </div>
+
+  <div class="video-wrap">
+    <video
+      id="video"
+      controls
+      playsinline
+      preload="metadata"
+    ></video>
+  </div>
+
+  <div id="playerMessage" class="player-message">
+    Préparation de la lecture...
+  </div>
 
 </div>
 
 <div id="toast" class="toast"></div>
 
-<nav class="bottom">
+<!-- BOTTOM NAV -->
 
-<div class="bottom-inner">
+<nav class="bottom-nav">
 
-<button class="navbtn active" data-s="home">
-<b>⌂</b>
-Accueil
-</button>
+  <div class="nav-inner">
 
-<button class="navbtn" data-s="tv">
-<b>◉</b>
-TV
-</button>
+    <button class="nav-btn active" data-nav="home" type="button">
+      <span>⌂</span>
+      <small>Accueil</small>
+    </button>
 
-<button class="navbtn" data-s="films">
-<b>▣</b>
-Films
-</button>
+    <button class="nav-btn" data-nav="favorites" type="button">
+      <span>★</span>
+      <small>Favoris</small>
+    </button>
 
-<button class="navbtn" data-s="series">
-<b>▤</b>
-Séries
-</button>
+    <button class="nav-btn" data-nav="sources" type="button">
+      <span>◉</span>
+      <small>Sources</small>
+    </button>
 
-<button class="navbtn" data-s="sources">
-<b>⚙</b>
-Sources
-</button>
+    <button class="nav-btn" data-nav="about" type="button">
+      <span>☰</span>
+      <small>Plus</small>
+    </button>
 
-</div>
+  </div>
 
 </nav>
 
 <script>
-
 "use strict";
 
-/* =========================================
-   NEXWORLD V5
-   ========================================= */
-
-const URLS={
-
-ci:
-"https://iptv-org.github.io/iptv/countries/ci.m3u",
-
-fr:
-"https://iptv-org.github.io/iptv/countries/fr.m3u",
-
-world:
-"https://iptv-org.github.io/iptv/index.country.m3u"
-
-};
-
-/* =========================================
-   PROTECTION DES DONNÉES LOCALES
-   ========================================= */
-
-function safeJSON(key,fallback){
-
-try{
-
-const raw =
-localStorage.getItem(key);
-
-if(!raw)
-return fallback;
-
-const value =
-JSON.parse(raw);
-
-return value ?? fallback;
-
-}catch(e){
-
-try{
-localStorage.removeItem(key);
-}catch(_){}
-
-return fallback;
-
-}
-
-}
-
-const S={
-
-channels:[],
-
-seen:new Set(),
-
-country:"ALL",
-
-cat:"ALL",
-
-q:"",
-
-visible:40,
-
-home:12,
-
-favs:
-safeJSON("nw_favs",[]),
-
-sources:
-safeJSON("nw_sources",[]),
-
-world:false,
-
-worldLoading:false
-
-};
-
-if(!Array.isArray(S.favs))
-S.favs=[];
-
-if(!Array.isArray(S.sources))
-S.sources=[];
-
-const $ =
-id =>
-document.getElementById(id);
-
-const esc =
-s =>
-String(s ?? "")
-.replace(
-/[&<>"']/g,
-m => ({
-"&":"&amp;",
-"<":"&lt;",
-">":"&gt;",
-'"':"&quot;",
-"'":"&#039;"
-}[m])
-);
-
-/* =========================================
-   MESSAGE
-   ========================================= */
-
-function toast(t){
-
-$("toast").textContent=t;
-
-$("toast").style.display="block";
-
-clearTimeout(window.tt);
-
-window.tt=
-setTimeout(
-() =>
-$("toast").style.display="none",
-2500
-);
-
-}
-
-/* =========================================
-   ATTRIBUTS M3U
-   ========================================= */
-
-function attr(line,name){
-
-let m =
-line.match(
-new RegExp(
-name+'="([^"]*)"',
-"i"
-)
-);
-
-return m ? m[1] : "";
-
-}
-
-/* =========================================
-   PAYS
-   ========================================= */
-
-function country(raw){
-
-let x =
-(raw || "")
-.toLowerCase();
-
-let a =
-x.split(/[;,|\s]+/);
-
-if(
-a.includes("ci") ||
-x.includes("côte d'ivoire") ||
-x.includes("côte d’ivoire") ||
-x.includes("ivory coast")
-)
-return "CI";
-
-if(
-a.includes("fr") ||
-x==="france"
-)
-return "FR";
-
-let af =
-"dz ao bj bw bf bi cm cv cf td km cd cg dj eg gq er sz et ga gm gh gn gw ke ls lr ly mg mw ml mr mu ma mz na ne ng rw st sn sc sl so za ss sd tz tg tn ug zm zw re yt"
-.split(" ");
-
-if(
-a.some(c=>af.includes(c)) ||
-x.includes("africa")
-)
-return "AFR";
-
-if(
-a.includes("int") ||
-x.includes("international") ||
-x.includes("worldwide")
-)
-return "INT";
-
-return "INT";
-
-}
-
-/* =========================================
-   CATÉGORIES
-   ========================================= */
-
-function cat(g,n){
-
-let x =
-((g || "")+" "+(n || ""))
-.toLowerCase();
-
-if(
-/news|actualit|information|journal|24h|politic/.test(x)
-)
-return "NEWS";
-
-if(
-/sport|football|soccer|basket|tennis|golf|rugby|boxing|nba|ufc/.test(x)
-)
-return "SPORT";
-
-if(
-/music|musique|radio|mtv|trace|concert/.test(x)
-)
-return "MUSIC";
-
-if(
-/kid|kids|children|junior|cartoon|nick|disney|gulli/.test(x)
-)
-return "KIDS";
-
-if(
-/movie|movies|film|cinema|ciné|cine/.test(x)
-)
-return "MOVIES";
-
-if(
-/entertain|divert|variety|reality|show|comedy|lifestyle/.test(x)
-)
-return "ENT";
-
-return "GENERAL";
-
-}
-
-/* =========================================
-   PARSEUR M3U
-   ========================================= */
-
-function parse(text,source,forced){
-
-let lines =
-text
-.replace(/^\uFEFF/,"")
-.split(/\r?\n/);
-
-let p=null;
-
-let out=[];
-
-for(let l of lines){
-
-l=l.trim();
-
-if(!l)
-continue;
-
-if(l.startsWith("#EXTINF")){
-
-let c =
-l.indexOf(",");
-
-p={
-
-title:
-c>=0
-?
-l.slice(c+1).trim()
-:
-"Chaîne",
-
-group:
-attr(l,"group-title"),
-
-logo:
-attr(l,"tvg-logo"),
-
 /*
-IMPORTANT :
-CI et FR sont forcés lorsque
-nous chargeons leurs playlists.
+========================================================
+ NEXWORLD V5
+ Application TV mobile-first
+========================================================
 */
 
-country:
-forced ||
-country(attr(l,"tvg-country")),
+const URLS = {
+  ci: "https://iptv-org.github.io/iptv/countries/ci.m3u",
+  fr: "https://iptv-org.github.io/iptv/countries/fr.m3u",
+  world: "https://iptv-org.github.io/iptv/index.country.m3u"
+};
 
-source
+const AFRICAN_COUNTRIES = new Set([
+  "DZ","AO","BJ","BW","BF","BI","CM","CV","CF","TD",
+  "KM","CG","CD","CI","DJ","EG","GQ","ER","SZ","ET",
+  "GA","GM","GH","GN","GW","KE","LS","LR","LY","MG",
+  "MW","ML","MR","MU","MA","MZ","NA","NE","NG","RW",
+  "ST","SN","SC","SL","SO","ZA","SS","SD","TZ","TG",
+  "TN","UG","ZM","ZW"
+]);
+
+function $(id){
+  return document.getElementById(id);
+}
+
+/* ======================================================
+   SAFE LOCAL STORAGE
+====================================================== */
+
+function safeJSON(key, fallback){
+
+  try{
+
+    const raw = localStorage.getItem(key);
+
+    if(!raw){
+      return fallback;
+    }
+
+    const value = JSON.parse(raw);
+
+    return value ?? fallback;
+
+  }catch(error){
+
+    try{
+      localStorage.removeItem(key);
+    }catch(_){}
+
+    return fallback;
+  }
+}
+
+function saveJSON(key,value){
+
+  try{
+    localStorage.setItem(key,JSON.stringify(value));
+  }catch(error){
+    console.warn("LocalStorage indisponible",error);
+  }
+}
+
+/* ======================================================
+   STATE
+====================================================== */
+
+const S = {
+
+  channels: [],
+
+  favorites: new Set(
+    safeJSON("nexworld_v5_favorites",[])
+  ),
+
+  filter: "ALL",
+
+  search: "",
+
+  sources: 0,
+
+  loaded: false
 
 };
 
-continue;
+/* ======================================================
+   TOAST
+====================================================== */
 
+let toastTimer = null;
+
+function toast(message){
+
+  const el = $("toast");
+
+  if(!el){
+    return;
+  }
+
+  el.textContent = message;
+  el.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer = setTimeout(()=>{
+    el.classList.remove("show");
+  },3000);
 }
 
-if(
-p &&
-!l.startsWith("#")
+/* ======================================================
+   STATUS
+====================================================== */
+
+function setStatus(text,type){
+
+  $("status").textContent = text;
+
+  const dot = $("statusDot");
+
+  dot.className = "dot";
+
+  if(type === "ok"){
+    dot.classList.add("ok");
+  }
+
+  if(type === "error"){
+    dot.classList.add("error");
+  }
+}
+
+/* ======================================================
+   COUNTRY
+====================================================== */
+
+function clean(value){
+
+  return String(value || "")
+    .replace(/^["']|["']$/g,"")
+    .trim();
+}
+
+function getAttr(line,name){
+
+  const regex = new RegExp(
+    name + '="([^"]*)"',
+    "i"
+  );
+
+  const match = line.match(regex);
+
+  return match ? clean(match[1]) : "";
+}
+
+function normalizeCountry(value){
+
+  value = clean(value).toUpperCase();
+
+  const aliases = {
+
+    "COTE D IVOIRE":"CI",
+    "CÔTE D'IVOIRE":"CI",
+    "COTE D'IVOIRE":"CI",
+    "IVORY COAST":"CI",
+    "COTE DIVOIRE":"CI",
+
+    "FRANCE":"FR",
+
+    "SOUTH AFRICA":"ZA",
+    "EGYPT":"EG",
+    "MOROCCO":"MA",
+    "NIGERIA":"NG",
+    "GHANA":"GH",
+    "SENEGAL":"SN",
+    "KENYA":"KE",
+    "CAMEROON":"CM",
+    "TUNISIA":"TN",
+    "ALGERIA":"DZ",
+    "MALI":"ML",
+    "BURKINA FASO":"BF",
+    "BENIN":"BJ",
+    "TOGO":"TG",
+    "GUINEA":"GN",
+
+    "UNITED STATES":"US",
+    "USA":"US",
+    "UNITED KINGDOM":"GB",
+    "UK":"GB"
+  };
+
+  if(aliases[value]){
+    return aliases[value];
+  }
+
+  return value;
+}
+
+/* ======================================================
+   PARSER M3U
+====================================================== */
+
+function parseM3U(text,sourceName,forcedCountry){
+
+  const result = [];
+
+  if(!text){
+    return result;
+  }
+
+  const lines = text
+    .replace(/\r/g,"")
+    .split("\n");
+
+  let current = null;
+
+  for(let i=0;i<lines.length;i++){
+
+    const line = lines[i].trim();
+
+    if(!line){
+      continue;
+    }
+
+    if(line.startsWith("#EXTINF")){
+
+      const comma = line.indexOf(",");
+
+      let name = "";
+
+      if(comma >= 0){
+        name = line.slice(comma + 1).trim();
+      }
+
+      const logo =
+        getAttr(line,"tvg-logo") ||
+        getAttr(line,"logo");
+
+      const group =
+        getAttr(line,"group-title") ||
+        "TV";
+
+      const tvgId =
+        getAttr(line,"tvg-id");
+
+      const countryAttr =
+        getAttr(line,"tvg-country");
+
+      const language =
+        getAttr(line,"tvg-language");
+
+      const country =
+        normalizeCountry(
+          forcedCountry ||
+          countryAttr ||
+          ""
+        );
+
+      current = {
+        id:
+          tvgId ||
+          name.toLowerCase().replace(
+            /[^a-z0-9]+/g,
+            "-"
+          ) +
+          "-" +
+          result.length,
+
+        name:
+          name ||
+          "Chaîne sans nom",
+
+        logo,
+
+        group,
+
+        country,
+
+        language,
+
+        source:sourceName,
+
+        url:""
+      };
+
+      continue;
+    }
+
+    if(
+      current &&
+      !line.startsWith("#")
+    ){
+
+      current.url = line;
+
+      if(
+        current.url.startsWith("http://") ||
+        current.url.startsWith("https://")
+      ){
+        result.push(current);
+      }
+
+      current = null;
+    }
+  }
+
+  return result;
+}
+
+/* ======================================================
+   COUNTRY CLASSIFICATION
+====================================================== */
+
+function classify(channel){
+
+  const c = normalizeCountry(channel.country);
+
+  if(c === "CI"){
+    return "CI";
+  }
+
+  if(c === "FR"){
+    return "FR";
+  }
+
+  if(
+    AFRICAN_COUNTRIES.has(c) ||
+    channel.source === "Côte d’Ivoire" ||
+    channel.source === "Afrique"
+  ){
+    return "AFR";
+  }
+
+  return "INT";
+}
+
+/* ======================================================
+   LOAD PLAYLIST
+====================================================== */
+
+async function loadPlaylist(
+  url,
+  sourceName,
+  forcedCountry
 ){
 
-let key =
-(p.title+"|"+l)
-.toLowerCase();
+  try{
 
-if(!S.seen.has(key)){
+    const response = await fetch(
+      url,
+      {
+        method:"GET",
+        cache:"no-store"
+      }
+    );
 
-S.seen.add(key);
+    if(!response.ok){
+      throw new Error(
+        "HTTP " + response.status
+      );
+    }
 
-out.push({
+    const text = await response.text();
 
-...p,
+    const channels = parseM3U(
+      text,
+      sourceName,
+      forcedCountry
+    );
 
-url:l,
+    return channels;
 
-id:
-Math.random()
-.toString(36)
-.slice(2)+
-Date.now(),
+  }catch(error){
 
-category:
-cat(p.group,p.title)
+    console.warn(
+      "Impossible de charger",
+      sourceName,
+      error
+    );
 
-});
-
+    return [];
+  }
 }
 
-p=null;
+/* ======================================================
+   DEDUPLICATION
+====================================================== */
 
+function uniqueChannels(list){
+
+  const map = new Map();
+
+  for(const channel of list){
+
+    const key =
+      channel.url ||
+      (
+        channel.name +
+        "|" +
+        channel.country
+      );
+
+    if(!map.has(key)){
+      map.set(key,channel);
+    }
+  }
+
+  return Array.from(map.values());
 }
 
+/* ======================================================
+   LOAD WORLD
+====================================================== */
+
+async function loadWorld(){
+
+  const world =
+    await loadPlaylist(
+      URLS.world,
+      "Monde",
+      ""
+    );
+
+  if(!world.length){
+    return 0;
+  }
+
+  const existing = new Set(
+    S.channels.map(
+      channel => channel.url
+    )
+  );
+
+  let added = 0;
+
+  for(const channel of world){
+
+    if(
+      channel.country === "CI" ||
+      channel.country === "FR" ||
+      AFRICAN_COUNTRIES.has(
+        channel.country
+      )
+    ){
+
+      if(!existing.has(channel.url)){
+
+        S.channels.push(channel);
+
+        existing.add(channel.url);
+
+        added++;
+      }
+    }
+  }
+
+  return added;
 }
 
-return out;
-
-}
-
-/* =========================================
-   CHARGEMENT
-   ========================================= */
-
-async function load(
-url,
-name,
-forced=null
-){
-
-try{
-
-let r =
-await fetch(
-url,
-{
-cache:"no-store"
-}
-);
-
-if(!r.ok)
-throw Error(r.status);
-
-let list =
-parse(
-await r.text(),
-name,
-forced
-);
-
-S.channels.push(...list);
-
-render();
-
-return list.length;
-
-}catch(e){
-
-console.warn(
-name,
-e
-);
-
-return 0;
-
-}
-
-}
-
-/* =========================================
-   MONDE
-   ========================================= */
-
-async function world(){
-
-if(
-S.world ||
-S.worldLoading
-)
-return;
-
-S.worldLoading=true;
-
-$("status").textContent=
-"Catalogue mondial…";
-
-try{
-
-let n =
-await load(
-URLS.world,
-"Monde"
-);
-
-S.world=true;
-
-render();
-
-toast(
-"Catalogue mondial : "+
-n+
-" nouvelles chaînes"
-);
-
-}catch(e){
-
-console.warn(
-"Catalogue mondial indisponible",
-e
-);
-
-}
-
-S.worldLoading=false;
-
-$("status").textContent=
-"TV connectée";
-
-}
-
-/* =========================================
-   DÉMARRAGE
-   ========================================= */
+/* ======================================================
+   LOAD ALL
+====================================================== */
 
 async function start(){
 
-$("status").textContent=
-"Chargement TV…";
+  setStatus(
+    "Connexion...",
+    ""
+  );
 
-/*
-CORRECTION PRINCIPALE :
+  $("channels").innerHTML = `
+    <div class="loading">
+      <div class="spinner"></div>
+      Connexion aux sources...
+    </div>
+  `;
 
-La playlist Côte d'Ivoire
-est forcée à CI.
+  try{
 
-La playlist France
-est forcée à FR.
-*/
+    const results =
+      await Promise.all([
 
-let a =
-await load(
-URLS.ci,
-"Côte d’Ivoire",
-"CI"
-);
+        loadPlaylist(
+          URLS.ci,
+          "Côte d’Ivoire",
+          "CI"
+        ),
 
-let b =
-await load(
-URLS.fr,
-"France",
-"FR"
-);
+        loadPlaylist(
+          URLS.fr,
+          "France",
+          "FR"
+        )
 
-$("status").textContent=
-"TV connectée";
+      ]);
 
-toast(
-"Côte d’Ivoire : "+
-a+
-" · France : "+
-b
-);
+    const ci = results[0];
+    const fr = results[1];
 
-setTimeout(
-world,
-800
-);
+    S.channels = uniqueChannels([
+      ...ci,
+      ...fr
+    ]);
 
+    S.sources = 2;
+
+    render();
+
+    setStatus(
+      "TV connectée",
+      "ok"
+    );
+
+    toast(
+      "Côte d’Ivoire : " +
+      ci.length +
+      " · France : " +
+      fr.length
+    );
+
+    S.loaded = true;
+
+    /*
+      On tente ensuite de récupérer
+      les chaînes africaines du catalogue mondial.
+    */
+
+    setTimeout(async()=>{
+
+      const added =
+        await loadWorld();
+
+      if(added > 0){
+
+        S.channels =
+          uniqueChannels(S.channels);
+
+        render();
+
+        toast(
+          "+" +
+          added +
+          " chaînes africaines"
+        );
+      }
+
+    },800);
+
+  }catch(error){
+
+    console.error(error);
+
+    setStatus(
+      "Erreur",
+      "error"
+    );
+
+    $("channels").innerHTML = `
+      <div class="empty">
+        <strong>Impossible de charger les chaînes</strong>
+        Vérifiez votre connexion Internet puis rechargez la page.
+      </div>
+    `;
+
+    toast(
+      "Erreur de connexion"
+    );
+  }
 }
 
-/* =========================================
-   FILTRAGE
-   ========================================= */
+/* ======================================================
+   FILTER
+====================================================== */
 
-function filtered(){
+function filteredChannels(){
 
-let q =
-S.q
-.toLowerCase()
-.trim();
+  const search =
+    S.search.trim().toLowerCase();
 
-return S.channels.filter(c=>{
+  return S.channels.filter(channel=>{
 
-let co =
+    if(S.filter === "FAV"){
 
-S.country==="ALL"
+      if(
+        !S.favorites.has(channel.id)
+      ){
+        return false;
+      }
+    }
 
-||
+    else if(S.filter !== "ALL"){
 
-(
-S.country==="CI" &&
-c.country==="CI"
-)
+      const category =
+        classify(channel);
 
-||
+      if(category !== S.filter){
+        return false;
+      }
+    }
 
-(
-S.country==="FR" &&
-c.country==="FR"
-)
+    if(search){
 
-||
+      const haystack = (
+        channel.name +
+        " " +
+        channel.group +
+        " " +
+        channel.country +
+        " " +
+        channel.source
+      ).toLowerCase();
 
-(
-S.country==="AFR" &&
-(
-c.country==="AFR" ||
-c.country==="CI"
-)
-)
+      if(!haystack.includes(search)){
+        return false;
+      }
+    }
 
-||
-
-(
-S.country==="INT" &&
-c.country==="INT"
-);
-
-let ca =
-S.cat==="ALL" ||
-c.category===S.cat;
-
-let se =
-!q ||
-(
-c.title+
-" "+
-c.group+
-" "+
-c.source
-)
-.toLowerCase()
-.includes(q);
-
-return co && ca && se;
-
-});
-
+    return true;
+  });
 }
 
-/* =========================================
-   FAVORIS
-   ========================================= */
+/* ======================================================
+   FAVORITE
+====================================================== */
 
-function fav(id){
+function toggleFavorite(
+  channelId,
+  event
+){
 
-return S.favs.includes(id);
+  if(event){
+    event.stopPropagation();
+  }
 
+  if(S.favorites.has(channelId)){
+
+    S.favorites.delete(channelId);
+
+  }else{
+
+    S.favorites.add(channelId);
+  }
+
+  saveJSON(
+    "nexworld_v5_favorites",
+    Array.from(S.favorites)
+  );
+
+  updateFavoriteCount();
+
+  render();
 }
 
-function toggle(id){
+function updateFavoriteCount(){
 
-S.favs =
-fav(id)
-
-?
-
-S.favs.filter(
-x=>x!==id
-)
-
-:
-
-[
-...S.favs,
-id
-];
-
-localStorage.setItem(
-"nw_favs",
-JSON.stringify(S.favs)
-);
-
-render();
-
+  $("favoriteCount").textContent =
+    S.favorites.size;
 }
 
-/* =========================================
-   LABEL PAYS
-   ========================================= */
+/* ======================================================
+   CHANNEL LOGO
+====================================================== */
 
-function label(c){
+function logoHTML(channel){
 
-return({
+  if(channel.logo){
 
-CI:"Côte d’Ivoire",
+    return `
+      <img
+        src="${escapeHTML(channel.logo)}"
+        alt=""
+        loading="lazy"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+      >
+      <div
+        class="logo-fallback"
+        style="display:none"
+      >
+        ${escapeHTML(
+          channel.name
+            .slice(0,1)
+            .toUpperCase()
+        )}
+      </div>
+    `;
 
-FR:"France",
+  }
 
-AFR:"Afrique",
-
-INT:"International"
-
-}[c] || "International");
-
+  return `
+    <div class="logo-fallback">
+      ${escapeHTML(
+        channel.name
+          .slice(0,1)
+          .toUpperCase()
+      )}
+    </div>
+  `;
 }
 
-/* =========================================
-   CARTE
-   ========================================= */
+/* ======================================================
+   ESCAPE
+====================================================== */
 
-function card(c){
+function escapeHTML(value){
 
-return `
-
-<article class="card">
-
-<div class="thumb">
-
-${
-c.logo
-
-?
-
-'<img loading="lazy" src="'+
-esc(c.logo)+
-'" onerror="this.style.display=\\'none\\'">'
-
-:
-
-'<div class="placeholder">◉</div>'
+  return String(value || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
 
-<span class="live">
-LIVE
-</span>
-
-<button
-class="fav ${fav(c.id)?"on":""}"
-onclick="toggle('${esc(c.id)}')"
->
-${fav(c.id)?"★":"☆"}
-</button>
-
-</div>
-
-<div class="card-body">
-
-<div class="card-title">
-${esc(c.title)}
-</div>
-
-<div class="meta">
-${label(c.country)} ·
-${esc(c.category)}
-</div>
-
-<div class="meta">
-📡 ${esc(c.source)}
-</div>
-
-<div class="card-actions">
-
-<button
-class="small play"
-onclick="play('${esc(c.id)}')"
->
-▶ Lire
-</button>
-
-<button
-class="small"
-onclick="info('${esc(c.id)}')"
->
-ⓘ
-</button>
-
-</div>
-
-</div>
-
-</article>
-
-`;
-
-}
-
-/* =========================================
-   GRILLE
-   ========================================= */
-
-function grid(el,list,n){
-
-let a =
-list.slice(0,n);
-
-el.innerHTML =
-a.length
-
-?
-
-a.map(card).join("")
-
-:
-
-'<div class="empty" style="grid-column:1/-1">Aucune chaîne pour ce filtre.</div>';
-
-}
-
-/* =========================================
-   RENDU
-   ========================================= */
+/* ======================================================
+   RENDER
+====================================================== */
 
 function render(){
 
-let a =
-filtered();
+  const list =
+    filteredChannels();
 
-let home =
-S.channels.filter(
-c=>fav(c.id)
-);
+  $("channelCount").textContent =
+    S.channels.length.toLocaleString("fr-FR");
 
-if(!home.length)
-home=S.channels;
+  $("favoriteCount").textContent =
+    S.favorites.size.toLocaleString("fr-FR");
 
-$("tvCount").textContent =
-a.length+
-" chaîne"+
-(a.length>1?"s":"");
+  $("sourceCount").textContent =
+    S.sources;
 
-$("homeCount").textContent =
-S.channels.length+
-" chaînes";
+  $("sectionCount").textContent =
+    list.length.toLocaleString("fr-FR");
 
-$("total").textContent =
-S.channels.length;
+  const container =
+    $("channels");
 
-$("favTotal").textContent =
-S.favs.length;
+  if(!list.length){
 
-grid(
-$("tvGrid"),
-a,
-S.visible
-);
+    container.innerHTML = `
+      <div class="empty">
+        <strong>Aucune chaîne trouvée</strong>
+        ${
+          S.filter === "FAV"
+          ? "Vous n'avez encore aucun favori."
+          : "Essayez une autre recherche ou catégorie."
+        }
+      </div>
+    `;
 
-grid(
-$("homeGrid"),
-home,
-S.home
-);
+    return;
+  }
 
-$("tvMore").style.display =
-a.length>S.visible
-?
-"block"
-:
-"none";
+  /*
+    Sur la page d'accueil,
+    on limite volontairement l'affichage
+    initial à 100 éléments pour garder
+    l'interface rapide sur Android.
+  */
 
-$("homeMore").style.display =
-home.length>S.home
-?
-"block"
-:
-"none";
+  const visible =
+    list.slice(0,100);
 
-sources();
+  container.innerHTML =
+    visible.map(channel=>{
 
+      const favorite =
+        S.favorites.has(channel.id);
+
+      const category =
+        classify(channel);
+
+      let countryLabel =
+        "International";
+
+      if(category === "CI"){
+        countryLabel =
+          "🇨🇮 Côte d’Ivoire";
+      }
+      else if(category === "FR"){
+        countryLabel =
+          "🇫🇷 France";
+      }
+      else if(category === "AFR"){
+        countryLabel =
+          "🌍 Afrique";
+      }
+
+      return `
+        <article
+          class="channel"
+          data-id="${escapeHTML(channel.id)}"
+        >
+
+          <div class="channel-top">
+
+            <div class="logo-box">
+              ${logoHTML(channel)}
+            </div>
+
+            <button
+              class="favorite ${favorite ? "active" : ""}"
+              data-fav="${escapeHTML(channel.id)}"
+              type="button"
+              aria-label="Favori"
+            >
+              ${favorite ? "★" : "☆"}
+            </button>
+
+          </div>
+
+          <div class="channel-name">
+            ${escapeHTML(channel.name)}
+          </div>
+
+          <div class="channel-meta">
+
+            <span class="country">
+              ${escapeHTML(countryLabel)}
+            </span>
+
+            <span class="live">
+              ● LIVE
+            </span>
+
+          </div>
+
+        </article>
+      `;
+
+    }).join("");
+
+  /*
+    Événements des cartes
+  */
+
+  container
+    .querySelectorAll(".channel")
+    .forEach(card=>{
+
+      card.addEventListener(
+        "click",
+        ()=>{
+          const id =
+            card.dataset.id;
+
+          const channel =
+            S.channels.find(
+              item => item.id === id
+            );
+
+          if(channel){
+            openPlayer(channel);
+          }
+        }
+      );
+    });
+
+  /*
+    Événements favoris
+  */
+
+  container
+    .querySelectorAll("[data-fav]")
+    .forEach(button=>{
+
+      button.addEventListener(
+        "click",
+        event=>{
+
+          toggleFavorite(
+            button.dataset.fav,
+            event
+          );
+        }
+      );
+    });
 }
 
-/* =========================================
-   LECTEUR
-   ========================================= */
+/* ======================================================
+   PLAYER
+====================================================== */
 
-function play(id){
+function openPlayer(channel){
 
-let c =
-S.channels.find(
-x=>x.id===id
-);
+  const overlay =
+    $("playerOverlay");
 
-if(!c)
-return;
+  const video =
+    $("video");
 
-$("pt").textContent =
-c.title;
+  $("playerTitle").textContent =
+    channel.name;
 
-$("player")
-.classList.add("open");
+  $("playerCountry").textContent =
+    channel.source || "NEXWORLD";
 
-$("video").src =
-c.url;
+  $("playerMessage").textContent =
+    "Chargement de la chaîne...";
 
-$("video")
-.play()
-.catch(()=>{});
+  overlay.classList.add("open");
 
+  video.pause();
+
+  video.removeAttribute("src");
+
+  video.load();
+
+  /*
+    Les flux HLS .m3u8 sont généralement
+    pris en charge nativement sur certains
+    navigateurs/appareils.
+
+    Si le navigateur ne prend pas le flux
+    directement en charge, le message indique
+    que la lecture peut être indisponible.
+  */
+
+  video.src = channel.url;
+
+  video.load();
+
+  const playPromise =
+    video.play();
+
+  if(
+    playPromise &&
+    typeof playPromise.catch === "function"
+  ){
+
+    playPromise.catch(error=>{
+
+      console.log(
+        "Lecture automatique bloquée",
+        error
+      );
+
+      $("playerMessage").textContent =
+        "Appuyez sur ▶ pour démarrer la lecture.";
+    });
+  }
 }
 
-function info(id){
+function closePlayer(){
 
-let c =
-S.channels.find(
-x=>x.id===id
-);
+  const video =
+    $("video");
 
-if(c){
+  video.pause();
 
-toast(
-c.title+
-" · "+
-label(c.country)+
-" · "+
-c.category
-);
+  video.removeAttribute("src");
 
+  video.load();
+
+  $("playerOverlay")
+    .classList.remove("open");
+
+  $("playerMessage").textContent =
+    "";
 }
 
-}
-
-window.toggle=toggle;
-window.play=play;
-window.info=info;
-
-/* =========================================
-   NAVIGATION
-   ========================================= */
+/* ======================================================
+   FILTER BUTTONS
+====================================================== */
 
 document
-.querySelectorAll("[data-s]")
-.forEach(b=>{
+  .querySelectorAll(".filter")
+  .forEach(button=>{
 
-b.onclick=()=>{
+    button.addEventListener(
+      "click",
+      ()=>{
 
-document
-.querySelectorAll(".section")
-.forEach(x=>
-x.classList.toggle(
-"active",
-x.id===b.dataset.s
-)
+        document
+          .querySelectorAll(".filter")
+          .forEach(item=>{
+            item.classList.remove("active");
+          });
+
+        button.classList.add("active");
+
+        S.filter =
+          button.dataset.filter;
+
+        render();
+      }
+    );
+  });
+
+/* ======================================================
+   SEARCH
+====================================================== */
+
+$("search").addEventListener(
+  "input",
+  event=>{
+
+    S.search =
+      event.target.value;
+
+    render();
+  }
 );
 
-document
-.querySelectorAll("[data-s]")
-.forEach(x=>
-x.classList.toggle(
-"active",
-x.dataset.s===b.dataset.s
-)
-);
+/* ======================================================
+   PLAYER EVENTS
+====================================================== */
 
-scrollTo(0,0);
+$("closePlayer")
+  .addEventListener(
+    "click",
+    closePlayer
+  );
 
-};
+$("playerOverlay")
+  .addEventListener(
+    "click",
+    event=>{
 
-});
+      if(
+        event.target ===
+        $("playerOverlay")
+      ){
+        closePlayer();
+      }
+    }
+  );
 
-/* =========================================
-   RECHERCHE
-   ========================================= */
+/* ======================================================
+   BOTTOM NAV
+====================================================== */
 
-$("search").oninput=e=>{
+function setNavigation(name){
 
-S.q=
-e.target.value;
+  document
+    .querySelectorAll(".nav-btn")
+    .forEach(button=>{
 
-S.visible=40;
+      button.classList.toggle(
+        "active",
+        button.dataset.nav === name
+      );
+    });
 
-render();
+  $("discoverSection").style.display =
+    name === "home" ||
+    name === "favorites"
+      ? "block"
+      : "none";
 
-};
+  $("sourcesSection").style.display =
+    name === "sources"
+      ? "block"
+      : "none";
 
-/* =========================================
-   PAYS
-   ========================================= */
+  $("aboutSection").style.display =
+    name === "about"
+      ? "block"
+      : "none";
 
-document
-.querySelectorAll("#countries .chip")
-.forEach(b=>{
+  if(name === "home"){
 
-b.onclick=()=>{
+    S.filter = "ALL";
 
-document
-.querySelectorAll("#countries .chip")
-.forEach(x=>
-x.classList.remove("active")
-);
+    document
+      .querySelectorAll(".filter")
+      .forEach(button=>{
+        button.classList.toggle(
+          "active",
+          button.dataset.filter === "ALL"
+        );
+      });
 
-b.classList.add("active");
+    render();
 
-S.country=
-b.dataset.c;
+  }
 
-S.visible=40;
+  if(name === "favorites"){
 
-if(
-S.country==="INT" &&
-!S.world
-){
+    S.filter = "FAV";
 
-world();
+    document
+      .querySelectorAll(".filter")
+      .forEach(button=>{
+        button.classList.toggle(
+          "active",
+          button.dataset.filter === "FAV"
+        );
+      });
 
+    render();
+
+  }
+
+  if(name === "sources"){
+    window.scrollTo({
+      top:0,
+      behavior:"smooth"
+    });
+  }
+
+  if(name === "about"){
+    window.scrollTo({
+      top:0,
+      behavior:"smooth"
+    });
+  }
 }
 
-render();
-
-};
-
-});
-
-/* =========================================
-   CATÉGORIES
-   ========================================= */
-
 document
-.querySelectorAll("#cats .chip")
-.forEach(b=>{
+  .querySelectorAll(".nav-btn")
+  .forEach(button=>{
 
-b.onclick=()=>{
+    button.addEventListener(
+      "click",
+      ()=>{
+        setNavigation(
+          button.dataset.nav
+        );
+      }
+    );
+  });
 
-document
-.querySelectorAll("#cats .chip")
-.forEach(x=>
-x.classList.remove("active")
+/* ======================================================
+   KEYBOARD / BACK
+====================================================== */
+
+document.addEventListener(
+  "keydown",
+  event=>{
+
+    if(event.key === "Escape"){
+
+      if(
+        $("playerOverlay")
+          .classList.contains("open")
+      ){
+        closePlayer();
+      }
+    }
+  }
 );
 
-b.classList.add("active");
-
-S.cat=
-b.dataset.k;
-
-S.visible=40;
-
-render();
-
-};
-
-});
-
-/* =========================================
-   AFFICHER PLUS
-   ========================================= */
-
-$("tvMore").onclick=()=>{
-
-S.visible+=40;
-
-render();
-
-};
-
-$("homeMore").onclick=()=>{
-
-S.home+=12;
-
-render();
-
-};
-
-/* =========================================
-   FERMER LECTEUR
-   ========================================= */
-
-$("close").onclick=()=>{
-
-$("video").pause();
-
-$("video")
-.removeAttribute("src");
-
-$("video").load();
-
-$("player")
-.classList.remove("open");
-
-};
-
-/* =========================================
-   SOURCES
-   ========================================= */
-
-function sources(){
-
-let b =
-$("sourceList");
-
-b.innerHTML =
-
-S.sources.length
-
-?
-
-S.sources
-.map(
-(s,i)=>`
-
-<div class="source">
-
-<b>
-${esc(s.name)}
-</b>
-
-<small>
-${esc(s.type)}
-·
-${esc(s.url||"")}
-</small>
-
-<button
-class="small"
-onclick="removeSource(${i})"
->
-Supprimer
-</button>
-
-</div>
-
-`
-)
-.join("")
-
-:
-
-'<div class="empty">Aucune source personnelle.</div>';
-
-}
-
-window.removeSource =
-i=>{
-
-S.sources.splice(
-i,
-1
-);
-
-localStorage.setItem(
-"nw_sources",
-JSON.stringify(S.sources)
-);
-
-render();
-
-toast(
-"Source supprimée"
-);
-
-};
-
-/* =========================================
-   AJOUT SOURCE
-   ========================================= */
-
-$("add").onclick=()=>{
-
-let name =
-$("sn").value.trim() ||
-"Ma source";
-
-let type =
-$("st").value;
-
-let url =
-$("su").value.trim();
-
-if(
-!url &&
-type!=="stalker"
-){
-
-toast(
-"Ajoute une URL."
-);
-
-return;
-
-}
-
-S.sources.push({
-
-name,
-
-type,
-
-url,
-
-user:
-$("si").value.trim(),
-
-mac:
-$("sm").value.trim(),
-
-createdAt:
-new Date().toISOString()
-
-});
-
-localStorage.setItem(
-"nw_sources",
-JSON.stringify(S.sources)
-);
-
-[
-"sn",
-"su",
-"si",
-"sp",
-"sm"
-].forEach(
-id=>
-$(id).value=""
-);
-
-render();
-
-toast(
-"Source enregistrée"
-);
-
-};
-
-/* =========================================
-   RESET
-   ========================================= */
-
-$("reset").onclick=()=>{
-
-if(
-confirm(
-"Supprimer favoris et sources locales ?"
-)
-){
-
-localStorage.removeItem(
-"nw_favs"
-);
-
-localStorage.removeItem(
-"nw_sources"
-);
-
-S.favs=[];
-
-S.sources=[];
-
-render();
-
-toast(
-"Données réinitialisées"
-);
-
-}
-
-};
-
-/* =========================================
-   GESTION DES ERREURS
-   ========================================= */
+/* ======================================================
+   GLOBAL ERROR HANDLING
+====================================================== */
 
 window.addEventListener(
-"error",
-e=>{
+  "error",
+  event=>{
 
-console.error(
-"NEXWORLD:",
-e.error||e.message
+    console.error(
+      "NEXWORLD erreur:",
+      event.error || event.message
+    );
+
+    /*
+      On ne remplace pas immédiatement
+      toute l'interface afin de conserver
+      l'information utile à l'utilisateur.
+    */
+  }
 );
-
-const x =
-document.getElementById("status");
-
-if(x)
-x.textContent=
-"Erreur — recharge la page";
-
-});
 
 window.addEventListener(
-"unhandledrejection",
-e=>
-console.error(
-"NEXWORLD:",
-e.reason
-)
+  "unhandledrejection",
+  event=>{
+
+    console.error(
+      "NEXWORLD Promise:",
+      event.reason
+    );
+  }
 );
 
-/* =========================================
-   LANCEMENT
-   ========================================= */
+/* ======================================================
+   START APPLICATION
+====================================================== */
 
-start().catch(
-e=>{
+document.addEventListener(
+  "DOMContentLoaded",
+  ()=>{
 
-console.error(e);
+    try{
 
-const x =
-document.getElementById("status");
+      setStatus(
+        "Connexion...",
+        ""
+      );
 
-if(x)
-x.textContent=
-"Erreur de démarrage";
+      updateFavoriteCount();
 
-});
+      render();
+
+      start();
+
+    }catch(error){
+
+      console.error(error);
+
+      setStatus(
+        "Erreur",
+        "error"
+      );
+
+      $("channels").innerHTML = `
+        <div class="empty">
+          <strong>Erreur de démarrage</strong>
+          Rechargez la page.
+        </div>
+      `;
+    }
+  }
+);
 
 </script>
 
