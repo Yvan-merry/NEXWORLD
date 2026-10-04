@@ -4,419 +4,427 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0F172A">
-<meta name="description" content="NEXWORLD — TV en direct">
-<title>NEXWORLD V6.1</title>
+<meta name="description" content="NEXWORLD — télévision en direct">
+<title>NEXWORLD V6.2</title>
 
 <style>
 :root{
-  --bg:#0F172A;
-  --panel:#111c31;
-  --panel2:#16233d;
-  --text:#f8fafc;
-  --muted:#94a3b8;
-  --line:#263653;
-  --cyan:#22d3ee;
-  --green:#34d399;
-  --amber:#fbbf24;
-  --pink:#f472b6;
-  --danger:#fb7185;
-  --r:18px;
+--bg:#0F172A;
+--panel:#111c31;
+--panel2:#16233d;
+--text:#f8fafc;
+--muted:#94a3b8;
+--line:#263653;
+--cyan:#22d3ee;
+--green:#34d399;
+--amber:#fbbf24;
+--pink:#f472b6;
+--danger:#fb7185
 }
 
 *{box-sizing:border-box}
 
 html,body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif
+margin:0;
+background:var(--bg);
+color:var(--text);
+font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif
 }
 
 body{
-  min-height:100vh;
-  padding-bottom:82px
+min-height:100vh;
+padding-bottom:82px
 }
 
-button,input{
-  font:inherit
-}
+button,input,select{font:inherit}
 
 button{
-  border:0;
-  color:inherit;
-  cursor:pointer
+border:0;
+color:inherit;
+cursor:pointer
 }
 
 .app{
-  max-width:900px;
-  margin:auto;
-  padding:14px
+max-width:980px;
+margin:auto;
+padding:14px
 }
 
 .top{
-  position:sticky;
-  top:0;
-  z-index:20;
-  background:rgba(15,23,42,.94);
-  backdrop-filter:blur(14px);
-  padding:8px 0 12px
+position:sticky;
+top:0;
+z-index:20;
+background:rgba(15,23,42,.94);
+backdrop-filter:blur(14px);
+padding:8px 0 12px
 }
 
 .brand{
-  display:flex;
-  align-items:center;
-  justify-content:space-between
+display:flex;
+align-items:center;
+justify-content:space-between
 }
 
 .logo{
-  font-weight:900;
-  letter-spacing:.08em;
-  font-size:23px
+font-weight:900;
+letter-spacing:.08em;
+font-size:23px
 }
 
-.logo b{
-  color:var(--cyan)
-}
+.logo b{color:var(--cyan)}
 
 .status{
-  font-size:11px;
-  padding:6px 9px;
-  border-radius:999px;
-  background:#1e293b;
-  color:var(--amber)
+font-size:11px;
+padding:6px 9px;
+border-radius:999px;
+background:#1e293b;
+color:var(--amber)
 }
 
-.status.ok{
-  color:var(--green)
-}
-
-.status.err{
-  color:var(--danger)
-}
+.status.ok{color:var(--green)}
+.status.err{color:var(--danger)}
 
 .hero{
-  margin:10px 0;
-  padding:18px;
-  border:1px solid var(--line);
-  border-radius:24px;
-  background:linear-gradient(
-    145deg,
-    rgba(34,211,238,.08),
-    rgba(244,114,182,.04)
-  );
-  box-shadow:0 18px 45px rgba(0,0,0,.2)
+margin:10px 0;
+padding:18px;
+border:1px solid var(--line);
+border-radius:24px;
+background:linear-gradient(
+145deg,
+rgba(34,211,238,.08),
+rgba(244,114,182,.04)
+);
+box-shadow:0 18px 45px rgba(0,0,0,.2)
 }
 
 .hero h1{
-  margin:0 0 5px;
-  font-size:25px
+margin:0 0 5px;
+font-size:25px
 }
 
 .hero p{
-  margin:0;
-  color:var(--muted);
-  font-size:13px
+margin:0;
+color:var(--muted);
+font-size:13px
 }
 
 .stats{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  margin-top:14px
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:8px;
+margin-top:14px
 }
 
 .stat{
-  background:rgba(255,255,255,.035);
-  border:1px solid var(--line);
-  border-radius:15px;
-  padding:10px
+background:rgba(255,255,255,.035);
+border:1px solid var(--line);
+border-radius:15px;
+padding:10px
 }
 
 .stat strong{
-  display:block;
-  font-size:19px
+display:block;
+font-size:19px
 }
 
 .stat span{
-  font-size:11px;
-  color:var(--muted)
+font-size:11px;
+color:var(--muted)
 }
 
 .tools{
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:8px;
-  margin:12px 0
+display:grid;
+grid-template-columns:1fr auto;
+gap:8px;
+margin:12px 0
 }
 
 .search{
-  width:100%;
-  padding:13px 14px;
-  border-radius:15px;
-  border:1px solid var(--line);
-  background:#0b1324;
-  color:var(--text);
-  outline:none
+width:100%;
+padding:13px 14px;
+border-radius:15px;
+border:1px solid var(--line);
+background:#0b1324;
+color:var(--text);
+outline:none
 }
 
-.search:focus{
-  border-color:var(--cyan)
-}
+.search:focus{border-color:var(--cyan)}
 
 .btn{
-  padding:12px 14px;
-  border-radius:14px;
-  background:var(--panel2);
-  border:1px solid var(--line)
+padding:12px 14px;
+border-radius:14px;
+background:var(--panel2);
+border:1px solid var(--line)
 }
 
-.btn:active,
-.chip:active{
-  transform:scale(.98)
+.filters{
+display:grid;
+grid-template-columns:1fr auto;
+gap:8px;
+margin-bottom:10px
+}
+
+.select{
+width:100%;
+padding:11px 12px;
+border-radius:14px;
+border:1px solid var(--line);
+background:#111b2e;
+color:var(--text);
+outline:none
+}
+
+.countHint{
+display:flex;
+align-items:center;
+padding:0 10px;
+border:1px solid var(--line);
+border-radius:14px;
+color:var(--muted);
+font-size:11px;
+white-space:nowrap
 }
 
 .chips{
-  display:flex;
-  gap:7px;
-  overflow:auto;
-  padding:2px 0 9px;
-  scrollbar-width:none
+display:flex;
+gap:7px;
+overflow:auto;
+padding:2px 0 9px;
+scrollbar-width:none
 }
 
 .chip{
-  white-space:nowrap;
-  padding:8px 12px;
-  border-radius:999px;
-  background:#111b2e;
-  border:1px solid var(--line);
-  font-size:12px
+white-space:nowrap;
+padding:8px 12px;
+border-radius:999px;
+background:#111b2e;
+border:1px solid var(--line);
+font-size:12px
 }
 
 .chip.active{
-  border-color:var(--cyan);
-  color:var(--cyan);
-  background:rgba(34,211,238,.08)
+border-color:var(--cyan);
+color:var(--cyan);
+background:rgba(34,211,238,.08)
 }
 
-.section{
-  margin:18px 0
-}
+.section{margin:18px 0}
 
 .sectionHead{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:10px
+display:flex;
+align-items:center;
+justify-content:space-between;
+margin-bottom:10px
 }
 
 .sectionHead h2{
-  font-size:16px;
-  margin:0
+font-size:16px;
+margin:0
 }
 
 .sectionHead span{
-  font-size:11px;
-  color:var(--muted)
+font-size:11px;
+color:var(--muted)
 }
 
 .grid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:9px
+display:grid;
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:9px
 }
 
 .card{
-  position:relative;
-  min-height:112px;
-  padding:11px;
-  border-radius:17px;
-  border:1px solid var(--line);
-  background:linear-gradient(145deg,#111c31,#0e1729);
-  overflow:hidden
+position:relative;
+min-height:112px;
+padding:11px;
+border-radius:17px;
+border:1px solid var(--line);
+background:linear-gradient(145deg,#111c31,#0e1729);
+overflow:hidden
 }
 
-.card:active{
-  transform:scale(.985)
-}
+.card:active{transform:scale(.985)}
 
 .fav{
-  position:absolute;
-  right:8px;
-  top:7px;
-  width:31px;
-  height:31px;
-  border-radius:50%;
-  background:rgba(2,6,23,.72);
-  border:1px solid var(--line);
-  z-index:2
+position:absolute;
+right:8px;
+top:7px;
+width:31px;
+height:31px;
+border-radius:50%;
+background:rgba(2,6,23,.72);
+border:1px solid var(--line);
+z-index:2
 }
 
-.fav.on{
-  color:var(--pink)
-}
+.fav.on{color:var(--pink)}
 
 .channelLogo{
-  width:54px;
-  height:38px;
-  object-fit:contain;
-  border-radius:8px;
-  background:#020617;
-  display:block;
-  margin-bottom:9px
+width:54px;
+height:38px;
+object-fit:contain;
+border-radius:8px;
+background:#020617;
+display:block;
+margin-bottom:9px
 }
 
 .channelName{
-  font-weight:750;
-  font-size:13px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  padding-right:30px
+font-weight:750;
+font-size:13px;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+padding-right:30px
 }
 
 .meta{
-  font-size:10px;
-  color:var(--muted);
-  margin-top:4px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis
+font-size:10px;
+color:var(--muted);
+margin-top:4px;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis
 }
 
 .empty{
-  padding:24px;
-  text-align:center;
-  border:1px dashed var(--line);
-  border-radius:17px;
-  color:var(--muted);
-  font-size:13px
+padding:24px;
+text-align:center;
+border:1px dashed var(--line);
+border-radius:17px;
+color:var(--muted);
+font-size:13px
+}
+
+.more{
+display:block;
+margin:12px auto 0;
+padding:11px 16px;
+border-radius:14px;
+background:var(--panel2);
+border:1px solid var(--line)
 }
 
 .player{
-  position:fixed;
-  inset:0;
-  background:#000;
-  z-index:50;
-  display:none;
-  flex-direction:column
+position:fixed;
+inset:0;
+background:#000;
+z-index:50;
+display:none;
+flex-direction:column
 }
 
-.player.show{
-  display:flex
-}
+.player.show{display:flex}
 
 .videoWrap{
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center
+flex:1;
+display:flex;
+align-items:center;
+justify-content:center
 }
 
 .player video{
-  width:100%;
-  max-height:80vh;
-  background:#000
+width:100%;
+max-height:80vh;
+background:#000
 }
 
 .playerBar{
-  padding:
-    12px
-    calc(12px + env(safe-area-inset-right))
-    calc(12px + env(safe-area-inset-bottom))
-    calc(12px + env(safe-area-inset-left));
-  background:#0b1220
+padding:
+12px
+calc(12px + env(safe-area-inset-right))
+calc(12px + env(safe-area-inset-bottom))
+calc(12px + env(safe-area-inset-left));
+background:#0b1220
 }
 
 .playerTitle{
-  font-weight:800;
-  margin-bottom:9px
+font-weight:800;
+margin-bottom:9px
 }
 
 .playerBtns{
-  display:flex;
-  gap:8px
+display:flex;
+gap:8px
 }
 
 .bottom{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  z-index:30;
-  padding:
-    8px
-    max(10px,env(safe-area-inset-left))
-    calc(8px + env(safe-area-inset-bottom))
-    max(10px,env(safe-area-inset-right));
-  background:rgba(8,15,29,.95);
-  backdrop-filter:blur(16px);
-  border-top:1px solid var(--line);
-  display:flex;
-  justify-content:center
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+z-index:30;
+padding:
+8px
+max(10px,env(safe-area-inset-left))
+calc(8px + env(safe-area-inset-bottom))
+max(10px,env(safe-area-inset-right));
+background:rgba(8,15,29,.95);
+backdrop-filter:blur(16px);
+border-top:1px solid var(--line);
+display:flex;
+justify-content:center
 }
 
 .nav{
-  display:flex;
-  width:min(520px,100%);
-  justify-content:space-around
+display:flex;
+width:min(520px,100%);
+justify-content:space-around
 }
 
 .nav button{
-  background:none;
-  color:var(--muted);
-  font-size:11px;
-  padding:5px 12px
+background:none;
+color:var(--muted);
+font-size:11px;
+padding:5px 12px
 }
 
-.nav button.active{
-  color:var(--cyan)
-}
+.nav button.active{color:var(--cyan)}
 
 .toast{
-  position:fixed;
-  left:50%;
-  bottom:90px;
-  transform:translateX(-50%) translateY(20px);
-  background:#020617;
-  border:1px solid var(--line);
-  padding:10px 14px;
-  border-radius:999px;
-  font-size:12px;
-  opacity:0;
-  pointer-events:none;
-  transition:.2s;
-  z-index:100;
-  white-space:nowrap
+position:fixed;
+left:50%;
+bottom:90px;
+transform:translateX(-50%) translateY(20px);
+background:#020617;
+border:1px solid var(--line);
+padding:10px 14px;
+border-radius:999px;
+font-size:12px;
+opacity:0;
+pointer-events:none;
+transition:.2s;
+z-index:100;
+white-space:nowrap
 }
 
 .toast.show{
-  opacity:1;
-  transform:translateX(-50%) translateY(0)
+opacity:1;
+transform:translateX(-50%) translateY(0)
 }
 
 .spin{
-  display:inline-block;
-  width:13px;
-  height:13px;
-  border:2px solid #334155;
-  border-top-color:var(--cyan);
-  border-radius:50%;
-  animation:sp .8s linear infinite;
-  vertical-align:-2px
+display:inline-block;
+width:13px;
+height:13px;
+border:2px solid #334155;
+border-top-color:var(--cyan);
+border-radius:50%;
+animation:sp .8s linear infinite;
+vertical-align:-2px
 }
 
 @keyframes sp{
-  to{transform:rotate(360deg)}
+to{transform:rotate(360deg)}
 }
 
 @media(min-width:650px){
-  .grid{
-    grid-template-columns:repeat(4,minmax(0,1fr))
-  }
+.grid{
+grid-template-columns:repeat(4,minmax(0,1fr))
+}
 
-  .app{
-    padding:18px
-  }
+.app{padding:18px}
 }
 </style>
 </head>
@@ -426,108 +434,129 @@ button{
 <div class="app">
 
 <header class="top">
-  <div class="brand">
-    <div class="logo">NEX<b>WORLD</b></div>
-    <div id="status" class="status">Connexion...</div>
-  </div>
+<div class="brand">
+
+<div class="logo">
+NEX<b>WORLD</b>
+</div>
+
+<div id="status" class="status">
+Connexion...
+</div>
+
+</div>
 </header>
 
 <main>
 
 <section class="hero">
 
-  <h1>TV connectée</h1>
+<h1>TV connectée</h1>
 
-  <p>
-    Chaînes publiques et gratuites provenant de sources autorisées.
-  </p>
+<p>
+Un catalogue mondial de chaînes publiques et gratuites provenant de sources autorisées.
+</p>
 
-  <div class="stats">
+<div class="stats">
 
-    <div class="stat">
-      <strong id="count">0</strong>
-      <span>chaînes</span>
-    </div>
+<div class="stat">
+<strong id="count">0</strong>
+<span>chaînes</span>
+</div>
 
-    <div class="stat">
-      <strong id="favCount">0</strong>
-      <span>favoris</span>
-    </div>
+<div class="stat">
+<strong id="favCount">0</strong>
+<span>favoris</span>
+</div>
 
-    <div class="stat">
-      <strong id="sourceCount">0</strong>
-      <span>sources</span>
-    </div>
+<div class="stat">
+<strong id="sourceCount">0</strong>
+<span>source</span>
+</div>
 
-  </div>
+</div>
 
 </section>
 
 <div class="tools">
 
-  <input
-    id="search"
-    class="search"
-    type="search"
-    placeholder="Rechercher une chaîne…"
-    autocomplete="off"
-  >
+<input
+id="search"
+class="search"
+type="search"
+placeholder="Rechercher une chaîne ou un pays…"
+autocomplete="off"
+>
 
-  <button
-    id="refresh"
-    class="btn"
-    aria-label="Actualiser"
-  >
-    ↻
-  </button>
+<button
+id="refresh"
+class="btn"
+aria-label="Actualiser"
+>
+↻
+</button>
 
 </div>
 
-<div id="chips" class="chips"></div>
+<div class="filters">
 
-<section
-  id="continueSection"
-  class="section"
-  hidden
+<select
+id="country"
+class="select"
+aria-label="Choisir un pays"
 >
+<option value="all">
+🌍 Tous les pays
+</option>
+</select>
 
-  <div class="sectionHead">
-    <h2>Continuer à regarder</h2>
-    <span id="historyCount"></span>
-  </div>
+<div id="countryCount" class="countHint">
+0 pays
+</div>
 
-  <div id="historyGrid" class="grid"></div>
+</div>
+
+<div id="regions" class="chips"></div>
+
+<section id="histSec" class="section" hidden>
+
+<div class="sectionHead">
+<h2>Continuer à regarder</h2>
+<span>Historique</span>
+</div>
+
+<div id="histGrid" class="grid"></div>
 
 </section>
 
-<section
-  id="favoritesSection"
-  class="section"
-  hidden
->
+<section id="favSec" class="section" hidden>
 
-  <div class="sectionHead">
-    <h2>Mes favoris</h2>
-    <span id="favoriteLabel"></span>
-  </div>
+<div class="sectionHead">
+<h2>Mes favoris</h2>
+<span>Favoris</span>
+</div>
 
-  <div id="favoritesGrid" class="grid"></div>
+<div id="favGrid" class="grid"></div>
 
 </section>
 
 <section class="section">
 
-  <div class="sectionHead">
+<div class="sectionHead">
 
-    <h2 id="discoverTitle">
-      À découvrir
-    </h2>
+<h2>À découvrir</h2>
 
-    <span id="resultLabel"></span>
+<span id="result">
+0
+</span>
 
-  </div>
+</div>
 
-  <div id="grid" class="grid"></div>
+<div id="grid" class="grid"></div>
+
+<button id="more" class="more" hidden>
+Charger 48 autres
+</button>
 
 </section>
 
@@ -536,1135 +565,1419 @@ button{
 
 <nav class="bottom">
 
-  <div class="nav">
+<div class="nav">
 
-    <button data-nav="home" class="active">
-      ⌂<br>Accueil
-    </button>
+<button data-nav="home" class="active">
+⌂<br>Accueil
+</button>
 
-    <button data-nav="favorites">
-      ♡<br>Favoris
-    </button>
+<button data-nav="favorites">
+♡<br>Favoris
+</button>
 
-    <button data-nav="history">
-      ◷<br>Historique
-    </button>
+<button data-nav="history">
+◷<br>Historique
+</button>
 
-    <button data-nav="all">
-      ▦<br>Chaînes
-    </button>
+<button data-nav="all">
+▦<br>Chaînes
+</button>
 
-  </div>
+</div>
 
 </nav>
 
 <div id="toast" class="toast"></div>
 
-<div
-  id="player"
-  class="player"
-  aria-hidden="true"
->
+<div id="player" class="player">
 
-  <div class="videoWrap">
+<div class="videoWrap">
 
-    <video
-      id="video"
-      controls
-      playsinline
-      preload="metadata"
-    ></video>
+<video
+id="video"
+controls
+playsinline
+preload="metadata"
+></video>
 
-  </div>
+</div>
 
-  <div class="playerBar">
+<div class="playerBar">
 
-    <div
-      id="playerTitle"
-      class="playerTitle"
-    ></div>
+<div id="playerTitle" class="playerTitle"></div>
 
-    <div class="playerBtns">
+<div class="playerBtns">
 
-      <button
-        id="closePlayer"
-        class="btn"
-      >
-        Fermer
-      </button>
+<button id="close" class="btn">
+Fermer
+</button>
 
-      <button
-        id="fullScreen"
-        class="btn"
-      >
-        Plein écran
-      </button>
+<button id="fullscreen" class="btn">
+Plein écran
+</button>
 
-    </div>
+</div>
 
-  </div>
+</div>
 
 </div>
 
 <script>
 'use strict';
 
-const SOURCES = {
+const WORLD_URL =
+'https://iptv-org.github.io/iptv/index.country.m3u';
 
-  ci: {
-    name: 'Côte d’Ivoire',
-    url: 'https://iptv-org.github.io/iptv/countries/ci.m3u',
-    country: 'CI'
-  },
-
-  fr: {
-    name: 'France',
-    url: 'https://iptv-org.github.io/iptv/countries/fr.m3u',
-    country: 'FR'
-  }
-
-};
+const PAGE_SIZE = 48;
 
 const state = {
+channels: [],
+favorites: [],
+history: [],
+country: 'all',
+region: 'all',
+search: '',
+page: 1,
+loading: false
+};
 
-  channels: [],
-  favorites: [],
-  history: [],
-  filter: 'all',
-  search: '',
-  loading: false,
-  sources: 0
+const $ = id =>
+document.getElementById(id);
+
+function safeRead(key, fallback){
+
+try{
+
+const value =
+localStorage.getItem(key);
+
+return value
+? JSON.parse(value)
+: fallback;
+
+}catch(error){
+
+return fallback;
+
+}
+
+}
+
+function safeWrite(key,value){
+
+try{
+
+localStorage.setItem(
+key,
+JSON.stringify(value)
+);
+
+}catch(error){}
+
+}
+
+function toast(message){
+
+const element =
+$('toast');
+
+element.textContent =
+message;
+
+element.classList.add('show');
+
+clearTimeout(toast.timer);
+
+toast.timer =
+setTimeout(
+() =>
+element.classList.remove('show'),
+2200
+);
+
+}
+
+function status(text,type=''){
+
+const element =
+$('status');
+
+element.textContent =
+text;
+
+element.className =
+'status ' + type;
+
+}
+
+function clean(value){
+
+return String(value || '')
+.replace(/\s+/g,' ')
+.trim();
+
+}
+
+function flag(country){
+
+const flags = {
+
+'Côte d’Ivoire':'🇨🇮',
+"Côte d'Ivoire":'🇨🇮',
+'France':'🇫🇷',
+'Ghana':'🇬🇭',
+'Nigeria':'🇳🇬',
+'Senegal':'🇸🇳',
+'Sénégal':'🇸🇳',
+'Cameroon':'🇨🇲',
+'Cameroun':'🇨🇲',
+'South Africa':'🇿🇦',
+'Afrique du Sud':'🇿🇦',
+'Kenya':'🇰🇪',
+'Morocco':'🇲🇦',
+'Maroc':'🇲🇦',
+'Algeria':'🇩🇿',
+'Algérie':'🇩🇿',
+'Tunisia':'🇹🇳',
+'Tunisie':'🇹🇳',
+'Mali':'🇲🇱',
+'Burkina Faso':'🇧🇫',
+'Togo':'🇹🇬',
+'Benin':'🇧🇯',
+'Bénin':'🇧🇯',
+'Guinea':'🇬🇳',
+'Guinée':'🇬🇳',
+'Gabon':'🇬🇦',
+'Congo':'🇨🇬',
+'DR Congo':'🇨🇩',
+'United States':'🇺🇸',
+'USA':'🇺🇸',
+'Canada':'🇨🇦',
+'United Kingdom':'🇬🇧',
+'UK':'🇬🇧',
+'Germany':'🇩🇪',
+'Allemagne':'🇩🇪',
+'Italy':'🇮🇹',
+'Italie':'🇮🇹',
+'Spain':'🇪🇸',
+'Espagne':'🇪🇸',
+'Belgium':'🇧🇪',
+'Belgique':'🇧🇪',
+'Switzerland':'🇨🇭',
+'Suisse':'🇨🇭',
+'Portugal':'🇵🇹',
+'Brazil':'🇧🇷',
+'Brésil':'🇧🇷',
+'Argentina':'🇦🇷',
+'Japan':'🇯🇵',
+'Japon':'🇯🇵',
+'South Korea':'🇰🇷',
+'Corée du Sud':'🇰🇷',
+'China':'🇨🇳',
+'India':'🇮🇳',
+'Inde':'🇮🇳',
+'Australia':'🇦🇺',
+'New Zealand':'🇳🇿',
+'Mexico':'🇲🇽',
+'Mexique':'🇲🇽',
+'Turkey':'🇹🇷',
+'Turquie':'🇹🇷',
+'Egypt':'🇪🇬',
+'Égypte':'🇪🇬'
 
 };
 
-const $ = id => document.getElementById(id);
-
-function safeRead(key, fallback) {
-
-  try {
-
-    const value = localStorage.getItem(key);
-
-    return value
-      ? JSON.parse(value)
-      : fallback;
-
-  } catch (e) {
-
-    return fallback;
-
-  }
+return flags[country] || '🌐';
 
 }
 
-function safeWrite(key, value) {
+const regionMap = {
 
-  try {
+africa:new Set([
+'Côte d’Ivoire',
+"Côte d'Ivoire",
+'Ghana',
+'Nigeria',
+'Senegal',
+'Sénégal',
+'Cameroon',
+'Cameroun',
+'South Africa',
+'Afrique du Sud',
+'Kenya',
+'Morocco',
+'Maroc',
+'Algeria',
+'Algérie',
+'Tunisia',
+'Tunisie',
+'Mali',
+'Burkina Faso',
+'Togo',
+'Benin',
+'Bénin',
+'Guinea',
+'Guinée',
+'Gabon',
+'Congo',
+'DR Congo',
+'Madagascar',
+'Mozambique',
+'Namibia',
+'Ethiopia',
+'Uganda',
+'Tanzania',
+'Zambia',
+'Zimbabwe'
+]),
 
-    localStorage.setItem(
-      key,
-      JSON.stringify(value)
-    );
+europe:new Set([
+'France',
+'Germany',
+'Allemagne',
+'Italy',
+'Italie',
+'Spain',
+'Espagne',
+'Belgium',
+'Belgique',
+'Switzerland',
+'Suisse',
+'Portugal',
+'United Kingdom',
+'UK',
+'Ireland',
+'Netherlands',
+'Austria',
+'Poland',
+'Norway',
+'Sweden',
+'Denmark',
+'Finland',
+'Greece',
+'Romania',
+'Croatia',
+'Serbia'
+]),
 
-  } catch (e) {
+americas:new Set([
+'United States',
+'USA',
+'Canada',
+'Mexico',
+'Mexique',
+'Brazil',
+'Brésil',
+'Argentina',
+'Chile',
+'Colombia',
+'Peru',
+'Venezuela',
+'Uruguay',
+'Ecuador',
+'Bolivia'
+]),
 
-    console.warn(
-      'Stockage local indisponible',
-      e
-    );
+asia:new Set([
+'Japan',
+'Japon',
+'China',
+'India',
+'Inde',
+'South Korea',
+'Corée du Sud',
+'Indonesia',
+'Thailand',
+'Vietnam',
+'Malaysia',
+'Singapore',
+'Philippines',
+'Pakistan',
+'Bangladesh'
+]),
 
-  }
+oceania:new Set([
+'Australia',
+'New Zealand',
+'Fiji',
+'Samoa',
+'Tonga'
+])
 
-}
+};
 
-function toast(message) {
+function region(country){
 
-  const el = $('toast');
+for(
+const [name,set]
+of Object.entries(regionMap)
+){
 
-  el.textContent = message;
-
-  el.classList.add('show');
-
-  clearTimeout(toast.t);
-
-  toast.t = setTimeout(
-    () => el.classList.remove('show'),
-    2200
-  );
-
-}
-
-function setStatus(text, type = '') {
-
-  const el = $('status');
-
-  el.textContent = text;
-
-  el.className = 'status ' + type;
-
-}
-
-function clean(value) {
-
-  return String(value || '')
-    .replace(/\s+/g, ' ')
-    .trim();
-
-}
-
-function parseM3U(text, source) {
-
-  const out = [];
-
-  const lines = String(text || '')
-    .replace(/\r/g, '')
-    .split('\n');
-
-  let meta = null;
-
-  for (const raw of lines) {
-
-    const line = raw.trim();
-
-    if (!line) continue;
-
-    if (line.startsWith('#EXTINF')) {
-
-      const attrs = {};
-
-      for (
-        const match of line.matchAll(
-          /([\w-]+)="([^"]*)"/g
-        )
-      ) {
-
-        attrs[match[1]] = match[2];
-
-      }
-
-      const comma = line.indexOf(',');
-
-      const title =
-        comma >= 0
-          ? clean(line.slice(comma + 1))
-          : clean(
-              attrs['tvg-name'] ||
-              'Chaîne'
-            );
-
-      meta = {
-
-        name: title,
-
-        logo:
-          attrs['tvg-logo'] || '',
-
-        group:
-          attrs['group-title'] || 'TV',
-
-        country:
-          source.country,
-
-        id:
-          attrs['tvg-id'] || title
-
-      };
-
-    }
-
-    else if (
-      !line.startsWith('#') &&
-      meta
-    ) {
-
-      if (
-        /^https?:\/\//i.test(line)
-      ) {
-
-        out.push({
-
-          ...meta,
-
-          url: line,
-
-          source: source.name
-
-        });
-
-        meta = null;
-
-      }
-
-    }
-
-  }
-
-  return out;
+if(set.has(country))
+return name;
 
 }
 
-async function fetchText(source) {
-
-  const response = await fetch(
-    source.url,
-    {
-      cache: 'no-store'
-    }
-  );
-
-  if (!response.ok) {
-
-    throw new Error(
-      'HTTP ' + response.status
-    );
-
-  }
-
-  return await response.text();
+return 'other';
 
 }
 
-async function loadSource(source) {
+function parseM3U(text){
 
-  const text =
-    await fetchText(source);
+const channels = [];
 
-  return parseM3U(
-    text,
-    source
-  );
+const lines =
+String(text || '')
+.replace(/\r/g,'')
+.split('\n');
 
-}
+let meta = null;
 
-function uniqueChannels(list) {
+for(
+const raw of lines
+){
 
-  const seen = new Set();
+const line =
+raw.trim();
 
-  return list.filter(channel => {
+if(!line)
+continue;
 
-    const key =
-      (
-        channel.url ||
-        channel.name
-      ).toLowerCase();
+if(
+line.startsWith('#EXTINF')
+){
 
-    if (seen.has(key)) {
+const attributes = {};
 
-      return false;
+for(
+const match
+of line.matchAll(
+/([\w-]+)="([^"]*)"/g
+)
+){
 
-    }
-
-    seen.add(key);
-
-    return true;
-
-  });
-
-}
-
-function saveState() {
-
-  safeWrite(
-    'nexworld_v61_favorites',
-    state.favorites
-  );
-
-  safeWrite(
-    'nexworld_v61_history',
-    state.history
-  );
+attributes[match[1]] =
+match[2];
 
 }
 
-function channelKey(channel) {
+const comma =
+line.indexOf(',');
 
-  return (
-    channel.url ||
-    channel.id ||
-    channel.name
-  );
+const name =
+clean(
+comma >= 0
+? line.slice(comma + 1)
+: attributes['tvg-name'] ||
+'Chaîne'
+);
 
-}
+const country =
+clean(
+attributes['group-title'] ||
+''
+);
 
-function isFav(channel) {
+meta = {
 
-  return state.favorites.includes(
-    channelKey(channel)
-  );
+name,
 
-}
+logo:
+attributes['tvg-logo'] ||
+'',
 
-function toggleFav(channel) {
+group:
+attributes['group-title'] ||
+'TV',
 
-  const key =
-    channelKey(channel);
+country,
 
-  if (isFav(channel)) {
+countryKey:
+country.toLowerCase(),
 
-    state.favorites =
-      state.favorites.filter(
-        item => item !== key
-      );
+region:
+region(country),
 
-    toast(
-      'Retiré des favoris'
-    );
+id:
+attributes['tvg-id'] ||
+name
 
-  } else {
-
-    state.favorites = [
-      ...state.favorites,
-      key
-    ];
-
-    toast(
-      'Ajouté aux favoris'
-    );
-
-  }
-
-  saveState();
-
-  updateStats();
-
-  renderAll();
+};
 
 }
 
-function addHistory(channel) {
+else if(
 
-  const key =
-    channelKey(channel);
+!line.startsWith('#') &&
+meta &&
+/^https?:\/\//i.test(line)
 
-  state.history = [
+){
 
-    channel,
+channels.push({
 
-    ...state.history.filter(
-      item =>
-        channelKey(item) !== key
-    )
+...meta,
 
-  ].slice(0, 12);
+url:line
 
-  saveState();
+});
 
-}
-
-function filtered() {
-
-  let list =
-    state.channels;
-
-  if (state.filter !== 'all') {
-
-    list =
-      list.filter(
-        channel =>
-          channel.country ===
-          state.filter
-      );
-
-  }
-
-  const query =
-    state.search
-      .toLowerCase()
-      .trim();
-
-  if (query) {
-
-    list =
-      list.filter(channel =>
-        (
-          channel.name +
-          ' ' +
-          channel.group +
-          ' ' +
-          channel.source
-        )
-        .toLowerCase()
-        .includes(query)
-      );
-
-  }
-
-  return list;
+meta = null;
 
 }
 
-function makeCard(channel) {
+}
 
-  const card =
-    document.createElement('article');
+return channels;
 
-  card.className = 'card';
+}
 
-  card.dataset.key =
-    channelKey(channel);
+async function loadWorld(){
 
-  const fav =
-    document.createElement('button');
+const response =
+await fetch(
+WORLD_URL,
+{
+cache:'no-store'
+}
+);
 
-  fav.className =
-    'fav' +
-    (
-      isFav(channel)
-        ? ' on'
-        : ''
-    );
+if(!response.ok){
 
-  fav.textContent =
-    isFav(channel)
-      ? '♥'
-      : '♡';
+throw new Error(
+'HTTP ' +
+response.status
+);
 
-  fav.setAttribute(
-    'aria-label',
-    'Favori'
-  );
+}
 
-  fav.onclick = event => {
+return parseM3U(
+await response.text()
+);
 
-    event.stopPropagation();
+}
 
-    toggleFav(channel);
+function unique(channels){
 
-  };
+const seen =
+new Set();
 
-  const image =
-    document.createElement('img');
+return channels.filter(
+channel => {
 
-  image.className =
-    'channelLogo';
+const key =
+(
+channel.url ||
+channel.id ||
+channel.name
+).toLowerCase();
 
-  image.alt = '';
+if(
+seen.has(key)
+){
 
-  image.loading = 'lazy';
+return false;
 
-  image.src =
-    channel.logo ||
-    'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2254%22 height=%2238%22%3E%3Crect width=%2254%22 height=%2238%22 rx=%228%22 fill=%22%23020617%22/%3E%3Ctext x=%2227%22 y=%2225%22 fill=%22%2394a3b8%22 text-anchor=%22middle%22 font-size=%2210%22%3ETV%3C/text%3E%3C/svg%3E';
+}
 
-  image.onerror = () => {
+seen.add(key);
 
-    image.style.visibility =
-      'hidden';
+return true;
 
-  };
+}
+);
 
-  const name =
-    document.createElement('div');
+}
 
-  name.className =
-    'channelName';
+function channelKey(channel){
 
-  name.textContent =
-    channel.name;
+return (
+channel.url ||
+channel.id ||
+channel.name
+);
 
-  const meta =
-    document.createElement('div');
+}
 
-  meta.className =
-    'meta';
+function isFavorite(channel){
 
-  meta.textContent =
-    (
-      channel.country === 'CI'
-        ? '🇨🇮 '
-        : channel.country === 'FR'
-          ? '🇫🇷 '
-          : '🌍 '
-    ) +
-    (
-      channel.group ||
-      channel.source
-    );
+return state.favorites.includes(
+channelKey(channel)
+);
 
-  card.append(
-    fav,
-    image,
-    name,
-    meta
-  );
+}
 
-  card.onclick = () =>
-    openPlayer(channel);
+function saveState(){
 
-  return card;
+safeWrite(
+'nexworld_v62_favorites',
+state.favorites
+);
+
+safeWrite(
+'nexworld_v62_history',
+state.history
+);
+
+}
+
+function toggleFavorite(channel){
+
+const key =
+channelKey(channel);
+
+if(
+isFavorite(channel)
+){
+
+state.favorites =
+state.favorites.filter(
+item =>
+item !== key
+);
+
+toast(
+'Retiré des favoris'
+);
+
+}else{
+
+state.favorites = [
+...state.favorites,
+key
+];
+
+toast(
+'Ajouté aux favoris'
+);
+
+}
+
+saveState();
+
+render();
+
+}
+
+function addHistory(channel){
+
+const key =
+channelKey(channel);
+
+state.history = [
+
+channel,
+
+...state.history.filter(
+item =>
+channelKey(item) !== key
+)
+
+].slice(0,12);
+
+saveState();
+
+}
+
+function filtered(){
+
+let channels =
+state.channels;
+
+if(
+state.country !== 'all'
+){
+
+channels =
+channels.filter(
+channel =>
+channel.countryKey ===
+state.country
+);
+
+}
+
+if(
+state.region !== 'all'
+){
+
+channels =
+channels.filter(
+channel =>
+channel.region ===
+state.region
+);
+
+}
+
+const query =
+state.search
+.toLowerCase()
+.trim();
+
+if(query){
+
+channels =
+channels.filter(
+channel =>
+(
+channel.name +
+' ' +
+channel.country +
+' ' +
+channel.group
+)
+.toLowerCase()
+.includes(query)
+);
+
+}
+
+return channels;
+
+}
+
+function makeCard(channel){
+
+const card =
+document.createElement(
+'article'
+);
+
+card.className =
+'card';
+
+const favorite =
+document.createElement(
+'button'
+);
+
+favorite.className =
+'fav' +
+(
+isFavorite(channel)
+? ' on'
+: ''
+);
+
+favorite.textContent =
+isFavorite(channel)
+? '♥'
+: '♡';
+
+favorite.onclick =
+event => {
+
+event.stopPropagation();
+
+toggleFavorite(channel);
+
+};
+
+const image =
+document.createElement(
+'img'
+);
+
+image.className =
+'channelLogo';
+
+image.loading =
+'lazy';
+
+image.alt = '';
+
+image.src =
+channel.logo || '';
+
+image.onerror =
+() =>
+image.style.visibility =
+'hidden';
+
+const name =
+document.createElement(
+'div'
+);
+
+name.className =
+'channelName';
+
+name.textContent =
+channel.name;
+
+const meta =
+document.createElement(
+'div'
+);
+
+meta.className =
+'meta';
+
+meta.textContent =
+flag(channel.country) +
+' ' +
+channel.country;
+
+card.append(
+favorite,
+image,
+name,
+meta
+);
+
+card.onclick =
+() =>
+openPlayer(channel);
+
+return card;
 
 }
 
 function renderGrid(
-  id,
-  list,
-  emptyMessage
-) {
+id,
+channels,
+message
+){
 
-  const grid = $(id);
+const grid =
+$(id);
 
-  grid.textContent = '';
+grid.textContent = '';
 
-  if (!list.length) {
+if(!channels.length){
 
-    const empty =
-      document.createElement('div');
-
-    empty.className =
-      'empty';
-
-    empty.textContent =
-      emptyMessage;
-
-    grid.append(empty);
-
-    return;
-
-  }
-
-  const fragment =
-    document.createDocumentFragment();
-
-  list.forEach(channel => {
-
-    fragment.append(
-      makeCard(channel)
-    );
-
-  });
-
-  grid.append(fragment);
-
-}
-
-function renderChips() {
-
-  const box =
-    $('chips');
-
-  box.textContent = '';
-
-  const filters = [
-
-    ['all', 'Toutes'],
-
-    ['CI', '🇨🇮 Côte d’Ivoire'],
-
-    ['FR', '🇫🇷 France']
-
-  ];
-
-  filters.forEach(
-    ([key, label]) => {
-
-      const button =
-        document.createElement('button');
-
-      button.className =
-        'chip' +
-        (
-          state.filter === key
-            ? ' active'
-            : ''
-        );
-
-      button.textContent =
-        label;
-
-      button.onclick = () => {
-
-        state.filter = key;
-
-        renderAll();
-
-      };
-
-      box.append(button);
-
-    }
-  );
-
-}
-
-function renderAll() {
-
-  renderChips();
-
-  const favorites =
-    state.channels.filter(isFav);
-
-  $('favoritesSection').hidden =
-    !favorites.length;
-
-  renderGrid(
-    'favoritesGrid',
-    favorites,
-    'Aucun favori pour le moment.'
-  );
-
-  $('favoriteLabel').textContent =
-    favorites.length
-      ? String(favorites.length)
-      : '';
-
-  const history =
-    state.history;
-
-  $('continueSection').hidden =
-    !history.length;
-
-  renderGrid(
-    'historyGrid',
-    history,
-    'Aucun historique.'
-  );
-
-  $('historyCount').textContent =
-    history.length
-      ? String(history.length)
-      : '';
-
-  const list =
-    filtered();
-
-  $('discoverTitle').textContent =
-    state.search
-      ? 'Résultats'
-      : 'À découvrir';
-
-  $('resultLabel').textContent =
-    String(list.length);
-
-  renderGrid(
-    'grid',
-    list,
-    'Aucune chaîne ne correspond à votre recherche.'
-  );
-
-}
-
-function updateStats() {
-
-  $('count').textContent =
-    state.channels.length;
-
-  $('favCount').textContent =
-    state.favorites.length;
-
-  $('sourceCount').textContent =
-    state.sources;
-
-}
-
-async function start() {
-
-  if (state.loading) return;
-
-  state.loading = true;
-
-  setStatus(
-    'Connexion...'
-  );
-
-  $('grid').innerHTML =
-    '<div class="empty">' +
-    '<span class="spin"></span> ' +
-    'Chargement des chaînes…' +
-    '</div>';
-
-  try {
-
-    const results =
-      await Promise.allSettled(
-        Object.values(SOURCES)
-          .map(loadSource)
-      );
-
-    let merged = [];
-
-    let successfulSources = 0;
-
-    results.forEach(result => {
-
-      if (
-        result.status ===
-        'fulfilled'
-      ) {
-
-        merged.push(
-          ...result.value
-        );
-
-        successfulSources++;
-
-      }
-
-    });
-
-    state.channels =
-      uniqueChannels(merged);
-
-    state.sources =
-      successfulSources;
-
-    updateStats();
-
-    renderAll();
-
-    if (state.channels.length) {
-
-      setStatus(
-        'TV connectée',
-        'ok'
-      );
-
-      toast(
-        state.channels.length +
-        ' chaînes chargées'
-      );
-
-    } else {
-
-      setStatus(
-        'Aucune chaîne',
-        'err'
-      );
-
-      toast(
-        'Les sources n’ont pas répondu'
-      );
-
-    }
-
-  } catch (error) {
-
-    console.error(error);
-
-    state.channels = [];
-
-    state.sources = 0;
-
-    updateStats();
-
-    renderAll();
-
-    setStatus(
-      'Erreur réseau',
-      'err'
-    );
-
-    toast(
-      'Impossible de charger les chaînes'
-    );
-
-  } finally {
-
-    state.loading = false;
-
-  }
-
-}
-
-function openPlayer(channel) {
-
-  $('playerTitle').textContent =
-    channel.name;
-
-  const player =
-    $('player');
-
-  const video =
-    $('video');
-
-  player.classList.add('show');
-
-  player.setAttribute(
-    'aria-hidden',
-    'false'
-  );
-
-  video.src =
-    channel.url;
-
-  video.load();
-
-  addHistory(channel);
-
-  renderAll();
-
-  const playPromise =
-    video.play();
-
-  if (
-    playPromise &&
-    playPromise.catch
-  ) {
-
-    playPromise.catch(
-      () =>
-        toast(
-          'Appuyez sur lecture si nécessaire'
-        )
-    );
-
-  }
-
-}
-
-function closePlayer() {
-
-  const video =
-    $('video');
-
-  video.pause();
-
-  video.removeAttribute(
-    'src'
-  );
-
-  video.load();
-
-  $('player').classList.remove(
-    'show'
-  );
-
-  $('player').setAttribute(
-    'aria-hidden',
-    'true'
-  );
-
-}
-
-$('search').addEventListener(
-  'input',
-  event => {
-
-    state.search =
-      event.target.value;
-
-    renderAll();
-
-  }
+const empty =
+document.createElement(
+'div'
 );
 
-$('refresh').addEventListener(
-  'click',
-  () => start()
+empty.className =
+'empty';
+
+empty.textContent =
+message;
+
+grid.append(empty);
+
+return;
+
+}
+
+const fragment =
+document.createDocumentFragment();
+
+channels.forEach(
+channel =>
+fragment.append(
+makeCard(channel)
+)
 );
 
-$('closePlayer').addEventListener(
-  'click',
-  closePlayer
+grid.append(fragment);
+
+}
+
+function renderCountries(){
+
+const select =
+$('country');
+
+select.textContent = '';
+
+const all =
+document.createElement(
+'option'
 );
 
-$('fullScreen').addEventListener(
-  'click',
-  async () => {
+all.value =
+'all';
 
-    const video =
-      $('video');
+all.textContent =
+'🌍 Tous les pays';
 
-    try {
+select.append(all);
 
-      if (
-        video.requestFullscreen
-      ) {
+const countries =
+new Map();
 
-        await video.requestFullscreen();
+state.channels.forEach(
+channel => {
 
-      }
+if(
+channel.country &&
+!countries.has(
+channel.countryKey
+)
+){
 
-      else if (
-        video.webkitEnterFullscreen
-      ) {
-
-        video.webkitEnterFullscreen();
-
-      }
-
-    } catch (error) {
-
-      toast(
-        'Plein écran indisponible'
-      );
-
-    }
-
-  }
+countries.set(
+channel.countryKey,
+channel.country
 );
 
-$('video').addEventListener(
-  'error',
-  () => {
+}
 
-    toast(
-      'Flux indisponible ou non compatible'
-    );
-
-  }
+}
 );
 
-document.addEventListener(
-  'keydown',
-  event => {
+[
+...countries.entries()
+]
+.sort(
+(a,b) =>
+a[1].localeCompare(
+b[1],
+'fr'
+)
+)
+.forEach(
+([key,name]) => {
 
-    if (
-      event.key === 'Escape'
-    ) {
+const option =
+document.createElement(
+'option'
+);
 
-      closePlayer();
+option.value =
+key;
 
-    }
+option.textContent =
+flag(name) +
+' ' +
+name;
 
-  }
+select.append(option);
+
+}
+);
+
+const exists =
+[
+...select.options
+]
+.some(
+option =>
+option.value ===
+state.country
+);
+
+select.value =
+exists
+? state.country
+: 'all';
+
+$('countryCount')
+.textContent =
+countries.size +
+' pays';
+
+}
+
+function renderRegions(){
+
+const box =
+$('regions');
+
+box.textContent = '';
+
+const regions = [
+
+['all','🌍 Monde'],
+['africa','🌍 Afrique'],
+['europe','🇪🇺 Europe'],
+['americas','🌎 Amériques'],
+['asia','🌏 Asie'],
+['oceania','🌊 Océanie']
+
+];
+
+regions.forEach(
+([key,label]) => {
+
+const button =
+document.createElement(
+'button'
+);
+
+button.className =
+'chip' +
+(
+state.region === key
+? ' active'
+: ''
+);
+
+button.textContent =
+label;
+
+button.onclick =
+() => {
+
+state.region =
+key;
+
+state.page =
+1;
+
+render();
+
+};
+
+box.append(button);
+
+}
+);
+
+}
+
+function render(){
+
+renderCountries();
+
+renderRegions();
+
+const favorites =
+state.channels.filter(
+isFavorite
+);
+
+$('favSec').hidden =
+!favorites.length;
+
+renderGrid(
+'favGrid',
+favorites,
+'Aucun favori.'
+);
+
+const history =
+state.history;
+
+$('histSec').hidden =
+!history.length;
+
+renderGrid(
+'histGrid',
+history,
+'Aucun historique.'
+);
+
+const channels =
+filtered();
+
+const visible =
+channels.slice(
+0,
+state.page *
+PAGE_SIZE
+);
+
+$('count').textContent =
+state.channels.length;
+
+$('favCount').textContent =
+state.favorites.length;
+
+$('sourceCount').textContent =
+state.channels.length
+? '1'
+: '0';
+
+renderGrid(
+'grid',
+visible,
+'Aucune chaîne trouvée.'
+);
+
+$('result').textContent =
+visible.length +
+' / ' +
+channels.length;
+
+if(
+visible.length <
+channels.length
+){
+
+$('more').hidden =
+false;
+
+$('more').textContent =
+'Charger 48 autres';
+
+}else{
+
+$('more').hidden =
+true;
+
+}
+
+}
+
+async function start(){
+
+if(state.loading)
+return;
+
+state.loading =
+true;
+
+status(
+'Connexion...'
+);
+
+$('grid').innerHTML =
+'<div class="empty">' +
+'<span class="spin"></span> ' +
+'Chargement du catalogue mondial…' +
+'</div>';
+
+try{
+
+state.channels =
+unique(
+await loadWorld()
+);
+
+state.page =
+1;
+
+render();
+
+status(
+state.channels.length
+? 'TV connectée'
+: 'Aucune chaîne',
+state.channels.length
+? 'ok'
+: 'err'
+);
+
+toast(
+state.channels.length +
+' chaînes disponibles'
+);
+
+}catch(error){
+
+console.error(error);
+
+state.channels = [];
+
+render();
+
+status(
+'Erreur réseau',
+'err'
+);
+
+toast(
+'Impossible de charger le catalogue mondial'
+);
+
+}finally{
+
+state.loading =
+false;
+
+}
+
+}
+
+function openPlayer(channel){
+
+$('playerTitle')
+.textContent =
+channel.name +
+' · ' +
+channel.country;
+
+const player =
+$('player');
+
+const video =
+$('video');
+
+player.classList.add(
+'show'
+);
+
+video.src =
+channel.url;
+
+video.load();
+
+addHistory(channel);
+
+render();
+
+const playPromise =
+video.play();
+
+if(
+playPromise &&
+playPromise.catch
+){
+
+playPromise.catch(
+() =>
+toast(
+'Appuyez sur lecture si nécessaire'
+)
+);
+
+}
+
+}
+
+function closePlayer(){
+
+const video =
+$('video');
+
+video.pause();
+
+video.removeAttribute(
+'src'
+);
+
+video.load();
+
+$('player')
+.classList.remove(
+'show'
+);
+
+}
+
+$('search')
+.addEventListener(
+'input',
+event => {
+
+state.search =
+event.target.value;
+
+state.page =
+1;
+
+render();
+
+}
+);
+
+$('country')
+.addEventListener(
+'change',
+event => {
+
+state.country =
+event.target.value;
+
+state.region =
+'all';
+
+state.page =
+1;
+
+render();
+
+}
+);
+
+$('refresh')
+.addEventListener(
+'click',
+start
+);
+
+$('more')
+.addEventListener(
+'click',
+() => {
+
+state.page++;
+
+render();
+
+}
+);
+
+$('close')
+.addEventListener(
+'click',
+closePlayer
+);
+
+$('fullscreen')
+.addEventListener(
+'click',
+async () => {
+
+try{
+
+const video =
+$('video');
+
+if(
+video.requestFullscreen
+){
+
+await video.requestFullscreen();
+
+}else if(
+video.webkitEnterFullscreen
+){
+
+video.webkitEnterFullscreen();
+
+}
+
+}catch(error){
+
+toast(
+'Plein écran indisponible'
+);
+
+}
+
+}
+);
+
+$('video')
+.addEventListener(
+'error',
+() =>
+toast(
+'Flux indisponible ou non compatible'
+)
 );
 
 document
-  .querySelectorAll('[data-nav]')
-  .forEach(button => {
+.querySelectorAll(
+'[data-nav]'
+)
+.forEach(
+button => {
 
-    button.addEventListener(
-      'click',
-      () => {
+button.addEventListener(
+'click',
+() => {
 
-        document
-          .querySelectorAll(
-            '[data-nav]'
-          )
-          .forEach(item =>
-            item.classList.remove(
-              'active'
-            )
-          );
+document
+.querySelectorAll(
+'[data-nav]'
+)
+.forEach(
+item =>
+item.classList.remove(
+'active'
+)
+);
 
-        button.classList.add(
-          'active'
-        );
+button.classList.add(
+'active'
+);
 
-        const nav =
-          button.dataset.nav;
+const nav =
+button.dataset.nav;
 
-        if (
-          nav === 'favorites'
-        ) {
+if(
+nav === 'favorites'
+){
 
-          $('favoritesSection')
-            .hidden = false;
+$('favSec')
+.scrollIntoView({
+behavior:'smooth'
+});
 
-          $('favoritesSection')
-            .scrollIntoView({
-              behavior:'smooth'
-            });
+}else if(
+nav === 'history'
+){
 
-        }
+$('histSec')
+.scrollIntoView({
+behavior:'smooth'
+});
 
-        else if (
-          nav === 'history'
-        ) {
+}else if(
+nav === 'all'
+){
 
-          $('continueSection')
-            .hidden = false;
+$('grid')
+.scrollIntoView({
+behavior:'smooth'
+});
 
-          $('continueSection')
-            .scrollIntoView({
-              behavior:'smooth'
-            });
+}else{
 
-        }
+window.scrollTo({
+top:0,
+behavior:'smooth'
+});
 
-        else if (
-          nav === 'all'
-        ) {
+}
 
-          window.scrollTo({
-            top:
-              document
-                .querySelector(
-                  '.section:last-of-type'
-                )
-                .offsetTop - 80,
-            behavior:'smooth'
-          });
+}
+);
 
-        }
+}
+);
 
-        else {
+function boot(){
 
-          window.scrollTo({
-            top:0,
-            behavior:'smooth'
-          });
+state.favorites =
+safeRead(
+'nexworld_v62_favorites',
+[]
+);
 
-        }
+state.history =
+safeRead(
+'nexworld_v62_history',
+[]
+);
 
-      }
-    );
+render();
 
-  });
-
-function boot() {
-
-  state.favorites =
-    safeRead(
-      'nexworld_v61_favorites',
-      []
-    );
-
-  state.history =
-    safeRead(
-      'nexworld_v61_history',
-      []
-    );
-
-  updateStats();
-
-  renderAll();
-
-  start();
+start();
 
 }
 
 window.addEventListener(
-  'error',
-  event => {
-
-    console.error(
-      'NEXWORLD error:',
-      event.error ||
-      event.message
-    );
-
-  }
+'error',
+event =>
+console.error(
+'NEXWORLD error:',
+event.error ||
+event.message
+)
 );
 
 window.addEventListener(
-  'unhandledrejection',
-  event => {
-
-    console.error(
-      'NEXWORLD promise:',
-      event.reason
-    );
-
-  }
+'unhandledrejection',
+event =>
+console.error(
+'NEXWORLD promise:',
+event.reason
+)
 );
 
-if (
-  document.readyState ===
-  'loading'
-) {
+if(
+document.readyState ===
+'loading'
+){
 
-  document.addEventListener(
-    'DOMContentLoaded',
-    boot,
-    {once:true}
-  );
+document.addEventListener(
+'DOMContentLoaded',
+boot,
+{once:true}
+);
 
-}
+}else{
 
-else {
-
-  boot();
+boot();
 
 }
 </script>
