@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b16">
+<title>NEXWORLD</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+margin:0;
+background:#080b16;
+color:#fff;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+header{
+position:sticky;
+top:0;
+z-index:10;
+padding:18px;
+background:rgba(8,11,22,.92);
+border-bottom:1px solid #20283d;
+backdrop-filter:blur(15px);
+}
+
+.logo{
+font-size:22px;
+font-weight:900;
+letter-spacing:3px;
+}
+
+.logo span{
+color:#22d3ee;
+}
+
+main{
+padding:18px;
+max-width:1100px;
+margin:auto;
+padding-bottom:100px;
+}
+
+.hero{
+min-height:330px;
+border-radius:28px;
+padding:28px;
+display:flex;
+align-items:flex-end;
+background:
+linear-gradient(90deg,#11182c 10%,rgba(17,24,44,.65),rgba(17,24,44,.15)),
+linear-gradient(135deg,#39206b,#075c68);
+box-shadow:0 20px 60px rgba(0,0,0,.35);
+}
+
+.hero h1{
+font-size:42px;
+line-height:1.05;
+margin:15px 0 10px;
+}
+
+.hero p{
+color:#c8cede;
+line-height:1.6;
+max-width:550px;
+}
+
+.badge{
+display:inline-block;
+padding:8px 12px;
+border-radius:30px;
+background:rgba(255,255,255,.12);
+font-size:12px;
+}
+
+button{
+border:0;
+cursor:pointer;
+}
+
+.cta{
+margin-top:10px;
+padding:14px 20px;
+border-radius:14px;
+font-weight:bold;
+font-size:15px;
+}
+
+section{
+margin-top:30px;
+}
+
+.section-title{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:15px;
+}
+
+.section-title h2{
+font-size:20px;
+margin:0;
+}
+
+.section-title span{
+font-size:12px;
+color:#8993aa;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+}
+
+.card{
+background:#111729;
+border:1px solid #20283d;
+border-radius:18px;
+overflow:hidden;
+}
+
+.poster{
+height:230px;
+display:flex;
+align-items:flex-end;
+padding:15px;
+font-weight:bold;
+background:
+linear-gradient(145deg,#293354,#111729);
+}
+
+.info{
+padding:13px;
+}
+
+.title{
+font-weight:bold;
+}
+
+.meta{
+font-size:12px;
+color:#8993aa;
+margin-top:5px;
+}
+
+.channel{
+display:flex;
+align-items:center;
+gap:12px;
+padding:14px;
+margin-bottom:10px;
+border-radius:18px;
+background:#111729;
+border:1px solid #20283d;
+}
+
+.channel-logo{
+width:50px;
+height:50px;
+border-radius:14px;
+display:grid;
+place-items:center;
+font-weight:bold;
+background:linear-gradient(135deg,#7c5cff,#22d3ee);
+}
+
+.live{
+color:#35e58b;
+font-size:12px;
+}
+
+nav{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+height:72px;
+display:flex;
+justify-content:space-around;
+background:rgba(8,11,22,.96);
+border-top:1px solid #20283d;
+z-index:20;
+}
+
+nav button{
+background:none;
+color:#8f99ae;
+font-size:11px;
+padding:8px;
+}
+
+nav button:first-child{
+color:#fff;
+}
+
+nav strong{
+display:block;
+font-size:20px;
+margin-bottom:3px;
+}
+
+@media(min-width:650px){
+.grid{
+grid-template-columns:repeat(4,1fr);
+}
+.poster{
+height:300px;
+}
+}
+
+@media(max-width:400px){
+.hero h1{
+font-size:34px;
+}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">NEX<span>WORLD</span></div>
+</header>
+
+<main>
+
+<section class="hero">
+<div>
+<div class="badge">✦ STREAMING MONDIAL</div>
+
+<h1>
+Votre monde.<br>
+Votre écran.
+</h1>
+
+<p>
+Films, séries et chaînes TV accessibles légalement
+depuis une expérience moderne et unique.
+</p>
+
+<button class="cta" onclick="document.getElementById('films').scrollIntoView({behavior:'smooth'})">
+▶ Découvrir
+</button>
+</div>
+</section>
+
+
+<section id="live">
+
+<div class="section-title">
+<h2>🔴 En direct</h2>
+<span>Chaînes autorisées</span>
+</div>
+
+<div class="channel">
+<div class="channel-logo">NW</div>
+<div style="flex:1">
+<b>Chaîne TV 1</b>
+<div class="live">● EN DIRECT</div>
+</div>
+<button onclick="alert('Le flux vidéo sera connecté dans la prochaine version.')">▶</button>
+</div>
+
+<div class="channel">
+<div class="channel-logo">NW</div>
+<div style="flex:1">
+<b>Chaîne TV 2</b>
+<div class="live">● EN DIRECT</div>
+</div>
+<button onclick="alert('Le flux vidéo sera connecté dans la prochaine version.')">▶</button>
+</div>
+
+<div class="channel">
+<div class="channel-logo">NW</div>
+<div style="flex:1">
+<b>Chaîne TV 3</b>
+<div class="live">● EN DIRECT</div>
+</div>
+<button onclick="alert('Le flux vidéo sera connecté dans la prochaine version.')">▶</button>
+</div>
+
+</section>
+
+
+<section id="films">
+
+<div class="section-title">
+<h2>🎬 Films populaires</h2>
+<span>NEXWORLD</span>
+</div>
+
+<div class="grid">
+
+<div class="card">
+<div class="poster">FILM</div>
+<div class="info">
+<div class="title">Le Voyageur</div>
+<div class="meta">2026 · Aventure</div>
+</div>
+</div>
+
+<div class="card">
+<div class="poster">FILM</div>
+<div class="info">
+<div class="title">Horizons</div>
+<div class="meta">2026 · Drame</div>
+</div>
+</div>
+
+<div class="card">
+<div class="poster">FILM</div>
+<div class="info">
+<div class="title">Mission Zéro</div>
+<div class="meta">2025 · Action</div>
+</div>
+</div>
+
+<div class="card">
+<div class="poster">FILM</div>
+<div class="info">
+<div class="title">Dernière Lumière</div>
+<div class="meta">2025 · Thriller</div>
+</div>
+</div>
+
+</div>
+</section>
+
+
+<section id="series">
+
+<div class="section-title">
+<h2>📺 Séries</h2>
+<span>Nouveautés</span>
+</div>
+
+<div class="grid">
+
+<div class="card">
+<div class="poster">SÉRIE</div>
+<div class="info">
+<div class="title">NEX Files</div>
+<div class="meta">Saison 1 · Mystère</div>
+</div>
+</div>
+
+<div class="card">
+<div class="poster">SÉRIE</div>
+<div class="info">
+<div class="title">Abidjan Stories</div>
+<div class="meta">Saison 1 · Drame</div>
+</div>
+</div>
+
+<div class="card">
+<div class="poster">SÉRIE</div>
+<div class="info">
+<div class="title">World Class</div>
+<div class="meta">Saison 2 · Documentaire</div>
+</div>
+</div>
+
+<div class="card">
+<div class="poster">SÉRIE</div>
+<div class="info">
+<div class="title">Code 225</div>
+<div class="meta">Saison 1 · Action</div>
+</div>
+</div>
+
+</div>
+</section>
+
+</main>
+
+
+<nav>
+
+<button onclick="window.scrollTo({top:0,behavior:'smooth'})">
+<strong>⌂</strong>
+Accueil
+</button>
+
+<button onclick="document.getElementById('live').scrollIntoView({behavior:'smooth'})">
+<strong>◉</strong>
+Direct
+</button>
+
+<button onclick="document.getElementById('films').scrollIntoView({behavior:'smooth'})">
+<strong>▣</strong>
+Films
+</button>
+
+<button onclick="document.getElementById('series').scrollIntoView({behavior:'smooth'})">
+<strong>▤</strong>
+Séries
+</button>
+
+<button onclick="alert('Votre liste personnelle sera disponible prochainement.')">
+<strong>♡</strong>
+Ma liste
+</button>
+
+</nav>
+
+</body>
+  </html>
