@@ -2,650 +2,697 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0F172A">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-
-<title>NEXWORLD V5</title>
+<title>NEXWORLD V6</title>
 
 <style>
 :root{
-  --bg:#0F172A;
-  --bg2:#111827;
-  --card:#172033;
-  --card2:#1d2940;
-  --line:#2a3852;
-  --text:#F8FAFC;
-  --muted:#94A3B8;
-  --cyan:#22D3EE;
-  --green:#34D399;
-  --amber:#FBBF24;
-  --pink:#F472B6;
-  --red:#FB7185;
-  --blue:#60A5FA;
-  --shadow:0 12px 35px rgba(0,0,0,.30);
+ --bg:#0F172A;
+ --bg2:#111827;
+ --card:#172033;
+ --card2:#1d2940;
+ --line:#2a3852;
+ --text:#F8FAFC;
+ --muted:#94A3B8;
+ --cyan:#22D3EE;
+ --green:#34D399;
+ --amber:#FBBF24;
+ --red:#FB7185;
+ --blue:#60A5FA;
+ --shadow:0 12px 35px rgba(0,0,0,.3);
 }
 
 *{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
+ box-sizing:border-box;
+ -webkit-tap-highlight-color:transparent;
 }
 
 html{
-  scroll-behavior:smooth;
+ scroll-behavior:smooth;
 }
 
 body{
-  margin:0;
-  min-height:100vh;
-  background:
-    radial-gradient(circle at 15% 0%,rgba(34,211,238,.10),transparent 28%),
-    radial-gradient(circle at 90% 10%,rgba(96,165,250,.10),transparent 30%),
-    var(--bg);
-  color:var(--text);
-  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  padding-bottom:92px;
+ margin:0;
+ min-height:100vh;
+ background:
+ radial-gradient(circle at 15% 0%,rgba(34,211,238,.10),transparent 28%),
+ radial-gradient(circle at 90% 10%,rgba(96,165,250,.10),transparent 30%),
+ var(--bg);
+ color:var(--text);
+ font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ padding-bottom:92px;
 }
 
-button,
-input{
-  font:inherit;
+button,input{
+ font:inherit;
 }
 
 button{
-  border:0;
+ border:0;
 }
 
 .app{
-  width:100%;
-  max-width:1180px;
-  margin:auto;
-  padding:0 15px;
+ width:100%;
+ max-width:1180px;
+ margin:auto;
+ padding:0 15px;
 }
 
 /* HEADER */
 
 header{
-  position:sticky;
-  top:0;
-  z-index:100;
-  margin:0 -15px;
-  padding:
-    calc(12px + env(safe-area-inset-top))
-    15px
-    12px;
-  background:rgba(15,23,42,.90);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-  border-bottom:1px solid rgba(148,163,184,.12);
+ position:sticky;
+ top:0;
+ z-index:100;
+ margin:0 -15px;
+ padding:
+ calc(12px + env(safe-area-inset-top))
+ 15px 12px;
+ background:rgba(15,23,42,.92);
+ backdrop-filter:blur(18px);
+ -webkit-backdrop-filter:blur(18px);
+ border-bottom:1px solid rgba(148,163,184,.12);
 }
 
 .top{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:12px;
 }
 
 .logo{
-  font-size:24px;
-  font-weight:900;
-  letter-spacing:.06em;
+ font-size:24px;
+ font-weight:900;
+ letter-spacing:.06em;
 }
 
 .logo span{
-  color:var(--cyan);
+ color:var(--cyan);
 }
 
 .status{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  font-size:11px;
-  color:var(--muted);
-  white-space:nowrap;
+ display:flex;
+ align-items:center;
+ gap:7px;
+ color:var(--muted);
+ font-size:11px;
+ white-space:nowrap;
 }
 
 .dot{
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:var(--amber);
-  box-shadow:0 0 12px rgba(251,191,36,.8);
+ width:8px;
+ height:8px;
+ border-radius:50%;
+ background:var(--amber);
+ box-shadow:0 0 12px rgba(251,191,36,.8);
 }
 
 .dot.ok{
-  background:var(--green);
-  box-shadow:0 0 12px rgba(52,211,153,.8);
+ background:var(--green);
+ box-shadow:0 0 12px rgba(52,211,153,.8);
 }
 
 .dot.error{
-  background:var(--red);
-  box-shadow:0 0 12px rgba(251,113,133,.8);
+ background:var(--red);
+ box-shadow:0 0 12px rgba(251,113,133,.8);
 }
 
 /* HERO */
 
 .hero{
-  padding:24px 0 12px;
+ padding:25px 0 12px;
 }
 
 .hero h1{
-  margin:0;
-  font-size:clamp(27px,7vw,42px);
-  line-height:1.05;
-  letter-spacing:-.04em;
+ margin:0;
+ font-size:clamp(28px,7vw,42px);
+ line-height:1.05;
+ letter-spacing:-.04em;
 }
 
 .hero h1 span{
-  color:var(--cyan);
+ color:var(--cyan);
 }
 
 .hero p{
-  margin:10px 0 0;
-  color:var(--muted);
-  line-height:1.5;
-  font-size:14px;
+ margin:10px 0 0;
+ color:var(--muted);
+ line-height:1.5;
+ font-size:14px;
 }
 
 /* STATS */
 
 .stats{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  margin:16px 0;
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:10px;
+ margin:16px 0;
 }
 
 .stat{
-  min-width:0;
-  padding:14px 10px;
-  background:linear-gradient(
-    145deg,
-    rgba(255,255,255,.055),
-    rgba(255,255,255,.018)
-  );
-  border:1px solid rgba(148,163,184,.12);
-  border-radius:17px;
-  box-shadow:var(--shadow);
+ padding:14px 10px;
+ background:linear-gradient(
+ 145deg,
+ rgba(255,255,255,.055),
+ rgba(255,255,255,.018)
+ );
+ border:1px solid rgba(148,163,184,.12);
+ border-radius:17px;
+ box-shadow:var(--shadow);
 }
 
 .stat strong{
-  display:block;
-  font-size:21px;
-  line-height:1;
+ display:block;
+ font-size:21px;
+ line-height:1;
 }
 
 .stat small{
-  display:block;
-  margin-top:6px;
-  color:var(--muted);
-  font-size:10px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+ display:block;
+ margin-top:6px;
+ color:var(--muted);
+ font-size:10px;
 }
 
 /* SEARCH */
 
 .search{
-  position:relative;
-  margin:16px 0;
+ position:relative;
+ margin:16px 0;
 }
 
 .search input{
-  width:100%;
-  height:48px;
-  padding:0 16px 0 44px;
-  color:var(--text);
-  background:rgba(23,32,51,.92);
-  border:1px solid var(--line);
-  border-radius:15px;
-  outline:none;
+ width:100%;
+ height:48px;
+ padding:0 16px 0 44px;
+ color:var(--text);
+ background:rgba(23,32,51,.92);
+ border:1px solid var(--line);
+ border-radius:15px;
+ outline:none;
 }
 
 .search input:focus{
-  border-color:rgba(34,211,238,.6);
-  box-shadow:0 0 0 3px rgba(34,211,238,.08);
+ border-color:rgba(34,211,238,.6);
+ box-shadow:0 0 0 3px rgba(34,211,238,.08);
 }
 
 .search-icon{
-  position:absolute;
-  left:16px;
-  top:50%;
-  transform:translateY(-50%);
-  color:var(--muted);
+ position:absolute;
+ left:16px;
+ top:50%;
+ transform:translateY(-50%);
+ color:var(--muted);
 }
 
 /* FILTERS */
 
 .filters{
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  padding:3px 0 9px;
-  scrollbar-width:none;
+ display:flex;
+ gap:8px;
+ overflow-x:auto;
+ padding:3px 0 9px;
+ scrollbar-width:none;
 }
 
 .filters::-webkit-scrollbar{
-  display:none;
+ display:none;
 }
 
 .filter{
-  flex:0 0 auto;
-  padding:9px 13px;
-  border-radius:999px;
-  color:var(--muted);
-  background:#151f33;
-  border:1px solid var(--line);
-  cursor:pointer;
-  font-size:12px;
+ flex:0 0 auto;
+ padding:9px 13px;
+ border-radius:999px;
+ color:var(--muted);
+ background:#151f33;
+ border:1px solid var(--line);
+ cursor:pointer;
+ font-size:12px;
 }
 
 .filter.active{
-  color:#06131a;
-  background:var(--cyan);
-  border-color:var(--cyan);
-  font-weight:800;
+ color:#06131a;
+ background:var(--cyan);
+ border-color:var(--cyan);
+ font-weight:800;
 }
 
-/* SECTIONS */
+/* SECTION */
 
 .section{
-  margin-top:20px;
+ margin-top:20px;
 }
 
 .section-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  margin-bottom:11px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+ margin-bottom:11px;
 }
 
 .section-title{
-  margin:0;
-  font-size:18px;
-  font-weight:800;
+ margin:0;
+ font-size:18px;
+ font-weight:800;
 }
 
 .section-count{
-  color:var(--muted);
-  font-size:11px;
+ color:var(--muted);
+ font-size:11px;
+}
+
+/* HISTORY */
+
+.history{
+ display:flex;
+ gap:10px;
+ overflow-x:auto;
+ padding-bottom:5px;
+ scrollbar-width:none;
+}
+
+.history::-webkit-scrollbar{
+ display:none;
+}
+
+.history-card{
+ flex:0 0 150px;
+ padding:12px;
+ border-radius:16px;
+ background:rgba(23,32,51,.8);
+ border:1px solid var(--line);
+ cursor:pointer;
+}
+
+.history-logo{
+ height:55px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ background:#0c1424;
+ border-radius:11px;
+ overflow:hidden;
+ margin-bottom:8px;
+}
+
+.history-logo img{
+ width:100%;
+ height:100%;
+ object-fit:contain;
+}
+
+.history-name{
+ font-size:12px;
+ font-weight:800;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis;
 }
 
 /* CHANNEL GRID */
 
 .channels{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:11px;
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:11px;
 }
 
 @media(min-width:650px){
-  .channels{
-    grid-template-columns:repeat(3,minmax(0,1fr));
-  }
+ .channels{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+ }
 }
 
 @media(min-width:950px){
-  .channels{
-    grid-template-columns:repeat(4,minmax(0,1fr));
-  }
+ .channels{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+ }
 }
 
 .channel{
-  position:relative;
-  min-width:0;
-  padding:13px;
-  border-radius:18px;
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255,255,255,.06),
-      rgba(255,255,255,.018)
-    );
-  border:1px solid rgba(148,163,184,.13);
-  box-shadow:0 8px 25px rgba(0,0,0,.20);
-  cursor:pointer;
-  transition:.18s ease;
+ min-width:0;
+ padding:13px;
+ border-radius:18px;
+ background:
+ linear-gradient(
+ 145deg,
+ rgba(255,255,255,.06),
+ rgba(255,255,255,.018)
+ );
+ border:1px solid rgba(148,163,184,.13);
+ box-shadow:0 8px 25px rgba(0,0,0,.20);
+ cursor:pointer;
+ transition:.18s ease;
 }
 
 .channel:active{
-  transform:scale(.97);
-}
-
-.channel:hover{
-  border-color:rgba(34,211,238,.30);
+ transform:scale(.97);
 }
 
 .channel-top{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:7px;
+ display:flex;
+ align-items:flex-start;
+ justify-content:space-between;
+ gap:7px;
 }
 
 .logo-box{
-  width:48px;
-  height:48px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex:0 0 auto;
-  border-radius:13px;
-  overflow:hidden;
-  background:#0c1424;
-  border:1px solid rgba(148,163,184,.12);
+ width:48px;
+ height:48px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ flex:0 0 auto;
+ border-radius:13px;
+ overflow:hidden;
+ background:#0c1424;
+ border:1px solid rgba(148,163,184,.12);
 }
 
 .logo-box img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
+ width:100%;
+ height:100%;
+ object-fit:contain;
 }
 
 .logo-fallback{
-  color:var(--cyan);
-  font-size:20px;
-  font-weight:900;
+ color:var(--cyan);
+ font-size:20px;
+ font-weight:900;
 }
 
 .favorite{
-  width:31px;
-  height:31px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:50%;
-  background:#101a2b;
-  color:#64748B;
-  font-size:16px;
-  cursor:pointer;
+ width:31px;
+ height:31px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ border-radius:50%;
+ background:#101a2b;
+ color:#64748B;
+ font-size:16px;
+ cursor:pointer;
 }
 
 .favorite.active{
-  color:var(--amber);
+ color:var(--amber);
 }
 
 .channel-name{
-  margin-top:11px;
-  font-size:14px;
-  font-weight:800;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+ margin-top:11px;
+ font-size:14px;
+ font-weight:800;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis;
 }
 
 .channel-meta{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:6px;
-  margin-top:7px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:6px;
+ margin-top:7px;
 }
 
 .country{
-  color:var(--muted);
-  font-size:10px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+ color:var(--muted);
+ font-size:10px;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis;
 }
 
 .live{
-  color:var(--green);
-  font-size:9px;
-  font-weight:800;
+ color:var(--green);
+ font-size:9px;
+ font-weight:800;
 }
 
 /* EMPTY */
 
 .empty{
-  padding:35px 18px;
-  text-align:center;
-  border:1px dashed #334155;
-  border-radius:18px;
-  color:var(--muted);
+ padding:35px 18px;
+ text-align:center;
+ border:1px dashed #334155;
+ border-radius:18px;
+ color:var(--muted);
 }
 
 .empty strong{
-  display:block;
-  color:var(--text);
-  margin-bottom:6px;
+ display:block;
+ color:var(--text);
+ margin-bottom:6px;
 }
 
 /* LOADING */
 
 .loading{
-  padding:25px;
-  text-align:center;
-  color:var(--muted);
+ padding:25px;
+ text-align:center;
+ color:var(--muted);
 }
 
 .spinner{
-  width:28px;
-  height:28px;
-  margin:0 auto 10px;
-  border:3px solid #26334b;
-  border-top-color:var(--cyan);
-  border-radius:50%;
-  animation:spin .8s linear infinite;
+ width:28px;
+ height:28px;
+ margin:0 auto 10px;
+ border:3px solid #26334b;
+ border-top-color:var(--cyan);
+ border-radius:50%;
+ animation:spin .8s linear infinite;
 }
 
 @keyframes spin{
-  to{transform:rotate(360deg)}
+ to{transform:rotate(360deg)}
 }
 
 /* PLAYER */
 
 .player-overlay{
-  position:fixed;
-  inset:0;
-  z-index:300;
-  display:none;
-  background:rgba(2,6,23,.94);
-  backdrop-filter:blur(15px);
+ position:fixed;
+ inset:0;
+ z-index:300;
+ display:none;
+ flex-direction:column;
+ background:rgba(2,6,23,.97);
+ backdrop-filter:blur(15px);
 }
 
 .player-overlay.open{
-  display:flex;
-  flex-direction:column;
+ display:flex;
 }
 
 .player-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding:
-    calc(12px + env(safe-area-inset-top))
-    14px
-    12px;
-  border-bottom:1px solid rgba(148,163,184,.13);
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+ padding:
+ calc(12px + env(safe-area-inset-top))
+ 14px 12px;
+ border-bottom:1px solid rgba(148,163,184,.13);
 }
 
 .player-title{
-  min-width:0;
+ min-width:0;
 }
 
 .player-title strong{
-  display:block;
-  font-size:15px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+ display:block;
+ font-size:15px;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis;
 }
 
 .player-title small{
-  color:var(--muted);
+ color:var(--muted);
 }
 
-.close{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  color:var(--text);
-  background:#1e293b;
-  cursor:pointer;
-  font-size:20px;
+.player-actions{
+ display:flex;
+ gap:7px;
+ flex:0 0 auto;
+}
+
+.player-btn{
+ width:40px;
+ height:40px;
+ border-radius:50%;
+ color:var(--text);
+ background:#1e293b;
+ cursor:pointer;
+ font-size:17px;
+}
+
+.player-btn:active{
+ transform:scale(.94);
 }
 
 .video-wrap{
-  width:100%;
-  max-width:1100px;
-  margin:auto;
-  background:#000;
+ width:100%;
+ max-width:1100px;
+ margin:auto;
+ background:#000;
 }
 
 video{
-  display:block;
-  width:100%;
-  max-height:70vh;
-  background:#000;
+ display:block;
+ width:100%;
+ max-height:72vh;
+ background:#000;
 }
 
 .player-message{
-  max-width:700px;
-  margin:15px auto;
-  padding:14px;
-  text-align:center;
-  color:var(--muted);
+ max-width:700px;
+ margin:15px auto;
+ padding:14px;
+ text-align:center;
+ color:var(--muted);
+ font-size:13px;
+}
+
+.player-info{
+ max-width:700px;
+ width:100%;
+ margin:0 auto;
+ padding:0 15px 25px;
+}
+
+.player-status{
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ gap:7px;
+ color:var(--green);
+ font-size:12px;
+}
+
+/* NAV */
+
+.bottom-nav{
+ position:fixed;
+ left:0;
+ right:0;
+ bottom:0;
+ z-index:200;
+ padding:
+ 8px 8px
+ calc(8px + env(safe-area-inset-bottom));
+ background:rgba(15,23,42,.94);
+ backdrop-filter:blur(18px);
+ -webkit-backdrop-filter:blur(18px);
+ border-top:1px solid rgba(148,163,184,.13);
+}
+
+.nav-inner{
+ max-width:600px;
+ margin:auto;
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:5px;
+}
+
+.nav-btn{
+ min-height:52px;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ gap:3px;
+ border-radius:13px;
+ color:#64748B;
+ background:transparent;
+ cursor:pointer;
+}
+
+.nav-btn span{
+ font-size:19px;
+ line-height:1;
+}
+
+.nav-btn small{
+ font-size:9px;
+}
+
+.nav-btn.active{
+ color:var(--cyan);
+ background:rgba(34,211,238,.08);
 }
 
 /* TOAST */
 
 .toast{
-  position:fixed;
-  left:50%;
-  bottom:88px;
-  z-index:500;
-  transform:translate(-50%,20px);
-  opacity:0;
-  pointer-events:none;
-  max-width:calc(100% - 30px);
-  padding:11px 15px;
-  color:var(--text);
-  background:#111827;
-  border:1px solid #334155;
-  border-radius:13px;
-  box-shadow:var(--shadow);
-  font-size:12px;
-  text-align:center;
-  transition:.22s ease;
+ position:fixed;
+ left:50%;
+ bottom:88px;
+ z-index:500;
+ transform:translate(-50%,20px);
+ opacity:0;
+ pointer-events:none;
+ max-width:calc(100% - 30px);
+ padding:11px 15px;
+ color:var(--text);
+ background:#111827;
+ border:1px solid #334155;
+ border-radius:13px;
+ box-shadow:var(--shadow);
+ font-size:12px;
+ text-align:center;
+ transition:.22s ease;
 }
 
 .toast.show{
-  opacity:1;
-  transform:translate(-50%,0);
+ opacity:1;
+ transform:translate(-50%,0);
 }
 
-/* BOTTOM NAV */
+/* SOURCES / ABOUT */
 
-.bottom-nav{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
-  z-index:200;
-  padding:
-    8px
-    8px
-    calc(8px + env(safe-area-inset-bottom));
-  background:rgba(15,23,42,.94);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-  border-top:1px solid rgba(148,163,184,.13);
-}
-
-.nav-inner{
-  max-width:600px;
-  margin:auto;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:5px;
-}
-
-.nav-btn{
-  min-height:52px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:3px;
-  border-radius:13px;
-  color:#64748B;
-  background:transparent;
-  cursor:pointer;
-}
-
-.nav-btn span{
-  font-size:19px;
-  line-height:1;
-}
-
-.nav-btn small{
-  font-size:9px;
-}
-
-.nav-btn.active{
-  color:var(--cyan);
-  background:rgba(34,211,238,.08);
-}
-
-/* SOURCES */
-
-.source-card{
-  padding:15px;
-  margin-bottom:10px;
-  border:1px solid var(--line);
-  border-radius:16px;
-  background:rgba(23,32,51,.7);
+.source-card,
+.about{
+ padding:15px;
+ margin-bottom:10px;
+ border:1px solid var(--line);
+ border-radius:16px;
+ background:rgba(23,32,51,.7);
 }
 
 .source-card strong{
-  display:block;
+ display:block;
 }
 
-.source-card small{
-  display:block;
-  color:var(--muted);
-  margin-top:5px;
+.source-card small,
+.about{
+ color:var(--muted);
 }
-
-/* ABOUT */
 
 .about{
-  padding:18px;
-  border:1px solid var(--line);
-  border-radius:18px;
-  background:rgba(23,32,51,.65);
-  line-height:1.6;
-  color:var(--muted);
-  font-size:13px;
+ line-height:1.6;
+ font-size:13px;
 }
 
 .about strong{
-  color:var(--text);
+ color:var(--text);
 }
 
-/* DESKTOP */
-
 @media(min-width:700px){
-  .app{
-    padding:0 22px;
-  }
+ .app{
+  padding:0 22px;
+ }
 
-  header{
-    margin:0 -22px;
-    padding-left:22px;
-    padding-right:22px;
-  }
-
-  .hero{
-    padding-top:35px;
-  }
+ header{
+  margin:0 -22px;
+  padding-left:22px;
+  padding-right:22px;
+ }
 }
 </style>
 </head>
@@ -655,121 +702,219 @@ video{
 <div class="app">
 
 <header>
-  <div class="top">
-    <div class="logo">NEX<span>WORLD</span></div>
+ <div class="top">
 
-    <div class="status">
-      <span id="statusDot" class="dot"></span>
-      <span id="status">Connexion...</span>
-    </div>
+  <div class="logo">
+   NEX<span>WORLD</span>
   </div>
+
+  <div class="status">
+   <span id="statusDot" class="dot"></span>
+   <span id="status">Connexion...</span>
+  </div>
+
+ </div>
 </header>
 
 <main>
 
 <section class="hero">
-  <h1>Le monde de la <span>TV</span></h1>
-  <p>
-    Retrouvez les chaînes disponibles depuis une interface simple,
-    rapide et adaptée au mobile.
-  </p>
+ <h1>Le monde de la <span>TV</span></h1>
+ <p>
+  Retrouvez les chaînes disponibles depuis une interface
+  simple, rapide et adaptée au mobile.
+ </p>
 </section>
 
 <section class="stats">
-  <div class="stat">
-    <strong id="channelCount">0</strong>
-    <small>Chaînes</small>
-  </div>
 
-  <div class="stat">
-    <strong id="favoriteCount">0</strong>
-    <small>Favoris</small>
-  </div>
+ <div class="stat">
+  <strong id="channelCount">0</strong>
+  <small>Chaînes</small>
+ </div>
 
-  <div class="stat">
-    <strong id="sourceCount">0</strong>
-    <small>Sources</small>
-  </div>
+ <div class="stat">
+  <strong id="favoriteCount">0</strong>
+  <small>Favoris</small>
+ </div>
+
+ <div class="stat">
+  <strong id="sourceCount">0</strong>
+  <small>Sources</small>
+ </div>
+
 </section>
 
 <section class="search">
-  <span class="search-icon">⌕</span>
-  <input
-    id="search"
-    type="search"
-    placeholder="Rechercher une chaîne..."
-    autocomplete="off"
-  >
+ <span class="search-icon">⌕</span>
+ <input
+  id="search"
+  type="search"
+  placeholder="Rechercher une chaîne..."
+  autocomplete="off">
 </section>
 
 <section>
-  <div class="filters">
-    <button class="filter active" data-filter="ALL">Toutes</button>
-    <button class="filter" data-filter="CI">🇨🇮 Côte d’Ivoire</button>
-    <button class="filter" data-filter="FR">🇫🇷 France</button>
-    <button class="filter" data-filter="AFR">🌍 Afrique</button>
-    <button class="filter" data-filter="INT">🌐 International</button>
-    <button class="filter" data-filter="FAV">★ Favoris</button>
-  </div>
+ <div class="filters">
+
+  <button class="filter active" data-filter="ALL">
+   Toutes
+  </button>
+
+  <button class="filter" data-filter="CI">
+   🇨🇮 Côte d’Ivoire
+  </button>
+
+  <button class="filter" data-filter="FR">
+   🇫🇷 France
+  </button>
+
+  <button class="filter" data-filter="AFR">
+   🌍 Afrique
+  </button>
+
+  <button class="filter" data-filter="INT">
+   🌐 International
+  </button>
+
+  <button class="filter" data-filter="FAV">
+   ★ Favoris
+  </button>
+
+ </div>
 </section>
 
-<section class="section" id="discoverSection">
-  <div class="section-head">
-    <h2 class="section-title">À découvrir</h2>
-    <span class="section-count" id="sectionCount">0</span>
-  </div>
+<section id="historySection" class="section">
 
-  <div id="channels" class="channels">
-    <div class="loading">
-      <div class="spinner"></div>
-      Chargement des chaînes...
-    </div>
-  </div>
+ <div class="section-head">
+  <h2 class="section-title">
+   Continuer à regarder
+  </h2>
+
+  <span
+   id="historyCount"
+   class="section-count">
+   0
+  </span>
+ </div>
+
+ <div id="history" class="history"></div>
+
 </section>
 
-<section class="section" id="sourcesSection" style="display:none">
-  <div class="section-head">
-    <h2 class="section-title">Sources</h2>
-  </div>
+<section id="favoriteSection" class="section">
 
-  <div class="source-card">
-    <strong>🇨🇮 Côte d’Ivoire</strong>
-    <small>Playlist publique IPTV-org</small>
-  </div>
+ <div class="section-head">
+  <h2 class="section-title">
+   Mes favoris
+  </h2>
 
-  <div class="source-card">
-    <strong>🇫🇷 France</strong>
-    <small>Playlist publique IPTV-org</small>
-  </div>
+  <span
+   id="favoriteSectionCount"
+   class="section-count">
+   0
+  </span>
+ </div>
 
-  <div class="source-card">
-    <strong>🌍 Monde</strong>
-    <small>Index international IPTV-org</small>
-  </div>
+ <div id="favoriteChannels" class="channels"></div>
+
 </section>
 
-<section class="section" id="aboutSection" style="display:none">
-  <div class="section-head">
-    <h2 class="section-title">NEXWORLD</h2>
+<section id="discoverSection" class="section">
+
+ <div class="section-head">
+  <h2 class="section-title">
+   À découvrir
+  </h2>
+
+  <span
+   id="sectionCount"
+   class="section-count">
+   0
+  </span>
+
+ </div>
+
+ <div id="channels" class="channels">
+
+  <div class="loading">
+   <div class="spinner"></div>
+   Chargement des chaînes...
   </div>
 
-  <div class="about">
-    <strong>NEXWORLD V5</strong><br><br>
+ </div>
 
-    Une interface de télévision en ligne pensée pour le mobile,
-    avec recherche, catégories, favoris et lecteur intégré.
+</section>
 
-    <br><br>
+<section
+ id="sourcesSection"
+ class="section"
+ style="display:none">
 
-    Les chaînes affichées dépendent des sources publiques disponibles
-    et de leur disponibilité au moment du chargement.
+ <div class="section-head">
+  <h2 class="section-title">
+   Sources
+  </h2>
+ </div>
 
-    <br><br>
+ <div class="source-card">
+  <strong>🇨🇮 Côte d’Ivoire</strong>
+  <small>
+   Playlist publique IPTV-org
+  </small>
+ </div>
 
-    NEXWORLD ne garantit pas la disponibilité permanente d'une chaîne
-    et ne revendique pas les droits sur les contenus diffusés par
-    des sources tierces.
-  </div>
+ <div class="source-card">
+  <strong>🇫🇷 France</strong>
+  <small>
+   Playlist publique IPTV-org
+  </small>
+ </div>
+
+ <div class="source-card">
+  <strong>🌍 Monde</strong>
+  <small>
+   Catalogue public IPTV-org
+  </small>
+ </div>
+
+</section>
+
+<section
+ id="aboutSection"
+ class="section"
+ style="display:none">
+
+ <div class="section-head">
+  <h2 class="section-title">
+   NEXWORLD
+  </h2>
+ </div>
+
+ <div class="about">
+
+  <strong>NEXWORLD V6</strong>
+
+  <br><br>
+
+  Plateforme TV mobile avec recherche,
+  catégories, favoris, historique et
+  lecteur intégré.
+
+  <br><br>
+
+  Les chaînes affichées dépendent des
+  sources publiques et de leur disponibilité
+  au moment du chargement.
+
+  <br><br>
+
+  NEXWORLD ne revendique pas les droits
+  sur les contenus provenant de sources
+  tierces.
+
+ </div>
+
 </section>
 
 </main>
@@ -777,33 +922,81 @@ video{
 
 <!-- PLAYER -->
 
-<div id="playerOverlay" class="player-overlay">
+<div
+ id="playerOverlay"
+ class="player-overlay">
 
-  <div class="player-head">
+ <div class="player-head">
 
-    <div class="player-title">
-      <strong id="playerTitle">NEXWORLD</strong>
-      <small id="playerCountry">Lecture</small>
-    </div>
+  <div class="player-title">
 
-    <button id="closePlayer" class="close" type="button">
-      ×
-    </button>
+   <strong id="playerTitle">
+    NEXWORLD
+   </strong>
+
+   <small id="playerCountry">
+    Lecture
+   </small>
 
   </div>
 
-  <div class="video-wrap">
-    <video
-      id="video"
-      controls
-      playsinline
-      preload="metadata"
-    ></video>
+  <div class="player-actions">
+
+   <button
+    id="reconnectPlayer"
+    class="player-btn"
+    type="button"
+    title="Reconnexion">
+    ↻
+   </button>
+
+   <button
+    id="fullscreenPlayer"
+    class="player-btn"
+    type="button"
+    title="Plein écran">
+    ⛶
+   </button>
+
+   <button
+    id="closePlayer"
+    class="player-btn"
+    type="button"
+    title="Fermer">
+    ×
+   </button>
+
   </div>
 
-  <div id="playerMessage" class="player-message">
-    Préparation de la lecture...
+ </div>
+
+ <div class="video-wrap">
+
+  <video
+   id="video"
+   controls
+   playsinline
+   preload="metadata">
+  </video>
+
+ </div>
+
+ <div
+  id="playerMessage"
+  class="player-message">
+  Préparation de la lecture...
+ </div>
+
+ <div class="player-info">
+
+  <div
+   id="playerStatus"
+   class="player-status">
+   <span class="dot ok"></span>
+   <span>Connexion au direct</span>
   </div>
+
+ </div>
 
 </div>
 
@@ -813,1248 +1006,1224 @@ video{
 
 <nav class="bottom-nav">
 
-  <div class="nav-inner">
+ <div class="nav-inner">
 
-    <button class="nav-btn active" data-nav="home" type="button">
-      <span>⌂</span>
-      <small>Accueil</small>
-    </button>
+  <button
+   class="nav-btn active"
+   data-nav="home"
+   type="button">
 
-    <button class="nav-btn" data-nav="favorites" type="button">
-      <span>★</span>
-      <small>Favoris</small>
-    </button>
+   <span>⌂</span>
+   <small>Accueil</small>
 
-    <button class="nav-btn" data-nav="sources" type="button">
-      <span>◉</span>
-      <small>Sources</small>
-    </button>
+  </button>
 
-    <button class="nav-btn" data-nav="about" type="button">
-      <span>☰</span>
-      <small>Plus</small>
-    </button>
+  <button
+   class="nav-btn"
+   data-nav="favorites"
+   type="button">
 
-  </div>
+   <span>★</span>
+   <small>Favoris</small>
+
+  </button>
+
+  <button
+   class="nav-btn"
+   data-nav="sources"
+   type="button">
+
+   <span>◉</span>
+   <small>Sources</small>
+
+  </button>
+
+  <button
+   class="nav-btn"
+   data-nav="about"
+   type="button">
+
+   <span>☰</span>
+   <small>Plus</small>
+
+  </button>
+
+ </div>
 
 </nav>
 
 <script>
 "use strict";
 
-/*
-========================================================
- NEXWORLD V5
- Application TV mobile-first
-========================================================
-*/
-
-const URLS = {
-  ci: "https://iptv-org.github.io/iptv/countries/ci.m3u",
-  fr: "https://iptv-org.github.io/iptv/countries/fr.m3u",
-  world: "https://iptv-org.github.io/iptv/index.country.m3u"
+const URLS={
+ ci:"https://iptv-org.github.io/iptv/countries/ci.m3u",
+ fr:"https://iptv-org.github.io/iptv/countries/fr.m3u",
+ world:"https://iptv-org.github.io/iptv/index.country.m3u"
 };
 
-const AFRICAN_COUNTRIES = new Set([
-  "DZ","AO","BJ","BW","BF","BI","CM","CV","CF","TD",
-  "KM","CG","CD","CI","DJ","EG","GQ","ER","SZ","ET",
-  "GA","GM","GH","GN","GW","KE","LS","LR","LY","MG",
-  "MW","ML","MR","MU","MA","MZ","NA","NE","NG","RW",
-  "ST","SN","SC","SL","SO","ZA","SS","SD","TZ","TG",
-  "TN","UG","ZM","ZW"
+const AFRICAN_COUNTRIES=new Set([
+ "DZ","AO","BJ","BW","BF","BI","CM","CV","CF","TD",
+ "KM","CG","CD","CI","DJ","EG","GQ","ER","SZ","ET",
+ "GA","GM","GH","GN","GW","KE","LS","LR","LY","MG",
+ "MW","ML","MR","MU","MA","MZ","NA","NE","NG","RW",
+ "ST","SN","SC","SL","SO","ZA","SS","SD","TZ","TG",
+ "TN","UG","ZM","ZW"
 ]);
 
 function $(id){
-  return document.getElementById(id);
+ return document.getElementById(id);
 }
 
-/* ======================================================
-   SAFE LOCAL STORAGE
-====================================================== */
-
-function safeJSON(key, fallback){
-
+function safeJSON(key,fallback){
+ try{
+  const raw=localStorage.getItem(key);
+  if(!raw)return fallback;
+  const value=JSON.parse(raw);
+  return value ?? fallback;
+ }catch(e){
   try{
-
-    const raw = localStorage.getItem(key);
-
-    if(!raw){
-      return fallback;
-    }
-
-    const value = JSON.parse(raw);
-
-    return value ?? fallback;
-
-  }catch(error){
-
-    try{
-      localStorage.removeItem(key);
-    }catch(_){}
-
-    return fallback;
-  }
+   localStorage.removeItem(key);
+  }catch(_){}
+  return fallback;
 }
 
 function saveJSON(key,value){
-
-  try{
-    localStorage.setItem(key,JSON.stringify(value));
-  }catch(error){
-    console.warn("LocalStorage indisponible",error);
-  }
+ try{
+  localStorage.setItem(key,JSON.stringify(value));
+ }catch(e){
+  console.warn("Storage:",e);
+ }
 }
 
-/* ======================================================
-   STATE
-====================================================== */
-
-const S = {
-
-  channels: [],
-
-  favorites: new Set(
-    safeJSON("nexworld_v5_favorites",[])
-  ),
-
-  filter: "ALL",
-
-  search: "",
-
-  sources: 0,
-
-  loaded: false
-
+const S={
+ channels:[],
+ favorites:new Set(
+  safeJSON(
+   "nexworld_v6_favorites",
+   safeJSON("nexworld_v5_favorites",[])
+  )
+ ),
+ history:safeJSON("nexworld_v6_history",[]),
+ filter:"ALL",
+ search:"",
+ sources:0,
+ current:null
 };
 
-/* ======================================================
-   TOAST
-====================================================== */
+function setStatus(text,type){
+ $("status").textContent=text;
 
-let toastTimer = null;
+ const dot=$("statusDot");
+ dot.className="dot";
+
+ if(type==="ok")dot.classList.add("ok");
+ if(type==="error")dot.classList.add("error");
+}
+
+let toastTimer;
 
 function toast(message){
+ const el=$("toast");
+ el.textContent=message;
+ el.classList.add("show");
 
-  const el = $("toast");
+ clearTimeout(toastTimer);
 
-  if(!el){
-    return;
-  }
-
-  el.textContent = message;
-  el.classList.add("show");
-
-  clearTimeout(toastTimer);
-
-  toastTimer = setTimeout(()=>{
-    el.classList.remove("show");
-  },3000);
+ toastTimer=setTimeout(()=>{
+  el.classList.remove("show");
+ },3000);
 }
-
-/* ======================================================
-   STATUS
-====================================================== */
-
-function setStatus(text,type){
-
-  $("status").textContent = text;
-
-  const dot = $("statusDot");
-
-  dot.className = "dot";
-
-  if(type === "ok"){
-    dot.classList.add("ok");
-  }
-
-  if(type === "error"){
-    dot.classList.add("error");
-  }
-}
-
-/* ======================================================
-   COUNTRY
-====================================================== */
 
 function clean(value){
-
-  return String(value || "")
-    .replace(/^["']|["']$/g,"")
-    .trim();
+ return String(value||"")
+  .replace(/^["']|["']$/g,"")
+  .trim();
 }
 
-function getAttr(line,name){
+function attr(line,name){
+ const regex=new RegExp(
+  name+'="([^"]*)"',"i"
+ );
+ const match=line.match(regex);
+ return match?clean(match[1]):"";
+}
 
-  const regex = new RegExp(
-    name + '="([^"]*)"',
-    "i"
-  );
-
-  const match = line.match(regex);
-
-  return match ? clean(match[1]) : "";
+function escapeHTML(value){
+ return String(value||"")
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
 }
 
 function normalizeCountry(value){
 
-  value = clean(value).toUpperCase();
+ value=clean(value).toUpperCase();
 
-  const aliases = {
+ const aliases={
+  "COTE D IVOIRE":"CI",
+  "CÔTE D'IVOIRE":"CI",
+  "COTE D'IVOIRE":"CI",
+  "IVORY COAST":"CI",
+  "FRANCE":"FR",
+  "SOUTH AFRICA":"ZA",
+  "EGYPT":"EG",
+  "MOROCCO":"MA",
+  "NIGERIA":"NG",
+  "GHANA":"GH",
+  "SENEGAL":"SN",
+  "KENYA":"KE",
+  "CAMEROON":"CM",
+  "TUNISIA":"TN",
+  "ALGERIA":"DZ",
+  "MALI":"ML",
+  "BURKINA FASO":"BF",
+  "BENIN":"BJ",
+  "TOGO":"TG",
+  "GUINEA":"GN"
+ };
 
-    "COTE D IVOIRE":"CI",
-    "CÔTE D'IVOIRE":"CI",
-    "COTE D'IVOIRE":"CI",
-    "IVORY COAST":"CI",
-    "COTE DIVOIRE":"CI",
-
-    "FRANCE":"FR",
-
-    "SOUTH AFRICA":"ZA",
-    "EGYPT":"EG",
-    "MOROCCO":"MA",
-    "NIGERIA":"NG",
-    "GHANA":"GH",
-    "SENEGAL":"SN",
-    "KENYA":"KE",
-    "CAMEROON":"CM",
-    "TUNISIA":"TN",
-    "ALGERIA":"DZ",
-    "MALI":"ML",
-    "BURKINA FASO":"BF",
-    "BENIN":"BJ",
-    "TOGO":"TG",
-    "GUINEA":"GN",
-
-    "UNITED STATES":"US",
-    "USA":"US",
-    "UNITED KINGDOM":"GB",
-    "UK":"GB"
-  };
-
-  if(aliases[value]){
-    return aliases[value];
-  }
-
-  return value;
+ return aliases[value]||value;
 }
-
-/* ======================================================
-   PARSER M3U
-====================================================== */
-
-function parseM3U(text,sourceName,forcedCountry){
-
-  const result = [];
-
-  if(!text){
-    return result;
-  }
-
-  const lines = text
-    .replace(/\r/g,"")
-    .split("\n");
-
-  let current = null;
-
-  for(let i=0;i<lines.length;i++){
-
-    const line = lines[i].trim();
-
-    if(!line){
-      continue;
-    }
-
-    if(line.startsWith("#EXTINF")){
-
-      const comma = line.indexOf(",");
-
-      let name = "";
-
-      if(comma >= 0){
-        name = line.slice(comma + 1).trim();
-      }
-
-      const logo =
-        getAttr(line,"tvg-logo") ||
-        getAttr(line,"logo");
-
-      const group =
-        getAttr(line,"group-title") ||
-        "TV";
-
-      const tvgId =
-        getAttr(line,"tvg-id");
-
-      const countryAttr =
-        getAttr(line,"tvg-country");
-
-      const language =
-        getAttr(line,"tvg-language");
-
-      const country =
-        normalizeCountry(
-          forcedCountry ||
-          countryAttr ||
-          ""
-        );
-
-      current = {
-        id:
-          tvgId ||
-          name.toLowerCase().replace(
-            /[^a-z0-9]+/g,
-            "-"
-          ) +
-          "-" +
-          result.length,
-
-        name:
-          name ||
-          "Chaîne sans nom",
-
-        logo,
-
-        group,
-
-        country,
-
-        language,
-
-        source:sourceName,
-
-        url:""
-      };
-
-      continue;
-    }
-
-    if(
-      current &&
-      !line.startsWith("#")
-    ){
-
-      current.url = line;
-
-      if(
-        current.url.startsWith("http://") ||
-        current.url.startsWith("https://")
-      ){
-        result.push(current);
-      }
-
-      current = null;
-    }
-  }
-
-  return result;
-}
-
-/* ======================================================
-   COUNTRY CLASSIFICATION
-====================================================== */
 
 function classify(channel){
 
-  const c = normalizeCountry(channel.country);
+ const country=normalizeCountry(channel.country);
 
-  if(c === "CI"){
-    return "CI";
-  }
+ if(country==="CI")return "CI";
+ if(country==="FR")return "FR";
 
-  if(c === "FR"){
-    return "FR";
-  }
+ if(AFRICAN_COUNTRIES.has(country)){
+  return "AFR";
+ }
 
-  if(
-    AFRICAN_COUNTRIES.has(c) ||
-    channel.source === "Côte d’Ivoire" ||
-    channel.source === "Afrique"
-  ){
-    return "AFR";
-  }
-
-  return "INT";
+ return "INT";
 }
 
-/* ======================================================
-   LOAD PLAYLIST
-====================================================== */
+function countryLabel(channel){
+
+ const c=classify(channel);
+
+ if(c==="CI")return "🇨🇮 Côte d’Ivoire";
+ if(c==="FR")return "🇫🇷 France";
+ if(c==="AFR")return "🌍 Afrique";
+
+ return "🌐 International";
+}
+
+function parseM3U(text,sourceName,forcedCountry){
+
+ const result=[];
+
+ if(!text)return result;
+
+ const lines=text.replace(/\r/g,"").split("\n");
+
+ let current=null;
+
+ for(let i=0;i<lines.length;i++){
+
+  const line=lines[i].trim();
+
+  if(!line)continue;
+
+  if(line.startsWith("#EXTINF")){
+
+   const comma=line.indexOf(",");
+
+   const name=
+    comma>=0
+     ? line.slice(comma+1).trim()
+     : "Chaîne";
+
+   const logo=attr(line,"tvg-logo");
+   const group=attr(line,"group-title")||"TV";
+   const tvgId=attr(line,"tvg-id");
+   const countryAttr=attr(line,"tvg-country");
+
+   const country=normalizeCountry(
+    forcedCountry||countryAttr||""
+   );
+
+   current={
+    id:
+     tvgId||
+     name.toLowerCase()
+      .replace(/[^a-z0-9]+/g,"-")
+     +"-"+result.length,
+
+    name:name||"Chaîne",
+    logo:logo,
+    group:group,
+    country:country,
+    source:sourceName,
+    url:""
+   };
+
+   continue;
+  }
+
+  if(current&&!line.startsWith("#")){
+
+   current.url=line;
+
+   if(
+    line.startsWith("http://")||
+    line.startsWith("https://")
+   ){
+    result.push(current);
+   }
+
+   current=null;
+  }
+ }
+
+ return result;
+}
 
 async function loadPlaylist(
-  url,
-  sourceName,
-  forcedCountry
+ url,
+ source,
+ forcedCountry
 ){
 
-  try{
+ try{
 
-    const response = await fetch(
-      url,
-      {
-        method:"GET",
-        cache:"no-store"
-      }
-    );
+  const response=await fetch(
+   url,
+   {
+    method:"GET",
+    cache:"no-store"
+   }
+  );
 
-    if(!response.ok){
-      throw new Error(
-        "HTTP " + response.status
-      );
-    }
-
-    const text = await response.text();
-
-    const channels = parseM3U(
-      text,
-      sourceName,
-      forcedCountry
-    );
-
-    return channels;
-
-  }catch(error){
-
-    console.warn(
-      "Impossible de charger",
-      sourceName,
-      error
-    );
-
-    return [];
+  if(!response.ok){
+   throw new Error("HTTP "+response.status);
   }
-}
 
-/* ======================================================
-   DEDUPLICATION
-====================================================== */
+  const text=await response.text();
+
+  return parseM3U(
+   text,
+   source,
+   forcedCountry
+  );
+
+ }catch(error){
+
+  console.warn(source,error);
+
+  return [];
+ }
+}
 
 function uniqueChannels(list){
 
-  const map = new Map();
+ const map=new Map();
 
-  for(const channel of list){
+ list.forEach(channel=>{
 
-    const key =
-      channel.url ||
-      (
-        channel.name +
-        "|" +
-        channel.country
-      );
+  const key=
+   channel.url||
+   channel.name+"|"+channel.country;
 
-    if(!map.has(key)){
-      map.set(key,channel);
-    }
+  if(!map.has(key)){
+   map.set(key,channel);
   }
+ });
 
-  return Array.from(map.values());
+ return Array.from(map.values());
 }
-
-/* ======================================================
-   LOAD WORLD
-====================================================== */
-
-async function loadWorld(){
-
-  const world =
-    await loadPlaylist(
-      URLS.world,
-      "Monde",
-      ""
-    );
-
-  if(!world.length){
-    return 0;
-  }
-
-  const existing = new Set(
-    S.channels.map(
-      channel => channel.url
-    )
-  );
-
-  let added = 0;
-
-  for(const channel of world){
-
-    if(
-      channel.country === "CI" ||
-      channel.country === "FR" ||
-      AFRICAN_COUNTRIES.has(
-        channel.country
-      )
-    ){
-
-      if(!existing.has(channel.url)){
-
-        S.channels.push(channel);
-
-        existing.add(channel.url);
-
-        added++;
-      }
-    }
-  }
-
-  return added;
-}
-
-/* ======================================================
-   LOAD ALL
-====================================================== */
 
 async function start(){
 
+ setStatus("Connexion","");
+
+ $("channels").innerHTML=`
+  <div class="loading">
+   <div class="spinner"></div>
+   Connexion aux sources...
+  </div>
+ `;
+
+ try{
+
+  const [ci,fr]=await Promise.all([
+
+   loadPlaylist(
+    URLS.ci,
+    "Côte d’Ivoire",
+    "CI"
+   ),
+
+   loadPlaylist(
+    URLS.fr,
+    "France",
+    "FR"
+   )
+
+  ]);
+
+  S.channels=uniqueChannels([
+   ...ci,
+   ...fr
+  ]);
+
+  S.sources=2;
+
   setStatus(
-    "Connexion...",
-    ""
+   "TV connectée",
+   "ok"
   );
 
-  $("channels").innerHTML = `
-    <div class="loading">
-      <div class="spinner"></div>
-      Connexion aux sources...
-    </div>
+  renderAll();
+
+  toast(
+   "Côte d’Ivoire : "+
+   ci.length+
+   " · France : "+
+   fr.length
+  );
+
+  setTimeout(
+   loadAfricanWorld,
+   800
+  );
+
+ }catch(error){
+
+  console.error(error);
+
+  setStatus(
+   "Erreur",
+   "error"
+  );
+
+  $("channels").innerHTML=`
+   <div class="empty">
+    <strong>Impossible de charger les chaînes</strong>
+    Vérifiez votre connexion puis rechargez.
+   </div>
   `;
-
-  try{
-
-    const results =
-      await Promise.all([
-
-        loadPlaylist(
-          URLS.ci,
-          "Côte d’Ivoire",
-          "CI"
-        ),
-
-        loadPlaylist(
-          URLS.fr,
-          "France",
-          "FR"
-        )
-
-      ]);
-
-    const ci = results[0];
-    const fr = results[1];
-
-    S.channels = uniqueChannels([
-      ...ci,
-      ...fr
-    ]);
-
-    S.sources = 2;
-
-    render();
-
-    setStatus(
-      "TV connectée",
-      "ok"
-    );
-
-    toast(
-      "Côte d’Ivoire : " +
-      ci.length +
-      " · France : " +
-      fr.length
-    );
-
-    S.loaded = true;
-
-    /*
-      On tente ensuite de récupérer
-      les chaînes africaines du catalogue mondial.
-    */
-
-    setTimeout(async()=>{
-
-      const added =
-        await loadWorld();
-
-      if(added > 0){
-
-        S.channels =
-          uniqueChannels(S.channels);
-
-        render();
-
-        toast(
-          "+" +
-          added +
-          " chaînes africaines"
-        );
-      }
-
-    },800);
-
-  }catch(error){
-
-    console.error(error);
-
-    setStatus(
-      "Erreur",
-      "error"
-    );
-
-    $("channels").innerHTML = `
-      <div class="empty">
-        <strong>Impossible de charger les chaînes</strong>
-        Vérifiez votre connexion Internet puis rechargez la page.
-      </div>
-    `;
-
-    toast(
-      "Erreur de connexion"
-    );
-  }
+ }
 }
 
-/* ======================================================
-   FILTER
-====================================================== */
+async function loadAfricanWorld(){
+
+ const world=await loadPlaylist(
+  URLS.world,
+  "Monde",
+  ""
+ );
+
+ if(!world.length)return;
+
+ const existing=new Set(
+  S.channels.map(c=>c.url)
+ );
+
+ let added=0;
+
+ world.forEach(channel=>{
+
+  const c=normalizeCountry(channel.country);
+
+  if(AFRICAN_COUNTRIES.has(c)){
+
+   if(!existing.has(channel.url)){
+
+    S.channels.push(channel);
+    existing.add(channel.url);
+    added++;
+   }
+  }
+ });
+
+ if(added){
+
+  S.channels=uniqueChannels(S.channels);
+
+  renderAll();
+
+  toast("+"+added+" chaînes africaines");
+ }
+}
 
 function filteredChannels(){
 
-  const search =
-    S.search.trim().toLowerCase();
+ const query=S.search.trim().toLowerCase();
 
-  return S.channels.filter(channel=>{
+ return S.channels.filter(channel=>{
 
-    if(S.filter === "FAV"){
+  if(S.filter==="FAV"){
 
-      if(
-        !S.favorites.has(channel.id)
-      ){
-        return false;
-      }
-    }
+   if(!S.favorites.has(channel.id)){
+    return false;
+   }
 
-    else if(S.filter !== "ALL"){
+  }else if(S.filter!=="ALL"){
 
-      const category =
-        classify(channel);
-
-      if(category !== S.filter){
-        return false;
-      }
-    }
-
-    if(search){
-
-      const haystack = (
-        channel.name +
-        " " +
-        channel.group +
-        " " +
-        channel.country +
-        " " +
-        channel.source
-      ).toLowerCase();
-
-      if(!haystack.includes(search)){
-        return false;
-      }
-    }
-
-    return true;
-  });
-}
-
-/* ======================================================
-   FAVORITE
-====================================================== */
-
-function toggleFavorite(
-  channelId,
-  event
-){
-
-  if(event){
-    event.stopPropagation();
+   if(classify(channel)!==S.filter){
+    return false;
+   }
   }
 
-  if(S.favorites.has(channelId)){
+  if(query){
 
-    S.favorites.delete(channelId);
+   const haystack=(
+    channel.name+" "+
+    channel.group+" "+
+    channel.country+" "+
+    channel.source
+   ).toLowerCase();
 
-  }else{
-
-    S.favorites.add(channelId);
+   if(!haystack.includes(query)){
+    return false;
+   }
   }
 
-  saveJSON(
-    "nexworld_v5_favorites",
-    Array.from(S.favorites)
-  );
-
-  updateFavoriteCount();
-
-  render();
+  return true;
+ });
 }
 
-function updateFavoriteCount(){
+function toggleFavorite(id,event){
 
-  $("favoriteCount").textContent =
-    S.favorites.size;
+ if(event){
+  event.stopPropagation();
+ }
+
+ if(S.favorites.has(id)){
+  S.favorites.delete(id);
+ }else{
+  S.favorites.add(id);
+ }
+
+ saveJSON(
+  "nexworld_v6_favorites",
+  Array.from(S.favorites)
+ );
+
+ renderAll();
+
+ toast(
+  S.favorites.has(id)
+   ? "Ajouté aux favoris ⭐"
+   : "Retiré des favoris"
+ );
 }
 
-/* ======================================================
-   CHANNEL LOGO
-====================================================== */
+function addHistory(channel){
+
+ const item={
+  id:channel.id,
+  name:channel.name,
+  logo:channel.logo,
+  country:channel.country,
+  source:channel.source,
+  url:channel.url
+ };
+
+ S.history=S.history.filter(
+  x=>x.id!==channel.id
+ );
+
+ S.history.unshift(item);
+
+ S.history=S.history.slice(0,10);
+
+ saveJSON(
+  "nexworld_v6_history",
+  S.history
+ );
+
+ renderHistory();
+}
+
+function getHistoryChannels(){
+
+ return S.history.filter(
+  item=>S.channels.some(
+   channel=>channel.id===item.id
+  )
+ );
+}
 
 function logoHTML(channel){
 
-  if(channel.logo){
-
-    return `
-      <img
-        src="${escapeHTML(channel.logo)}"
-        alt=""
-        loading="lazy"
-        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
-      >
-      <div
-        class="logo-fallback"
-        style="display:none"
-      >
-        ${escapeHTML(
-          channel.name
-            .slice(0,1)
-            .toUpperCase()
-        )}
-      </div>
-    `;
-
-  }
+ if(channel.logo){
 
   return `
-    <div class="logo-fallback">
-      ${escapeHTML(
-        channel.name
-          .slice(0,1)
-          .toUpperCase()
-      )}
-    </div>
+   <img
+    src="${escapeHTML(channel.logo)}"
+    alt=""
+    loading="lazy"
+    onerror="
+     this.style.display='none';
+     this.nextElementSibling.style.display='flex';
+    "
+   >
+
+   <div
+    class="logo-fallback"
+    style="display:none">
+    ${escapeHTML(
+     channel.name.slice(0,1).toUpperCase()
+    )}
+   </div>
   `;
+ }
+
+ return `
+  <div class="logo-fallback">
+   ${escapeHTML(
+    channel.name.slice(0,1).toUpperCase()
+   )}
+  </div>
+ `;
 }
 
-/* ======================================================
-   ESCAPE
-====================================================== */
+function channelCard(channel){
 
-function escapeHTML(value){
+ const favorite=S.favorites.has(channel.id);
 
-  return String(value || "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+ return `
+  <article
+   class="channel"
+   data-id="${escapeHTML(channel.id)}">
+
+   <div class="channel-top">
+
+    <div class="logo-box">
+     ${logoHTML(channel)}
+    </div>
+
+    <button
+     class="favorite ${favorite?"active":""}"
+     data-fav="${escapeHTML(channel.id)}"
+     type="button">
+
+     ${favorite?"★":"☆"}
+
+    </button>
+
+   </div>
+
+   <div class="channel-name">
+    ${escapeHTML(channel.name)}
+   </div>
+
+   <div class="channel-meta">
+
+    <span class="country">
+     ${escapeHTML(countryLabel(channel))}
+    </span>
+
+    <span class="live">
+     ● LIVE
+    </span>
+
+   </div>
+
+  </article>
+ `;
 }
 
-/* ======================================================
-   RENDER
-====================================================== */
-
-function render(){
-
-  const list =
-    filteredChannels();
-
-  $("channelCount").textContent =
-    S.channels.length.toLocaleString("fr-FR");
-
-  $("favoriteCount").textContent =
-    S.favorites.size.toLocaleString("fr-FR");
-
-  $("sourceCount").textContent =
-    S.sources;
-
-  $("sectionCount").textContent =
-    list.length.toLocaleString("fr-FR");
-
-  const container =
-    $("channels");
-
-  if(!list.length){
-
-    container.innerHTML = `
-      <div class="empty">
-        <strong>Aucune chaîne trouvée</strong>
-        ${
-          S.filter === "FAV"
-          ? "Vous n'avez encore aucun favori."
-          : "Essayez une autre recherche ou catégorie."
-        }
-      </div>
-    `;
-
-    return;
-  }
-
-  /*
-    Sur la page d'accueil,
-    on limite volontairement l'affichage
-    initial à 100 éléments pour garder
-    l'interface rapide sur Android.
-  */
-
-  const visible =
-    list.slice(0,100);
-
-  container.innerHTML =
-    visible.map(channel=>{
-
-      const favorite =
-        S.favorites.has(channel.id);
-
-      const category =
-        classify(channel);
-
-      let countryLabel =
-        "International";
-
-      if(category === "CI"){
-        countryLabel =
-          "🇨🇮 Côte d’Ivoire";
-      }
-      else if(category === "FR"){
-        countryLabel =
-          "🇫🇷 France";
-      }
-      else if(category === "AFR"){
-        countryLabel =
-          "🌍 Afrique";
-      }
-
-      return `
-        <article
-          class="channel"
-          data-id="${escapeHTML(channel.id)}"
-        >
-
-          <div class="channel-top">
-
-            <div class="logo-box">
-              ${logoHTML(channel)}
-            </div>
-
-            <button
-              class="favorite ${favorite ? "active" : ""}"
-              data-fav="${escapeHTML(channel.id)}"
-              type="button"
-              aria-label="Favori"
-            >
-              ${favorite ? "★" : "☆"}
-            </button>
-
-          </div>
-
-          <div class="channel-name">
-            ${escapeHTML(channel.name)}
-          </div>
-
-          <div class="channel-meta">
-
-            <span class="country">
-              ${escapeHTML(countryLabel)}
-            </span>
-
-            <span class="live">
-              ● LIVE
-            </span>
-
-          </div>
-
-        </article>
-      `;
-
-    }).join("");
-
-  /*
-    Événements des cartes
-  */
-
-  container
-    .querySelectorAll(".channel")
-    .forEach(card=>{
-
-      card.addEventListener(
-        "click",
-        ()=>{
-          const id =
-            card.dataset.id;
-
-          const channel =
-            S.channels.find(
-              item => item.id === id
-            );
-
-          if(channel){
-            openPlayer(channel);
-          }
-        }
-      );
-    });
-
-  /*
-    Événements favoris
-  */
-
-  container
-    .querySelectorAll("[data-fav]")
-    .forEach(button=>{
-
-      button.addEventListener(
-        "click",
-        event=>{
-
-          toggleFavorite(
-            button.dataset.fav,
-            event
-          );
-        }
-      );
-    });
-}
-
-/* ======================================================
-   PLAYER
-====================================================== */
-
-function openPlayer(channel){
-
-  const overlay =
-    $("playerOverlay");
-
-  const video =
-    $("video");
-
-  $("playerTitle").textContent =
-    channel.name;
-
-  $("playerCountry").textContent =
-    channel.source || "NEXWORLD";
-
-  $("playerMessage").textContent =
-    "Chargement de la chaîne...";
-
-  overlay.classList.add("open");
-
-  video.pause();
-
-  video.removeAttribute("src");
-
-  video.load();
-
-  /*
-    Les flux HLS .m3u8 sont généralement
-    pris en charge nativement sur certains
-    navigateurs/appareils.
-
-    Si le navigateur ne prend pas le flux
-    directement en charge, le message indique
-    que la lecture peut être indisponible.
-  */
-
-  video.src = channel.url;
-
-  video.load();
-
-  const playPromise =
-    video.play();
-
-  if(
-    playPromise &&
-    typeof playPromise.catch === "function"
-  ){
-
-    playPromise.catch(error=>{
-
-      console.log(
-        "Lecture automatique bloquée",
-        error
-      );
-
-      $("playerMessage").textContent =
-        "Appuyez sur ▶ pour démarrer la lecture.";
-    });
-  }
-}
-
-function closePlayer(){
-
-  const video =
-    $("video");
-
-  video.pause();
-
-  video.removeAttribute("src");
-
-  video.load();
-
-  $("playerOverlay")
-    .classList.remove("open");
-
-  $("playerMessage").textContent =
-    "";
-}
-
-/* ======================================================
-   FILTER BUTTONS
-====================================================== */
-
-document
-  .querySelectorAll(".filter")
-  .forEach(button=>{
-
-    button.addEventListener(
-      "click",
-      ()=>{
-
-        document
-          .querySelectorAll(".filter")
-          .forEach(item=>{
-            item.classList.remove("active");
-          });
-
-        button.classList.add("active");
-
-        S.filter =
-          button.dataset.filter;
-
-        render();
-      }
-    );
+function renderGrid(container,list,limit=100){
+
+ if(!list.length){
+
+  container.innerHTML=`
+   <div class="empty">
+    <strong>Aucune chaîne</strong>
+    Aucune chaîne ne correspond à cette sélection.
+   </div>
+  `;
+
+  return;
+ }
+
+ container.innerHTML=list
+  .slice(0,limit)
+  .map(channelCard)
+  .join("");
+
+ container.querySelectorAll(".channel")
+  .forEach(card=>{
+
+   card.addEventListener(
+    "click",
+    ()=>{
+
+     const channel=S.channels.find(
+      c=>c.id===card.dataset.id
+     );
+
+     if(channel){
+      openPlayer(channel);
+     }
+    }
+   );
   });
 
-/* ======================================================
-   SEARCH
-====================================================== */
+ container.querySelectorAll("[data-fav]")
+  .forEach(button=>{
 
-$("search").addEventListener(
-  "input",
-  event=>{
-
-    S.search =
-      event.target.value;
-
-    render();
-  }
-);
-
-/* ======================================================
-   PLAYER EVENTS
-====================================================== */
-
-$("closePlayer")
-  .addEventListener(
-    "click",
-    closePlayer
-  );
-
-$("playerOverlay")
-  .addEventListener(
+   button.addEventListener(
     "click",
     event=>{
 
-      if(
-        event.target ===
-        $("playerOverlay")
-      ){
-        closePlayer();
-      }
+     toggleFavorite(
+      button.dataset.fav,
+      event
+     );
     }
-  );
-
-/* ======================================================
-   BOTTOM NAV
-====================================================== */
-
-function setNavigation(name){
-
-  document
-    .querySelectorAll(".nav-btn")
-    .forEach(button=>{
-
-      button.classList.toggle(
-        "active",
-        button.dataset.nav === name
-      );
-    });
-
-  $("discoverSection").style.display =
-    name === "home" ||
-    name === "favorites"
-      ? "block"
-      : "none";
-
-  $("sourcesSection").style.display =
-    name === "sources"
-      ? "block"
-      : "none";
-
-  $("aboutSection").style.display =
-    name === "about"
-      ? "block"
-      : "none";
-
-  if(name === "home"){
-
-    S.filter = "ALL";
-
-    document
-      .querySelectorAll(".filter")
-      .forEach(button=>{
-        button.classList.toggle(
-          "active",
-          button.dataset.filter === "ALL"
-        );
-      });
-
-    render();
-
-  }
-
-  if(name === "favorites"){
-
-    S.filter = "FAV";
-
-    document
-      .querySelectorAll(".filter")
-      .forEach(button=>{
-        button.classList.toggle(
-          "active",
-          button.dataset.filter === "FAV"
-        );
-      });
-
-    render();
-
-  }
-
-  if(name === "sources"){
-    window.scrollTo({
-      top:0,
-      behavior:"smooth"
-    });
-  }
-
-  if(name === "about"){
-    window.scrollTo({
-      top:0,
-      behavior:"smooth"
-    });
-  }
+   );
+  });
 }
 
-document
-  .querySelectorAll(".nav-btn")
+function renderHistory(){
+
+ const container=$("history");
+
+ const history=getHistoryChannels();
+
+ $("historyCount").textContent=
+  history.length;
+
+ if(!history.length){
+
+  $("historySection").style.display="none";
+
+  return;
+ }
+
+ $("historySection").style.display="block";
+
+ container.innerHTML=history.map(channel=>`
+
+  <div
+   class="history-card"
+   data-history="${escapeHTML(channel.id)}">
+
+   <div class="history-logo">
+
+    ${
+     channel.logo
+      ? `
+       <img
+        src="${escapeHTML(channel.logo)}"
+        alt=""
+        onerror="this.style.display='none'">
+      `
+      : `
+       <div class="logo-fallback">
+        ${escapeHTML(
+         channel.name.slice(0,1).toUpperCase()
+        )}
+       </div>
+      `
+    }
+
+   </div>
+
+   <div class="history-name">
+    ${escapeHTML(channel.name)}
+   </div>
+
+  </div>
+
+ `).join("");
+
+ container.querySelectorAll("[data-history]")
+  .forEach(card=>{
+
+   card.addEventListener(
+    "click",
+    ()=>{
+
+     const channel=S.channels.find(
+      c=>c.id===card.dataset.history
+     );
+
+     if(channel){
+      openPlayer(channel);
+     }
+    }
+   );
+  });
+}
+
+function renderAll(){
+
+ $("channelCount").textContent=
+  S.channels.length.toLocaleString("fr-FR");
+
+ $("favoriteCount").textContent=
+  S.favorites.size.toLocaleString("fr-FR");
+
+ $("sourceCount").textContent=
+  S.sources;
+
+ const list=filteredChannels();
+
+ $("sectionCount").textContent=
+  list.length.toLocaleString("fr-FR");
+
+ const favoriteList=S.channels.filter(
+  channel=>S.favorites.has(channel.id)
+ );
+
+ $("favoriteSectionCount").textContent=
+  favoriteList.length;
+
+ if(
+  S.filter==="ALL" &&
+  !S.search
+ ){
+
+  $("favoriteSection").style.display=
+   favoriteList.length
+    ? "block"
+    : "none";
+
+ }else{
+
+  $("favoriteSection").style.display="none";
+ }
+
+ renderGrid(
+  $("channels"),
+  list,
+  100
+ );
+
+ if(
+  S.filter==="ALL" &&
+  !S.search
+ ){
+
+  renderGrid(
+   $("favoriteChannels"),
+   favoriteList,
+   8
+  );
+ }
+
+ renderHistory();
+}
+
+function setPlayerStatus(text,type="ok"){
+
+ const box=$("playerStatus");
+
+ const color=
+  type==="error"
+   ? "var(--red)"
+   : type==="loading"
+    ? "var(--amber)"
+    : "var(--green)";
+
+ box.innerHTML=`
+  <span
+   class="dot"
+   style="
+    background:${color};
+    box-shadow:0 0 12px ${color};
+   ">
+  </span>
+
+  <span>
+   ${escapeHTML(text)}
+  </span>
+ `;
+}
+
+function openPlayer(channel){
+
+ S.current=channel;
+
+ $("playerTitle").textContent=
+  channel.name;
+
+ $("playerCountry").textContent=
+  countryLabel(channel);
+
+ $("playerOverlay").classList.add("open");
+
+ addHistory(channel);
+
+ playCurrent();
+}
+
+function playCurrent(){
+
+ const channel=S.current;
+
+ if(!channel)return;
+
+ const video=$("video");
+
+ video.pause();
+ video.removeAttribute("src");
+ video.load();
+
+ $("playerMessage").textContent=
+  "Connexion au direct...";
+
+ setPlayerStatus(
+  "Connexion au direct",
+  "loading"
+ );
+
+ video.src=channel.url;
+
+ video.load();
+
+ const promise=video.play();
+
+ if(
+  promise &&
+  typeof promise.catch==="function"
+ ){
+
+  promise.catch(error=>{
+
+   console.log(
+    "Autoplay:",
+    error
+   );
+
+   $("playerMessage").textContent=
+    "Appuyez sur ▶ pour démarrer.";
+  });
+ }
+}
+
+$("video").addEventListener(
+ "playing",
+ ()=>{
+
+  $("playerMessage").textContent="";
+
+  setPlayerStatus(
+   "LIVE · Lecture en cours",
+   "ok"
+  );
+ }
+);
+
+$("video").addEventListener(
+ "waiting",
+ ()=>{
+
+  $("playerMessage").textContent=
+   "Chargement du flux...";
+
+  setPlayerStatus(
+   "Chargement du flux",
+   "loading"
+  );
+ }
+);
+
+$("video").addEventListener(
+ "canplay",
+ ()=>{
+
+  setPlayerStatus(
+   "LIVE · Prêt",
+   "ok"
+  );
+ }
+);
+
+$("video").addEventListener(
+ "error",
+ ()=>{
+
+  $("playerMessage").textContent=
+   "Le flux ne répond pas. Essayez Reconnexion.";
+
+  setPlayerStatus(
+   "Flux indisponible",
+   "error"
+  );
+ }
+);
+
+$("reconnectPlayer").addEventListener(
+ "click",
+ ()=>{
+
+  if(!S.current)return;
+
+  toast("Reconnexion...");
+
+  playCurrent();
+ }
+);
+
+$("fullscreenPlayer").addEventListener(
+ "click",
+ async()=>{
+
+  const video=$("video");
+
+  try{
+
+   if(document.fullscreenElement){
+
+    await document.exitFullscreen();
+
+    return;
+   }
+
+   if(video.requestFullscreen){
+
+    await video.requestFullscreen();
+
+   }else if(video.webkitEnterFullscreen){
+
+    video.webkitEnterFullscreen();
+
+   }else{
+
+    toast(
+     "Le plein écran n'est pas disponible."
+    );
+   }
+
+  }catch(error){
+
+   console.log(
+    "Fullscreen:",
+    error
+   );
+  }
+ }
+);
+
+function closePlayer(){
+
+ const video=$("video");
+
+ video.pause();
+ video.removeAttribute("src");
+ video.load();
+
+ $("playerOverlay").classList.remove("open");
+
+ $("playerMessage").textContent="";
+
+ S.current=null;
+}
+
+$("closePlayer").addEventListener(
+ "click",
+ closePlayer
+);
+
+$("playerOverlay").addEventListener(
+ "click",
+ event=>{
+
+  if(
+   event.target===
+   $("playerOverlay")
+  ){
+   closePlayer();
+  }
+ }
+);
+
+document.querySelectorAll(".filter")
+ .forEach(button=>{
+
+  button.addEventListener(
+   "click",
+   ()=>{
+
+    document
+     .querySelectorAll(".filter")
+     .forEach(item=>{
+      item.classList.remove("active");
+     });
+
+    button.classList.add("active");
+
+    S.filter=button.dataset.filter;
+
+    renderAll();
+
+    window.scrollTo({
+     top:0,
+     behavior:"smooth"
+    });
+   }
+  );
+ });
+
+$("search").addEventListener(
+ "input",
+ event=>{
+
+  S.search=event.target.value;
+
+  renderAll();
+ }
+);
+
+function navigation(name){
+
+ document.querySelectorAll(".nav-btn")
   .forEach(button=>{
 
-    button.addEventListener(
-      "click",
-      ()=>{
-        setNavigation(
-          button.dataset.nav
-        );
-      }
-    );
+   button.classList.toggle(
+    "active",
+    button.dataset.nav===name
+   );
   });
 
-/* ======================================================
-   KEYBOARD / BACK
-====================================================== */
+ $("discoverSection").style.display=
+  name==="home"||
+  name==="favorites"
+   ? "block"
+   : "none";
+
+ $("favoriteSection").style.display=
+  name==="home"
+   ? "block"
+   : "none";
+
+ $("historySection").style.display=
+  name==="home"&&S.history.length
+   ? "block"
+   : "none";
+
+ $("sourcesSection").style.display=
+  name==="sources"
+   ? "block"
+   : "none";
+
+ $("aboutSection").style.display=
+  name==="about"
+   ? "block"
+   : "none";
+
+ if(name==="home"){
+
+  S.filter="ALL";
+
+  document.querySelectorAll(".filter")
+   .forEach(button=>{
+
+    button.classList.toggle(
+     "active",
+     button.dataset.filter==="ALL"
+    );
+   });
+
+  renderAll();
+ }
+
+ if(name==="favorites"){
+
+  S.filter="FAV";
+
+  document.querySelectorAll(".filter")
+   .forEach(button=>{
+
+    button.classList.toggle(
+     "active",
+     button.dataset.filter==="FAV"
+    );
+   });
+
+  $("favoriteSection").style.display="none";
+
+  renderAll();
+ }
+
+ window.scrollTo({
+  top:0,
+  behavior:"smooth"
+ });
+}
+
+document.querySelectorAll(".nav-btn")
+ .forEach(button=>{
+
+  button.addEventListener(
+   "click",
+   ()=>{
+    navigation(
+     button.dataset.nav
+    );
+   }
+  );
+ });
 
 document.addEventListener(
-  "keydown",
-  event=>{
+ "keydown",
+ event=>{
 
-    if(event.key === "Escape"){
+  if(event.key==="Escape"){
 
-      if(
-        $("playerOverlay")
-          .classList.contains("open")
-      ){
-        closePlayer();
-      }
-    }
+   if(
+    $("playerOverlay")
+     .classList.contains("open")
+   ){
+    closePlayer();
+   }
   }
-);
-
-/* ======================================================
-   GLOBAL ERROR HANDLING
-====================================================== */
+ });
 
 window.addEventListener(
-  "error",
-  event=>{
-
-    console.error(
-      "NEXWORLD erreur:",
-      event.error || event.message
-    );
-
-    /*
-      On ne remplace pas immédiatement
-      toute l'interface afin de conserver
-      l'information utile à l'utilisateur.
-    */
-  }
-);
+ "error",
+ event=>{
+  console.error(
+   "NEXWORLD:",
+   event.error||event.message
+  );
+ });
 
 window.addEventListener(
-  "unhandledrejection",
-  event=>{
-
-    console.error(
-      "NEXWORLD Promise:",
-      event.reason
-    );
-  }
-);
-
-/* ======================================================
-   START APPLICATION
-====================================================== */
+ "unhandledrejection",
+ event=>{
+  console.error(
+   "NEXWORLD Promise:",
+   event.reason
+  );
+ });
 
 document.addEventListener(
-  "DOMContentLoaded",
-  ()=>{
+ "DOMContentLoaded",
+ ()=>{
 
-    try{
+  try{
 
-      setStatus(
-        "Connexion...",
-        ""
-      );
+   renderAll();
 
-      updateFavoriteCount();
+   start();
 
-      render();
+  }catch(error){
 
-      start();
+   console.error(error);
 
-    }catch(error){
+   setStatus(
+    "Erreur",
+    "error"
+   );
 
-      console.error(error);
-
-      setStatus(
-        "Erreur",
-        "error"
-      );
-
-      $("channels").innerHTML = `
-        <div class="empty">
-          <strong>Erreur de démarrage</strong>
-          Rechargez la page.
-        </div>
-      `;
-    }
+   $("channels").innerHTML=`
+    <div class="empty">
+     <strong>Erreur de démarrage</strong>
+     Rechargez la page.
+    </div>
+   `;
   }
-);
-
+ });
 </script>
 
 </body>
