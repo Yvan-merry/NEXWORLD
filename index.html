@@ -1,1842 +1,548 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0F172A">
-<meta name="mobile-web-app-capable" content="yes">
-<title>NEXWORLD V7.3</title>
-
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0F172A"><meta name="mobile-web-app-capable" content="yes">
+<title>NEXWORLD V7.4</title>
 <style>
-:root{
- --bg:#0F172A;
- --p:#111c31;
- --p2:#17243a;
- --line:#ffffff17;
- --txt:#f8fafc;
- --mut:#94a3b8;
- --c:#22d3ee;
- --g:#34d399;
- --a:#fbbf24;
-}
-
-*{box-sizing:border-box}
-
-body{
- margin:0;
- background:var(--bg);
- color:var(--txt);
- font:14px system-ui,-apple-system,Segoe UI,sans-serif
-}
-
-button,input,select{font:inherit}
-button{cursor:pointer}
-
-header{
- position:sticky;
- top:0;
- z-index:20;
- background:#0f172ae8;
- backdrop-filter:blur(18px);
- border-bottom:1px solid var(--line)
-}
-
-.top{
- max-width:1200px;
- margin:auto;
- padding:12px 15px;
- display:flex;
- align-items:center;
- gap:11px
-}
-
-.logo{
- width:42px;
- height:42px;
- border-radius:14px;
- display:grid;
- place-items:center;
- background:linear-gradient(135deg,var(--c),var(--g));
- color:#06111c;
- font-weight:900;
- font-size:20px
-}
-
-.brand{flex:1}
-
-.brand b{
- display:block;
- font-size:18px
-}
-
-.brand small{
- color:var(--mut)
-}
-
-.status{
- font-size:11px;
- color:var(--g)
-}
-
-main{
- max-width:1200px;
- margin:auto;
- padding:15px 15px 100px
-}
-
-.hero,.panel{
- background:linear-gradient(145deg,#111c31,#0c1628);
- border:1px solid var(--line);
- border-radius:24px;
- padding:18px;
- box-shadow:0 15px 40px #0002
-}
-
-.hero h1{
- margin:0 0 5px;
- font-size:25px
-}
-
-.mut{
- color:var(--mut);
- font-size:12px;
- line-height:1.55
-}
-
-.stats{
- display:grid;
- grid-template-columns:repeat(4,1fr);
- gap:8px;
- margin-top:14px
-}
-
-.stat{
- padding:12px;
- border:1px solid var(--line);
- border-radius:16px;
- background:#ffffff06
-}
-
-.stat b{
- display:block;
- font-size:19px
-}
-
-.stat small{
- color:var(--mut)
-}
-
-.search{
- display:flex;
- gap:8px;
- margin-top:13px
-}
-
-.search input,
-.form input,
-.form select{
- width:100%;
- padding:12px;
- border:1px solid var(--line);
- background:#091322;
- color:var(--txt);
- border-radius:13px;
- outline:0
-}
-
-.tabs,.chips{
- display:flex;
- gap:8px;
- overflow:auto;
- padding:10px 0
-}
-
-.tabs button,.chip,.btn{
- border:1px solid var(--line);
- background:var(--p2);
- color:var(--txt);
- border-radius:12px;
- padding:9px 12px;
- font-size:12px
-}
-
-.tabs button.active,
-.chip.active,
-.btn.primary{
- background:var(--c);
- color:#06111c;
- border-color:var(--c);
- font-weight:800
-}
-
-.section{
- margin-top:20px
-}
-
-.sectionhead{
- display:flex;
- justify-content:space-between;
- align-items:center;
- margin:0 0 10px
-}
-
-.sectionhead h2{
- font-size:17px;
- margin:0
-}
-
-.sectionhead span{
- font-size:11px;
- color:var(--mut)
-}
-
-.grid{
- display:grid;
- grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
- gap:11px
-}
-
-.card{
- overflow:hidden;
- border:1px solid var(--line);
- border-radius:18px;
- background:linear-gradient(145deg,#111c31,#0b1526)
-}
-
-.poster{
- height:190px;
- background:#0b1423;
- display:grid;
- place-items:center;
- position:relative
-}
-
-.poster img{
- width:100%;
- height:100%;
- object-fit:cover
-}
-
-.poster .fallback{
- font-size:35px;
- font-weight:900;
- color:#ffffff2a
-}
-
-.badge{
- position:absolute;
- top:8px;
- left:8px;
- background:#ef4444;
- color:#fff;
- border-radius:8px;
- padding:4px 7px;
- font-size:9px;
- font-weight:900;
- z-index:2
-}
-
-.body{
- padding:10px
-}
-
-.title{
- font-weight:800;
- white-space:nowrap;
- overflow:hidden;
- text-overflow:ellipsis
-}
-
-.meta{
- font-size:10px;
- color:var(--mut);
- margin:5px 0 9px;
- min-height:27px
-}
-
-.actions{
- display:flex;
- gap:7px
-}
-
-.actions .fav{
- margin-left:auto
-}
-
-.fav.on{
- color:var(--a);
- border-color:#fbbf2440
-}
-
-.hidden{
- display:none!important
-}
-
-.empty{
- grid-column:1/-1;
- padding:30px;
- text-align:center;
- color:var(--mut);
- border:1px dashed var(--line);
- border-radius:17px
-}
-
-.form{
- display:grid;
- gap:9px
-}
-
-.row{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:9px
-}
-
-.formactions{
- display:flex;
- gap:8px;
- flex-wrap:wrap
-}
-
-.source{
- display:flex;
- align-items:center;
- gap:9px;
- border:1px solid var(--line);
- border-radius:15px;
- padding:11px;
- margin-top:8px
-}
-
-.sourceinfo{
- flex:1;
- min-width:0
-}
-
-.sourceinfo b,
-.sourceinfo small{
- display:block;
- white-space:nowrap;
- overflow:hidden;
- text-overflow:ellipsis
-}
-
-.sourceinfo small{
- color:var(--mut);
- font-size:10px
-}
-
-.switch{
- width:42px;
- height:24px;
- border:0;
- border-radius:99px;
- background:#334155;
- padding:3px
-}
-
-.switch i{
- display:block;
- width:18px;
- height:18px;
- border-radius:50%;
- background:white
-}
-
-.switch.on{
- background:var(--g)
-}
-
-.switch.on i{
- transform:translateX(18px)
-}
-
-.bottom{
- position:fixed;
- z-index:30;
- left:9px;
- right:9px;
- bottom:9px;
- max-width:750px;
- margin:auto;
- height:62px;
- display:grid;
- grid-template-columns:repeat(5,1fr);
- background:#0b1628ed;
- backdrop-filter:blur(18px);
- border:1px solid var(--line);
- border-radius:21px
-}
-
-.nav{
- border:0;
- background:0;
- color:var(--mut);
- font-size:9px;
- display:flex;
- flex-direction:column;
- align-items:center;
- justify-content:center;
- gap:3px
-}
-
-.nav b{
- font-size:18px
-}
-
-.nav.active{
- color:var(--c)
-}
-
-#player{
- position:fixed;
- inset:0;
- z-index:100;
- background:#000e;
- display:none;
- flex-direction:column
-}
-
-#player.show{
- display:flex
-}
-
-.ptop{
- padding:11px;
- display:flex;
- gap:8px;
- align-items:center
-}
-
-.ptop strong{
- flex:1
-}
-
-.video{
- flex:1;
- display:grid;
- place-items:center
-}
-
-.video video{
- width:100%;
- max-height:78vh;
- background:#000
-}
-
-.pinfo{
- padding:12px;
- color:var(--mut);
- font-size:11px
-}
-
-.toast{
- position:fixed;
- z-index:200;
- bottom:85px;
- left:50%;
- transform:translate(-50%,10px);
- background:#e2e8f0;
- color:#0f172a;
- padding:10px 14px;
- border-radius:12px;
- font-size:11px;
- font-weight:800;
- opacity:0;
- transition:.2s
-}
-
-.toast.show{
- opacity:1;
- transform:translate(-50%,0)
-}
-
-@media(max-width:650px){
- .stats{
-  grid-template-columns:repeat(2,1fr)
- }
-
- .grid{
-  grid-template-columns:repeat(2,minmax(0,1fr))
- }
-
- .poster{
-  height:150px
- }
-
- .row{
-  grid-template-columns:1fr
- }
-}
+:root{--bg:#0F172A;--p:#111c31;--p2:#17243a;--line:#fff1;--txt:#f8fafc;--mut:#94a3b8;--c:#22d3ee;--g:#34d399;--a:#fbbf24}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:14px system-ui,-apple-system,Segoe UI,sans-serif}button,input,select{font:inherit}button{cursor:pointer}.hidden{display:none!important}header{position:sticky;top:0;z-index:20;background:#0f172ae8;backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}.top{max-width:1200px;margin:auto;padding:12px 15px;display:flex;align-items:center;gap:11px}.logo{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--c),var(--g));color:#06111c;font-weight:900;font-size:20px}.brand{flex:1}.brand b{display:block;font-size:18px}.brand small{color:var(--mut)}.status{font-size:11px;color:var(--g)}main{max-width:1200px;margin:auto;padding:15px 15px 100px}.hero,.panel{background:linear-gradient(145deg,#111c31,#0c1628);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:0 15px 40px #0002}.hero h1{margin:0 0 5px;font-size:25px}.mut{color:var(--mut);font-size:12px;line-height:1.55}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}.stat{padding:12px;border:1px solid var(--line);border-radius:16px;background:#ffffff06}.stat b{display:block;font-size:19px}.stat small{color:var(--mut)}.search{display:flex;gap:8px;margin-top:13px}.search input,.form input,.form select{width:100%;padding:12px;border:1px solid var(--line);background:#091322;color:var(--txt);border-radius:13px;outline:0}.tabs,.chips{display:flex;gap:8px;overflow:auto;padding:10px 0}.tabs button,.chip,.btn{border:1px solid var(--line);background:var(--p2);color:var(--txt);border-radius:12px;padding:9px 12px;font-size:12px;white-space:nowrap}.tabs button.active,.chip.active,.btn.primary{background:var(--c);color:#06111c;border-color:var(--c);font-weight:800}.section{margin-top:20px}.sectionhead{display:flex;justify-content:space-between;align-items:center;margin:0 0 10px}.sectionhead h2{font-size:17px;margin:0}.sectionhead span{font-size:11px;color:var(--mut)}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:11px}.card{overflow:hidden;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#111c31,#0b1526)}.poster{height:190px;background:#0b1423;display:grid;place-items:center;position:relative}.poster img{width:100%;height:100%;object-fit:cover}.fallback{font-size:35px;font-weight:900;color:#ffffff2a}.badge{position:absolute;top:8px;left:8px;background:#ef4444;color:#fff;border-radius:8px;padding:4px 7px;font-size:9px;font-weight:900;z-index:2}.body{padding:10px}.title{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.meta{font-size:10px;color:var(--mut);margin:5px 0 9px;min-height:27px}.actions{display:flex;gap:7px}.actions .fav{margin-left:auto}.fav.on{color:var(--a);border-color:#fbbf2440}.empty{grid-column:1/-1;padding:30px;text-align:center;color:var(--mut);border:1px dashed var(--line);border-radius:17px}.form{display:grid;gap:9px}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.formactions{display:flex;gap:8px;flex-wrap:wrap}.source{display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:15px;padding:11px;margin-top:8px}.sourceinfo{flex:1;min-width:0}.sourceinfo b,.sourceinfo small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sourceinfo small{color:var(--mut);font-size:10px}.switch{width:42px;height:24px;border:0;border-radius:99px;background:#334155;padding:3px}.switch i{display:block;width:18px;height:18px;border-radius:50%;background:white}.switch.on{background:var(--g)}.switch.on i{transform:translateX(18px)}.pager{display:flex;justify-content:center;gap:9px;margin:16px 0}.bottom{position:fixed;z-index:30;left:9px;right:9px;bottom:9px;max-width:750px;margin:auto;height:62px;display:grid;grid-template-columns:repeat(5,1fr);background:#0b1628ed;backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:21px}.nav{border:0;background:0;color:var(--mut);font-size:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}.nav b{font-size:18px}.nav.active{color:var(--c)}#player{position:fixed;inset:0;z-index:100;background:#000e;display:none;flex-direction:column}#player.show{display:flex}.ptop{padding:11px;display:flex;gap:8px;align-items:center}.ptop strong{flex:1}.video{flex:1;display:grid;place-items:center}.video video{width:100%;max-height:78vh;background:#000}.pinfo{padding:12px;color:var(--mut);font-size:11px}.toast{position:fixed;z-index:200;bottom:85px;left:50%;transform:translate(-50%,10px);background:#e2e8f0;color:#0f172a;padding:10px 14px;border-radius:12px;font-size:11px;font-weight:800;opacity:0;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}@media(max-width:650px){.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.poster{height:150px}.row{grid-template-columns:1fr}}
 </style>
 </head>
-
 <body>
-
-<header>
- <div class="top">
-  <div class="logo">N</div>
-
-  <div class="brand">
-   <b>NEXWORLD</b>
-   <small>TV • Films • Séries • VOD</small>
-  </div>
-
-  <span id="status" class="status">
-   Initialisation...
-  </span>
- </div>
-</header>
-
+<header><div class="top"><div class="logo">N</div><div class="brand"><b>NEXWORLD</b><small>TV • Films • Séries • VOD</small></div><span id="status" class="status">Initialisation...</span></div></header>
 <main>
 
-<!-- ACCUEIL -->
 <section id="home" class="view">
+<div class="hero">
+<h1>NEXWORLD</h1>
+<div class="mut">Votre espace de divertissement : télévision en direct, films, séries et contenus provenant de vos sources autorisées.</div>
+<div class="stats">
+<div class="stat"><b id="nTV">0</b><small>TV Live</small></div>
+<div class="stat"><b id="nMovies">0</b><small>Films</small></div>
+<div class="stat"><b id="nSeries">0</b><small>Séries</small></div>
+<div class="stat"><b id="nSources">1</b><small>Sources</small></div>
+</div>
+<div class="search"><input id="search" placeholder="Rechercher TV, film, série..."></div>
+</div>
 
- <div class="hero">
+<div class="section">
+<div class="sectionhead"><h2>Accès rapide</h2></div>
+<div class="tabs">
+<button data-go="tv">📺 TV en direct</button>
+<button data-go="movies">🎬 Films</button>
+<button data-go="series">📚 Séries</button>
+<button data-go="favorites">⭐ Favoris</button>
+</div>
+</div>
 
-  <h1>NEXWORLD</h1>
-
-  <div class="mut">
-   Votre espace de divertissement :
-   télévision en direct, films, séries et
-   contenus provenant de vos sources autorisées.
-  </div>
-
-  <div class="stats">
-
-   <div class="stat">
-    <b id="nTV">0</b>
-    <small>TV Live</small>
-   </div>
-
-   <div class="stat">
-    <b id="nMovies">0</b>
-    <small>Films</small>
-   </div>
-
-   <div class="stat">
-    <b id="nSeries">0</b>
-    <small>Séries</small>
-   </div>
-
-   <div class="stat">
-    <b id="nSources">1</b>
-    <small>Sources</small>
-   </div>
-
-  </div>
-
-  <div class="search">
-   <input
-    id="search"
-    placeholder="Rechercher TV, film, série..."
-   >
-  </div>
-
- </div>
-
- <div class="section">
-
-  <div class="sectionhead">
-   <h2>Accès rapide</h2>
-  </div>
-
-  <div class="tabs">
-
-   <button data-go="tv">
-    📺 TV en direct
-   </button>
-
-   <button data-go="movies">
-    🎬 Films
-   </button>
-
-   <button data-go="series">
-    📚 Séries
-   </button>
-
-   <button data-go="favorites">
-    ⭐ Favoris
-   </button>
-
-  </div>
-
- </div>
-
- <div class="section">
-
-  <div class="sectionhead">
-   <h2>Continuer</h2>
-   <span id="homeHistoryCount"></span>
-  </div>
-
-  <div id="homeHistory" class="grid"></div>
-
- </div>
-
+<div class="section">
+<div class="sectionhead"><h2>Continuer</h2><span id="homeHistoryCount"></span></div>
+<div id="homeHistory" class="grid"></div>
+</div>
 </section>
 
-
-<!-- TV -->
 <section id="tv" class="view hidden">
-
- <div class="panel">
-
-  <div class="sectionhead">
-   <h2>📺 TV en direct</h2>
-   <span id="tvCount"></span>
-  </div>
-
-  <div id="regions" class="chips"></div>
-
-  <div id="countries" class="chips"></div>
-
- </div>
-
- <div class="section">
-  <div id="tvGrid" class="grid"></div>
- </div>
-
+<div class="panel">
+<div class="sectionhead"><h2>📺 TV en direct</h2><span id="tvCount"></span></div>
+<div id="regions" class="chips"></div>
+<div id="countries" class="chips"></div>
+</div>
+<div class="section">
+<div id="tvGrid" class="grid"></div>
+<div class="pager">
+<button id="prevPage" class="btn">‹ Précédent</button>
+<button id="pageInfo" class="btn"></button>
+<button id="nextPage" class="btn">Suivant ›</button>
+</div>
+</div>
 </section>
 
-
-<!-- FILMS -->
 <section id="movies" class="view hidden">
-
- <div class="panel">
-
-  <div class="sectionhead">
-   <h2>🎬 Films</h2>
-   <span id="movieCount"></span>
-  </div>
-
-  <div class="mut">
-   Les films affichés proviennent uniquement
-   des sources qui déclarent des contenus VOD/films.
-  </div>
-
- </div>
-
- <div class="section">
-  <div id="movieGrid" class="grid"></div>
- </div>
-
+<div class="panel">
+<div class="sectionhead"><h2>🎬 Films</h2><span id="movieCount"></span></div>
+<div class="mut">Les films affichés proviennent uniquement des sources qui déclarent des contenus VOD/films.</div>
+</div>
+<div class="section"><div id="movieGrid" class="grid"></div></div>
 </section>
 
-
-<!-- SERIES -->
 <section id="series" class="view hidden">
-
- <div class="panel">
-
-  <div class="sectionhead">
-   <h2>📚 Séries</h2>
-   <span id="seriesCount"></span>
-  </div>
-
-  <div class="mut">
-   Les séries et épisodes sont affichés lorsqu'ils
-   sont fournis par une source compatible.
-  </div>
-
- </div>
-
- <div class="section">
-  <div id="seriesGrid" class="grid"></div>
- </div>
-
+<div class="panel">
+<div class="sectionhead"><h2>📚 Séries</h2><span id="seriesCount"></span></div>
+<div class="mut">Les séries et épisodes sont affichés lorsqu'ils sont fournis par une source compatible.</div>
+</div>
+<div class="section"><div id="seriesGrid" class="grid"></div></div>
 </section>
 
-
-<!-- FAVORIS -->
 <section id="favorites" class="view hidden">
-
- <div class="panel">
-
-  <h2>⭐ Mes favoris</h2>
-
-  <div class="mut">
-   TV, films et séries réunis dans une seule liste.
-  </div>
-
- </div>
-
- <div class="section">
-  <div id="favGrid" class="grid"></div>
- </div>
-
+<div class="panel"><h2>⭐ Mes favoris</h2><div class="mut">TV, films et séries réunis dans une seule liste.</div></div>
+<div class="section"><div id="favGrid" class="grid"></div></div>
 </section>
 
-
-<!-- HISTORIQUE -->
 <section id="history" class="view hidden">
-
- <div class="panel">
-
-  <h2>🕘 Historique</h2>
-
-  <div class="mut">
-   Reprenez vos contenus récemment consultés.
-  </div>
-
- </div>
-
- <div class="section">
-  <div id="historyGrid" class="grid"></div>
- </div>
-
+<div class="panel"><h2>🕘 Historique</h2><div class="mut">Reprenez vos contenus récemment consultés.</div></div>
+<div class="section"><div id="historyGrid" class="grid"></div></div>
 </section>
 
-
-<!-- SOURCES -->
 <section id="sources" class="view hidden">
-
- <div class="panel">
-
-  <h2>📡 Mes sources</h2>
-
-  <div class="mut">
-   Ajoutez uniquement des sources que vous êtes
-   autorisé à utiliser.
-  </div>
-
-  <div class="tabs">
-
-   <button class="stype active" data-type="url">
-    M3U/M3U8 URL
-   </button>
-
-   <button class="stype" data-type="file">
-    Fichier M3U
-   </button>
-
-   <button class="stype" data-type="direct">
-    Flux direct
-   </button>
-
-   <button class="stype" data-type="xtream">
-    Xtream
-   </button>
-
-   <button class="stype" data-type="stalker">
-    Stalker/MAG
-   </button>
-
-  </div>
-
-
-  <!-- M3U URL -->
-  <div id="form-url" class="sourceform">
-
-   <form id="urlForm" class="form">
-
-    <input
-     id="urlName"
-     placeholder="Nom de la source"
-     required
-    >
-
-    <input
-     id="urlValue"
-     type="url"
-     placeholder="https://.../playlist.m3u"
-     required
-    >
-
-    <button class="btn primary">
-     Ajouter
-    </button>
-
-   </form>
-
-  </div>
-
-
-  <!-- FICHIER M3U -->
-  <div id="form-file" class="sourceform hidden">
-
-   <form id="fileForm" class="form">
-
-    <input
-     id="fileName"
-     placeholder="Nom (facultatif)"
-    >
-
-    <input
-     id="file"
-     type="file"
-     accept=".m3u,.m3u8,text/plain,audio/x-mpegurl"
-     required
-    >
-
-    <button class="btn primary">
-     Importer
-    </button>
-
-   </form>
-
-  </div>
-
-
-  <!-- FLUX DIRECT -->
-  <div id="form-direct" class="sourceform hidden">
-
-   <form id="directForm" class="form">
-
-    <input
-     id="directName"
-     placeholder="Nom"
-     required
-    >
-
-    <input
-     id="directUrl"
-     type="url"
-     placeholder="URL du flux"
-     required
-    >
-
-    <input
-     id="directLogo"
-     placeholder="URL logo (facultatif)"
-    >
-
-    <select id="directKind">
-
-     <option value="tv">
-      TV
-     </option>
-
-     <option value="movie">
-      Film
-     </option>
-
-     <option value="series">
-      Série
-     </option>
-
-    </select>
-
-    <button class="btn primary">
-     Ajouter
-    </button>
-
-   </form>
-
-  </div>
-
-
-  <!-- XTREAM -->
-  <div id="form-xtream" class="sourceform hidden">
-
-   <form id="xtreamForm" class="form">
-
-    <input
-     id="xname"
-     placeholder="Nom"
-     required
-    >
-
-    <input
-     id="xserver"
-     type="url"
-     placeholder="URL serveur"
-     required
-    >
-
-    <div class="row">
-
-     <input
-      id="xuser"
-      placeholder="Utilisateur"
-      required
-     >
-
-     <input
-      id="xpass"
-      type="password"
-      placeholder="Mot de passe"
-      required
-     >
-
-    </div>
-
-    <button class="btn primary">
-     Enregistrer le profil
-    </button>
-
-   </form>
-
-   <p class="mut">
-    La connexion Xtream complète nécessite un backend
-    sécurisé. NEXWORLD ne stocke pas le mot de passe
-    dans localStorage.
-   </p>
-
-  </div>
-
-
-  <!-- STALKER MAG -->
-  <div id="form-stalker" class="sourceform hidden">
-
-   <form id="stalkerForm" class="form">
-
-    <input
-     id="sname"
-     placeholder="Nom de la source"
-     required
-    >
-
-    <input
-     id="sportal"
-     type="url"
-     placeholder="Portal URL : https://serveur/c/"
-     required
-    >
-
-    <div class="row">
-
-     <input
-      id="smac"
-      placeholder="MAC : 00:1A:79:XX:XX:XX"
-      required
-     >
-
-     <select id="smodel">
-
-      <option>
-       MAG254
-      </option>
-
-      <option>
-       MAG256
-      </option>
-
-      <option>
-       MAG322
-      </option>
-
-      <option>
-       MAG324
-      </option>
-
-      <option>
-       MAG424
-      </option>
-
-      <option>
-       MAG520
-      </option>
-
-      <option>
-       Autre
-      </option>
-
-     </select>
-
-    </div>
-
-    <button class="btn primary">
-     Enregistrer Stalker/MAG
-    </button>
-
-   </form>
-
-   <p class="mut">
-    Le portail et la MAC sont enregistrés comme profil.
-    L'authentification Stalker complète doit passer par
-    un backend/proxy pour gérer correctement session,
-    cookies et en-têtes.
-   </p>
-
-  </div>
-
- </div>
-
-
- <div class="panel section">
-
-  <h3>
-   Sources enregistrées
-  </h3>
-
-  <div id="sourceList"></div>
-
- </div>
-
+<div class="panel">
+<h2>📡 Mes sources</h2>
+<div class="mut">Ajoutez uniquement des sources que vous êtes autorisé à utiliser.</div>
+
+<div class="tabs">
+<button class="stype active" data-type="url">M3U/M3U8 URL</button>
+<button class="stype" data-type="file">Fichier M3U</button>
+<button class="stype" data-type="direct">Flux direct</button>
+<button class="stype" data-type="xtream">Xtream</button>
+<button class="stype" data-type="stalker">Stalker/MAG</button>
+</div>
+
+<div id="form-url" class="sourceform">
+<form id="urlForm" class="form">
+<input id="urlName" placeholder="Nom de la source" required>
+<input id="urlValue" type="url" placeholder="https://.../playlist.m3u" required>
+<button class="btn primary">Ajouter</button>
+</form>
+</div>
+
+<div id="form-file" class="sourceform hidden">
+<form id="fileForm" class="form">
+<input id="fileName" placeholder="Nom (facultatif)">
+<input id="file" type="file" accept=".m3u,.m3u8,text/plain,audio/x-mpegurl" required>
+<button class="btn primary">Importer</button>
+</form>
+</div>
+
+<div id="form-direct" class="sourceform hidden">
+<form id="directForm" class="form">
+<input id="directName" placeholder="Nom" required>
+<input id="directUrl" type="url" placeholder="URL du flux" required>
+<input id="directLogo" placeholder="URL logo (facultatif)">
+<select id="directKind">
+<option value="tv">TV</option>
+<option value="movie">Film</option>
+<option value="series">Série</option>
+</select>
+<button class="btn primary">Ajouter</button>
+</form>
+</div>
+
+<div id="form-xtream" class="sourceform hidden">
+<form id="xtreamForm" class="form">
+<input id="xname" placeholder="Nom" required>
+<input id="xserver" type="url" placeholder="URL serveur" required>
+<div class="row">
+<input id="xuser" placeholder="Utilisateur" required>
+<input id="xpass" type="password" placeholder="Mot de passe" required>
+</div>
+<button class="btn primary">Enregistrer le profil</button>
+</form>
+<p class="mut">La connexion Xtream complète nécessite un backend sécurisé. Le mot de passe n'est pas enregistré dans localStorage.</p>
+</div>
+
+<div id="form-stalker" class="sourceform hidden">
+<form id="stalkerForm" class="form">
+<input id="sname" placeholder="Nom de la source" required>
+<input id="sportal" type="url" placeholder="Portal URL : https://serveur/c/" required>
+<div class="row">
+<input id="smac" placeholder="MAC : 00:1A:79:XX:XX:XX" required>
+<select id="smodel">
+<option>MAG254</option><option>MAG256</option><option>MAG322</option>
+<option>MAG324</option><option>MAG424</option><option>MAG520</option><option>Autre</option>
+</select>
+</div>
+<button class="btn primary">Enregistrer Stalker/MAG</button>
+</form>
+<p class="mut">Portal + MAC sont enregistrés comme profil. L'authentification Stalker complète doit passer par un backend/proxy pour gérer session, cookies et en-têtes.</p>
+</div>
+</div>
+
+<div class="panel section">
+<h3>Sources enregistrées</h3>
+<div id="sourceList"></div>
+</div>
 </section>
 
 </main>
 
-
-<!-- NAVIGATION -->
 <nav class="bottom">
-
- <button
-  class="nav active"
-  data-view="home"
- >
-  <b>⌂</b>
-  Accueil
- </button>
-
- <button
-  class="nav"
-  data-view="tv"
- >
-  <b>📺</b>
-  TV
- </button>
-
- <button
-  class="nav"
-  data-view="movies"
- >
-  <b>🎬</b>
-  Films
- </button>
-
- <button
-  class="nav"
-  data-view="series"
- >
-  <b>📚</b>
-  Séries
- </button>
-
- <button
-  class="nav"
-  data-view="sources"
- >
-  <b>＋</b>
-  Sources
- </button>
-
+<button class="nav active" data-view="home"><b>⌂</b>Accueil</button>
+<button class="nav" data-view="tv"><b>📺</b>TV</button>
+<button class="nav" data-view="movies"><b>🎬</b>Films</button>
+<button class="nav" data-view="series"><b>📚</b>Séries</button>
+<button class="nav" data-view="sources"><b>＋</b>Sources</button>
 </nav>
 
-
-<!-- PLAYER -->
 <div id="player">
-
- <div class="ptop">
-
-  <button
-   class="btn"
-   id="close"
-  >
-   ←
-  </button>
-
-  <strong id="ptitle">
-   Lecture
-  </strong>
-
-  <button
-   class="btn"
-   id="full"
-  >
-   ⛶
-  </button>
-
- </div>
-
- <div class="video">
-
-  <video
-   id="video"
-   controls
-   playsinline
-  ></video>
-
- </div>
-
- <div
-  id="pinfo"
-  class="pinfo"
- ></div>
-
+<div class="ptop">
+<button class="btn" id="close">←</button>
+<strong id="ptitle">Lecture</strong>
+<button class="btn" id="full">⛶</button>
+</div>
+<div class="video"><video id="video" controls playsinline></video></div>
+<div id="pinfo" class="pinfo"></div>
 </div>
 
-
-<div
- id="toast"
- class="toast"
-></div>
-
+<div id="toast" class="toast"></div>
 
 <script>
 'use strict';
 
-const WORLD =
- 'https://iptv-org.github.io/iptv/index.country.m3u';
+const WORLD='https://iptv-org.github.io/iptv/index.country.m3u';
+const COUNTRIES='https://iptv-org.github.io/api/countries.json';
+const DB='nexworld_v74';
+const STORE='local_m3u';
+const PAGE=40;
 
-const COUNTRIES =
- 'https://iptv-org.github.io/api/countries.json';
-
-const DB =
- 'nexworld_v73';
-
-const STORE =
- 'local_m3u';
-
-
-const S = {
-
+const S={
  tv:[],
-
  movies:[],
-
  series:[],
-
  favorites:[],
-
  history:[],
-
  sources:[],
-
  country:'all',
-
  region:'all',
-
  q:'',
-
+ page:1,
  countries:new Map()
-
 };
 
-
-const REG = {
-
+const REG={
  all:'Monde',
-
  afr:'Afrique',
-
  eur:'Europe',
-
  amer:'Amériques',
-
  asia:'Asie',
-
  oce:'Océanie',
-
  waf:'Afrique de l’Ouest'
-
 };
 
-
-const ALIAS = {
-
+const ALIAS={
  'ivory coast':'CI',
-
  'cote divoire':'CI',
-
  'côte d’ivoire':'CI',
-
- 'côte d\'ivoire':'CI',
-
+ "côte d'ivoire":'CI',
  'usa':'US',
-
  'united states':'US',
-
  'uk':'GB',
-
  'united kingdom':'GB'
-
 };
 
-
-const RMAP = {
-
- CI:'waf',
-
- SN:'waf',
-
- GH:'waf',
-
- NG:'waf',
-
- BJ:'waf',
-
- TG:'waf',
-
- BF:'waf',
-
- ML:'waf',
-
- NE:'waf',
-
- GN:'waf',
-
- SL:'waf',
-
- LR:'waf',
-
- GM:'waf',
-
- GW:'waf',
-
- MR:'waf'
-
+const RMAP={
+ CI:'waf',SN:'waf',GH:'waf',NG:'waf',BJ:'waf',
+ TG:'waf',BF:'waf',ML:'waf',NE:'waf',GN:'waf',
+ SL:'waf',LR:'waf',GM:'waf',GW:'waf',MR:'waf'
 };
 
+const $=id=>document.getElementById(id);
 
-const $ =
- id => document.getElementById(id);
-
-
-const esc =
- x => String(x ?? '')
- .replace(
-  /[&<>"']/g,
-  m => ({
-   '&':'&amp;',
-   '<':'&lt;',
-   '>':'&gt;',
-   '"':'&quot;',
-   "'":'&#039;'
-  }[m])
- );
-
+const esc=x=>String(x??'').replace(
+ /[&<>"']/g,
+ m=>({
+  '&':'&amp;',
+  '<':'&lt;',
+  '>':'&gt;',
+  '"':'&quot;',
+  "'":'&#039;'
+ }[m])
+);
 
 function toast(x){
-
- const e =
-  $('toast');
-
- e.textContent =
-  x;
-
- e.classList.add(
-  'show'
+ const e=$('toast');
+ e.textContent=x;
+ e.classList.add('show');
+ clearTimeout(toast.t);
+ toast.t=setTimeout(
+  ()=>e.classList.remove('show'),
+  2300
  );
-
- clearTimeout(
-  toast.t
- );
-
- toast.t =
-  setTimeout(
-   () =>
-    e.classList.remove(
-     'show'
-    ),
-   2300
-  );
-
 }
-
 
 function save(k,v){
-
  try{
-
-  localStorage.setItem(
-   k,
-   JSON.stringify(v)
-  );
-
+  localStorage.setItem(k,JSON.stringify(v));
  }catch(e){}
-
 }
-
 
 function load(k,d){
-
  try{
-
-  return (
-   JSON.parse(
-    localStorage.getItem(k)
-   ) ?? d
-  );
-
+  return JSON.parse(
+   localStorage.getItem(k)
+  )??d;
  }catch(e){
-
   return d;
-
  }
-
 }
-
 
 function uid(){
-
- return 'n_' +
-  Date.now().toString(36) +
-  '_' +
-  Math.random()
-   .toString(36)
-   .slice(2,8);
-
+ return 'n_'+Date.now().toString(36)+'_'+
+  Math.random().toString(36).slice(2,8);
 }
-
-
-/* IndexedDB */
-
-function db(){
-
- return new Promise(
-  (ok,no)=>{
-
-   let r =
-    indexedDB.open(
-     DB,
-     1
-    );
-
-   r.onupgradeneeded =
-    () => {
-
-     r.result
-      .createObjectStore(
-       STORE,
-       {keyPath:'id'}
-      );
-
-    };
-
-   r.onsuccess =
-    () => ok(
-     r.result
-    );
-
-   r.onerror =
-    () => no(
-     r.error
-    );
-
-  }
- );
-
-}
-
-
-async function dbput(v){
-
- let d =
-  await db();
-
- return new Promise(
-  (ok,no)=>{
-
-   let t =
-    d.transaction(
-     STORE,
-     'readwrite'
-    );
-
-   t.objectStore(
-    STORE
-   ).put(v);
-
-   t.oncomplete =
-    ok;
-
-   t.onerror =
-    () => no(
-     t.error
-    );
-
-  }
- );
-
-}
-
-
-async function dbget(id){
-
- let d =
-  await db();
-
- return new Promise(
-  (ok,no)=>{
-
-   let r =
-    d.transaction(
-     STORE
-    )
-    .objectStore(
-     STORE
-    )
-    .get(id);
-
-   r.onsuccess =
-    () => ok(
-     r.result
-    );
-
-   r.onerror =
-    () => no(
-     r.error
-    );
-
-  }
- );
-
-}
-
-
-async function dbdel(id){
-
- let d =
-  await db();
-
- return new Promise(
-  (ok,no)=>{
-
-   let t =
-    d.transaction(
-     STORE,
-     'readwrite'
-    );
-
-   t.objectStore(
-    STORE
-   ).delete(id);
-
-   t.oncomplete =
-    ok;
-
-   t.onerror =
-    () => no(
-     t.error
-    );
-
-  }
- );
-
-}
-
-
-/* M3U */
 
 function attrs(s){
-
- let a = {};
-
- let r =
-  /([\w-]+)="([^"]*)"/g;
-
+ let a={};
+ let r=/([\w-]+)="([^"]*)"/g;
  let m;
-
- while(
-  m = r.exec(s)
- ){
-
-  a[m[1]] =
-   m[2];
-
- }
-
+ while(m=r.exec(s))a[m[1]]=m[2];
  return a;
-
 }
 
+function guessKind(n,g){
+ let x=(n+' '+g).toLowerCase();
 
-function parseM3U(
- text,
- source='world'
-){
+ if(/\b(series|serie|série|season|saison|episode|épisode)\b/.test(x))
+  return 'series';
 
- let out = [];
+ if(/\b(movie|film|cinema|cinéma|vod)\b/.test(x))
+  return 'movie';
 
- let cur =
-  null;
+ return 'tv';
+}
 
- for(
-  let line of
-  String(text)
-   .replace(/\r/g,'')
-   .split('\n')
- ){
+/* IMPORTANT :
+   group-title est utilisé comme pays pour
+   index.country.m3u lorsqu'aucun tvg-country
+   n'est présent.
+*/
+function parseM3U(text,source='world'){
+ let out=[];
+ let cur=null;
 
-  line =
-   line.trim();
+ for(let line of String(text)
+  .replace(/\r/g,'')
+  .split('\n')){
 
-  if(!line)
-   continue;
+  line=line.trim();
 
-  if(
-   line.startsWith(
-    '#EXTINF:'
-   )
-  ){
+  if(!line)continue;
 
-   let p =
-    line.indexOf(',');
+  if(line.startsWith('#EXTINF:')){
 
-   let a =
-    attrs(
-     p < 0
-      ? line
-      : line.slice(0,p)
-    );
+   let p=line.indexOf(',');
+   let a=attrs(
+    p<0?line:line.slice(0,p)
+   );
 
-   let name =
-    p < 0
-     ? 'Chaîne'
-     : line
-        .slice(p+1)
-        .trim();
+   let name=
+    p<0
+     ?'Chaîne'
+     :line.slice(p+1).trim();
 
-   cur = {
+   const group=a['group-title']||'';
 
+   cur={
     id:
-     a['tvg-id'] ||
+     a['tvg-id']||
+     a['channel-id']||
      uid(),
 
     name:
-     name ||
-     'Sans titre',
+     name||'Sans titre',
 
     logo:
-     a['tvg-logo'] ||
-     '',
+     a['tvg-logo']||'',
 
-    group:
-     a['group-title'] ||
-     '',
+    group,
 
     country:
-     a['tvg-country'] ||
-     a['country'] ||
+     a['tvg-country']||
+     a['country']||
+     group||
      '',
 
     language:
-     a['tvg-language'] ||
+     a['tvg-language']||
+     a['language']||
      '',
 
     url:'',
 
-    sourceId:
-     source,
+    sourceId:source,
 
     kind:
      guessKind(
       name,
-      a['group-title'] || ''
+      group
      )
-
    };
 
-  }
-
-  else if(
-   line[0] !== '#' &&
+  }else if(
+   line[0]!=='#'&&
    cur
   ){
 
-   cur.url =
-    line;
-
-   out.push(
-    cur
-   );
-
-   cur =
-    null;
+   cur.url=line;
+   out.push(cur);
+   cur=null;
 
   }
-
  }
 
  return out;
-
 }
-
-
-function guessKind(
- name,
- group
-){
-
- let x =
-  (
-   name +
-   ' ' +
-   group
-  )
-  .toLowerCase();
-
- if(
-  /\b(series|serie|série|season|saison|episode|épisode)\b/
-   .test(x)
- ){
-
-  return 'series';
-
- }
-
- if(
-  /\b(movie|film|cinema|cinéma|vod)\b/
-   .test(x)
- ){
-
-  return 'movie';
-
- }
-
- return 'tv';
-
-}
-
-
-/* Pays */
 
 function cc(x){
+ let raw=String(x||'').trim();
+ let low=raw.toLowerCase();
 
- let raw =
-  String(x || '')
-   .trim();
-
- let low =
-  raw.toLowerCase();
-
- if(
-  ALIAS[low]
- ){
-
+ if(ALIAS[low])
   return ALIAS[low];
 
- }
-
- if(
-  /^[A-Za-z]{2}$/.test(raw)
- ){
-
+ if(/^[A-Za-z]{2}$/.test(raw))
   return raw.toUpperCase();
 
- }
+ let n=low
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g,'')
+  .replace(/[’']/g,' ')
+  .replace(/\s+/g,' ')
+  .trim();
 
- let n =
-  low
+ for(let [k,v] of S.countries){
+
+  let z=String(v.name||'')
+   .toLowerCase()
    .normalize('NFD')
-   .replace(
-    /[\u0300-\u036f]/g,
-    ''
-   )
-   .replace(
-    /[’']/g,
-    ' '
-   )
-   .replace(
-    /\s+/g,
-    ' '
-   )
+   .replace(/[\u0300-\u036f]/g,'')
+   .replace(/[’']/g,' ')
+   .replace(/\s+/g,' ')
    .trim();
 
- for(
-  let [k,v]
-  of S.countries
- ){
-
-  let z =
-   String(v.name || '')
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(
-     /[\u0300-\u036f]/g,
-     ''
-    )
-    .replace(
-     /[’']/g,
-     ' '
-    )
-    .replace(
-     /\s+/g,
-     ' '
-    )
-    .trim();
-
-  if(
-   z === n
-  ){
-
+  if(z===n)
    return k;
-
-  }
-
  }
 
  return '';
-
 }
-
 
 function region(c){
-
- let code =
-  cc(c.country);
-
- if(
-  RMAP[code]
- ){
-
-  return RMAP[code];
-
- }
-
- return c.region || '';
-
+ let code=cc(c.country);
+ return RMAP[code]||c.region||'';
 }
-
-
-/* Classement */
 
 function addItems(items){
 
- for(
-  let c
-  of items
- ){
+ for(const c of items){
 
-  if(!c.url)
-   continue;
+  if(!c.url)continue;
 
-  let a =
-   Object.assign(
-    {kind:'tv'},
-    c
-   );
+  let a={
+   kind:'tv',
+   ...c
+  };
 
-  if(
-   a.kind === 'movie'
-  ){
-
+  if(a.kind==='movie')
    S.movies.push(a);
-
-  }
-
-  else if(
-   a.kind === 'series'
-  ){
-
+  else if(a.kind==='series')
    S.series.push(a);
-
-  }
-
-  else{
-
+  else
    S.tv.push(a);
-
-  }
-
  }
-
 }
 
+function dedupe(){
+
+ for(const k of [
+  'tv',
+  'movies',
+  'series'
+ ]){
+
+  let m=new Map();
+
+  S[k].forEach(
+   c=>m.set(
+    c.id+'|'+c.url,
+    c
+   )
+  );
+
+  S[k]=[...m.values()];
+ }
+}
 
 function allFor(kind){
 
- let a =
-  kind === 'movie'
-   ? S.movies
-   : kind === 'series'
-     ? S.series
-     : S.tv;
+ let a=
+  kind==='movie'
+   ?S.movies
+   :kind==='series'
+    ?S.series
+    :S.tv;
 
- let q =
-  S.q
+ if(S.q){
+
+  let q=S.q
    .toLowerCase()
    .trim();
 
- if(q){
-
-  a =
-   a.filter(
-    c =>
-     (
-      c.name +
-      ' ' +
-      c.group +
-      ' ' +
-      c.country +
-      ' ' +
-      c.language
-     )
-     .toLowerCase()
-     .includes(q)
-   );
-
+  a=a.filter(
+   c=>
+    (
+     c.name+' '+
+     c.group+' '+
+     c.country+' '+
+     c.language
+    )
+    .toLowerCase()
+    .includes(q)
+  );
  }
 
- if(
-  kind === 'tv'
- ){
+ if(kind==='tv'){
 
-  if(
-   S.country !== 'all'
-  ){
+  if(S.region!=='all')
+   a=a.filter(
+    c=>region(c)===S.region
+   );
 
-   a =
-    a.filter(
-     c =>
-      cc(c.country) ===
-      S.country
-    );
-
-  }
-
-  if(
-   S.region !== 'all'
-  ){
-
-   a =
-    a.filter(
-     c =>
-      region(c) ===
-      S.region
-    );
-
-  }
-
+  if(S.country!=='all')
+   a=a.filter(
+    c=>cc(c.country)===S.country
+   );
  }
 
  return a;
-
 }
-
-
-/* Cartes */
 
 function isFav(c){
-
  return S.favorites.some(
-  x =>
-   x.id === c.id &&
-   x.url === c.url
+  x=>x.id===c.id&&x.url===c.url
  );
-
 }
 
+function find(k){
+ return [
+  ...S.tv,
+  ...S.movies,
+  ...S.series,
+  ...S.history,
+  ...S.favorites
+ ].find(
+  c=>c.id+'|'+c.url===k
+ );
+}
 
 function card(c){
 
- let f =
-  isFav(c);
+ let f=isFav(c);
 
- let poster =
+ let poster=
   c.logo
-   ? `<img src="${esc(c.logo)}"
-        loading="lazy"
-        onerror="this.remove()">`
-   : `<span class="fallback">N</span>`;
+   ?`<img src="${esc(c.logo)}"
+       loading="lazy"
+       onerror="this.style.display='none'">`
+   :'<span class="fallback">N</span>';
 
- return `
-
+ return`
  <article class="card">
-
   <div class="poster">
-
    ${
-    c.kind === 'tv'
-     ? '<span class="badge">LIVE</span>'
-     : ''
+    c.kind==='tv'
+     ?'<span class="badge">LIVE</span>'
+     :''
    }
-
    ${poster}
-
   </div>
 
   <div class="body">
@@ -1847,9 +553,9 @@ function card(c){
 
    <div class="meta">
     ${esc(
-     c.year ||
-     c.group ||
-     c.country ||
+     c.year||
+     c.group||
+     c.country||
      'Source personnelle'
     )}
    </div>
@@ -1858,22 +564,18 @@ function card(c){
 
     <button
      class="btn primary"
-     data-play="${esc(
-      c.id + '|' + c.url
-     )}"
+     data-play="${esc(c.id+'|'+c.url)}"
     >
      ▶ ${
-      c.kind === 'tv'
-       ? 'Regarder'
-       : 'Lire'
+      c.kind==='tv'
+       ?'Regarder'
+       :'Lire'
      }
     </button>
 
     <button
      class="btn fav ${f?'on':''}"
-     data-fav="${esc(
-      c.id + '|' + c.url
-     )}"
+     data-fav="${esc(c.id+'|'+c.url)}"
     >
      ${f?'★':'☆'}
     </button>
@@ -1881,118 +583,63 @@ function card(c){
    </div>
 
   </div>
-
- </article>
-
- `;
-
+ </article>`;
 }
-
-
-function find(key){
-
- return [
-
-  ...S.tv,
-
-  ...S.movies,
-
-  ...S.series,
-
-  ...S.history,
-
-  ...S.favorites
-
- ].find(
-  c =>
-   c.id +
-   '|' +
-   c.url ===
-   key
- );
-
-}
-
-
-function bindCards(root){
-
- root
-  .querySelectorAll(
-   '[data-play]'
-  )
-  .forEach(
-   b =>
-    b.onclick =
-     () => {
-
-      let c =
-       find(
-        b.dataset.play
-       );
-
-      if(c)
-       play(c);
-
-     }
-  );
-
- root
-  .querySelectorAll(
-   '[data-fav]'
-  )
-  .forEach(
-   b =>
-    b.onclick =
-     () => {
-
-      let c =
-       find(
-        b.dataset.fav
-       );
-
-      if(c)
-       fav(c);
-
-     }
-  );
-
-}
-
 
 function renderGrid(
  id,
  list,
- empty
+ empty,
+ limit=PAGE
 ){
 
- let e =
-  $(id);
+ let e=$(id);
 
- e.innerHTML =
-  list.length
-   ? list
-      .slice(0,200)
-      .map(card)
-      .join('')
-   : `<div class="empty">
-       ${empty}
-      </div>`;
+ let shown=list.slice(
+  0,
+  limit
+ );
+
+ e.innerHTML=
+  shown.length
+   ?shown.map(card).join('')
+   :`<div class="empty">${empty}</div>`;
 
  bindCards(e);
-
 }
 
+function bindCards(root){
+
+ root.querySelectorAll(
+  '[data-play]'
+ ).forEach(
+  b=>b.onclick=()=>{
+   let c=find(
+    b.dataset.play
+   );
+
+   if(c)play(c);
+  }
+ );
+
+ root.querySelectorAll(
+  '[data-fav]'
+ ).forEach(
+  b=>b.onclick=()=>{
+   let c=find(
+    b.dataset.fav
+   );
+
+   if(c)fav(c);
+  }
+ );
+}
 
 function render(){
 
- let tv =
-  allFor('tv');
-
- let mv =
-  allFor('movie');
-
- let se =
-  allFor('series');
+ let tv=allFor('tv');
+ let mv=allFor('movie');
+ let se=allFor('series');
 
  renderGrid(
   'tvGrid',
@@ -2003,88 +650,80 @@ function render(){
  renderGrid(
   'movieGrid',
   mv,
-  'Aucun film fourni par vos sources.'
+  'Aucun film fourni par vos sources.',
+  80
  );
 
  renderGrid(
   'seriesGrid',
   se,
-  'Aucune série fournie par vos sources.'
+  'Aucune série fournie par vos sources.',
+  80
  );
 
  renderGrid(
   'favGrid',
   S.favorites,
-  'Aucun favori.'
+  'Aucun favori.',
+  80
  );
 
  renderGrid(
   'historyGrid',
   S.history,
-  'Aucun historique.'
+  'Aucun historique.',
+  80
  );
 
  renderGrid(
   'homeHistory',
   S.history.slice(0,8),
-  'Votre historique est vide.'
+  'Votre historique est vide.',
+  8
  );
 
- $('tvCount').textContent =
-  tv.length;
+ $('tvCount').textContent=
+  tv.length.toLocaleString('fr-FR')+
+  ' chaînes';
 
- $('movieCount').textContent =
-  mv.length;
+ $('movieCount').textContent=
+  mv.length.toLocaleString('fr-FR');
 
- $('seriesCount').textContent =
-  se.length;
+ $('seriesCount').textContent=
+  se.length.toLocaleString('fr-FR');
 
- $('homeHistoryCount').textContent =
-  S.history.length +
+ $('homeHistoryCount').textContent=
+  S.history.length+
   ' élément(s)';
 
- $('nTV').textContent =
-  S.tv.length
-   .toLocaleString('fr-FR');
+ $('nTV').textContent=
+  S.tv.length.toLocaleString('fr-FR');
 
- $('nMovies').textContent =
-  S.movies.length
-   .toLocaleString('fr-FR');
+ $('nMovies').textContent=
+  S.movies.length.toLocaleString('fr-FR');
 
- $('nSeries').textContent =
-  S.series.length
-   .toLocaleString('fr-FR');
+ $('nSeries').textContent=
+  S.series.length.toLocaleString('fr-FR');
 
- $('nSources').textContent =
-  1 +
-  S.sources.length;
+ $('nSources').textContent=
+  1+S.sources.length;
 
  renderFilters();
-
  renderSources();
-
+ updatePager(tv.length);
 }
-
-
-/* Filtres */
 
 function renderFilters(){
 
- let r =
-  $('regions');
+ let r=$('regions');
 
- r.innerHTML =
+ r.innerHTML=
   Object.entries(REG)
    .map(
-    ([k,v]) =>
+    ([k,v])=>
      `<button
-       class="chip ${
-        S.region === k
-         ? 'active'
-         : ''
-       }"
-       data-r="${k}"
-      >
+       class="chip ${S.region===k?'active':''}"
+       data-r="${k}">
        ${v}
       </button>`
    )
@@ -2092,90 +731,62 @@ function renderFilters(){
 
  r.querySelectorAll(
   '[data-r]'
- )
- .forEach(
-  b =>
-   b.onclick =
-    () => {
-
-     S.region =
-      b.dataset.r;
-
-     S.country =
-      'all';
-
-     render();
-
-    }
+ ).forEach(
+  b=>b.onclick=()=>{
+   S.region=b.dataset.r;
+   S.country='all';
+   S.page=1;
+   render();
+  }
  );
 
- let list =
-  [
-   ...new Set(
-    S.tv
-     .map(
-      x =>
-       cc(x.country)
-     )
-     .filter(Boolean)
-   )
-  ]
-  .map(
-   x => [
-    x,
-    S.countries.get(x)?.name ||
-    x
-   ]
-  )
-  .sort(
-   (a,b) =>
-    a[1].localeCompare(
-     b[1],
-     'fr'
+ let list=[
+  ...new Set(
+   S.tv
+    .map(
+     x=>cc(x.country)
     )
+    .filter(Boolean)
+  )
+ ]
+ .map(
+  x=>[
+   x,
+   S.countries.get(x)?.name||x
+  ]
+ )
+ .sort(
+  (a,b)=>
+   a[1].localeCompare(
+    b[1],
+    'fr'
+   )
+ );
+
+ if(S.region!=='all'){
+
+  list=list.filter(
+   x=>
+    region({
+     country:x[0]
+    })===S.region
   );
-
- if(
-  S.region !== 'all'
- ){
-
-  list =
-   list.filter(
-    x =>
-     region({
-      country:x[0]
-     }) ===
-     S.region
-   );
-
  }
 
- let c =
-  $('countries');
+ let c=$('countries');
 
- c.innerHTML =
+ c.innerHTML=
   `<button
-    class="chip ${
-     S.country === 'all'
-      ? 'active'
-      : ''
-    }"
-    data-c="all"
-   >
+    class="chip ${S.country==='all'?'active':''}"
+    data-c="all">
     Tous les pays
-   </button>` +
-
+   </button>`+
   list
    .map(
-    x =>
+    x=>
      `<button
-       class="chip ${
-        S.country === x[0]
-         ? 'active'
-         : ''
-       }"
-       data-c="${x[0]}"
-      >
+       class="chip ${S.country===x[0]?'active':''}"
+       data-c="${x[0]}">
        ${esc(x[1])}
       </button>`
    )
@@ -2183,39 +794,104 @@ function renderFilters(){
 
  c.querySelectorAll(
   '[data-c]'
- )
- .forEach(
-  b =>
-   b.onclick =
-    () => {
-
-     S.country =
-      b.dataset.c;
-
-     render();
-
-    }
+ ).forEach(
+  b=>b.onclick=()=>{
+   S.country=b.dataset.c;
+   S.page=1;
+   render();
+  }
  );
-
 }
 
+function updatePager(total){
 
-/* Favoris */
+ let pages=
+  Math.max(
+   1,
+   Math.ceil(
+    total/PAGE
+   )
+  );
+
+ S.page=
+  Math.min(
+   S.page,
+   pages
+  );
+
+ $('pageInfo').textContent=
+  'Page '+S.page+
+  ' / '+pages;
+
+ $('prevPage').disabled=
+  S.page<=1;
+
+ $('nextPage').disabled=
+  S.page>=pages;
+}
+
+function renderTVPage(){
+
+ let a=allFor('tv');
+
+ let start=
+  (S.page-1)*PAGE;
+
+ renderGrid(
+  'tvGrid',
+  a.slice(
+   start,
+   start+PAGE
+  ),
+  'Aucune chaîne TV trouvée.',
+  PAGE
+ );
+
+ updatePager(a.length);
+
+ window.scrollTo({
+  top:0,
+  behavior:'smooth'
+ });
+}
+
+$('prevPage').onclick=()=>{
+
+ if(S.page>1){
+
+  S.page--;
+
+  renderTVPage();
+ }
+};
+
+$('nextPage').onclick=()=>{
+
+ let t=allFor('tv');
+
+ let p=
+  Math.ceil(
+   t.length/PAGE
+  );
+
+ if(S.page<p){
+
+  S.page++;
+
+  renderTVPage();
+ }
+};
 
 function fav(c){
 
- let before =
-  isFav(c);
+ if(isFav(c)){
 
- if(before){
-
-  S.favorites =
+  S.favorites=
    S.favorites.filter(
-    x =>
-     !(
-      x.id === c.id &&
-      x.url === c.url
-     )
+    x=>!(
+     x.id===c.id&&
+     x.url===c.url
+    )
    );
 
   toast(
@@ -2224,54 +900,41 @@ function fav(c){
 
  }else{
 
-  S.favorites =
-   [c,...S.favorites];
+  S.favorites=[
+   c,
+   ...S.favorites
+  ];
 
   toast(
    'Ajouté aux favoris'
   );
-
  }
 
  save(
-  'nexworld_v73_fav',
+  'nexworld_v74_fav',
   S.favorites
  );
 
  render();
-
 }
-
-
-/* Historique */
 
 function history(c){
 
- S.history =
-  [
-   c,
-   ...S.history.filter(
-    x =>
-     !(
-      x.id === c.id &&
-      x.url === c.url
-     )
+ S.history=[
+  c,
+  ...S.history.filter(
+   x=>!(
+    x.id===c.id&&
+    x.url===c.url
    )
-  ]
-  .slice(
-   0,
-   60
-  );
+  )
+ ].slice(0,60);
 
  save(
-  'nexworld_v73_hist',
+  'nexworld_v74_hist',
   S.history
  );
-
 }
-
-
-/* Lecteur */
 
 function play(c){
 
@@ -2279,118 +942,77 @@ function play(c){
 
  render();
 
- $('ptitle').textContent =
+ $('ptitle').textContent=
   c.name;
 
- $('pinfo').textContent =
-  [
-   c.kind === 'tv'
-    ? 'TV en direct'
-    : c.kind === 'movie'
-      ? 'Film'
-      : 'Série',
+ $('pinfo').textContent=[
+  c.kind==='tv'
+   ?'TV en direct'
+   :c.kind==='movie'
+    ?'Film'
+    :'Série',
+  c.group,
+  c.country
+ ]
+ .filter(Boolean)
+ .join(' • ');
 
-   c.group,
+ let v=$('video');
 
-   c.country
-
-  ]
-  .filter(Boolean)
-  .join(' • ');
-
- let v =
-  $('video');
-
- v.src =
-  c.url;
+ v.src=c.url;
 
  $('player')
-  .classList.add(
-   'show'
-  );
+  .classList.add('show');
 
  v.play()
   .catch(
-   () =>
-    toast(
-     'Appuyez sur lecture pour démarrer'
-    )
+   ()=>toast(
+    'Appuyez sur lecture pour démarrer'
+   )
   );
-
 }
 
+$('close').onclick=()=>{
 
-$('close').onclick =
- () => {
+ let v=$('video');
 
-  let v =
-   $('video');
+ v.pause();
+ v.removeAttribute('src');
+ v.load();
 
-  v.pause();
+ $('player')
+  .classList.remove('show');
+};
 
-  v.removeAttribute(
-   'src'
-  );
+$('full').onclick=()=>{
 
-  v.load();
+ let v=$('video');
 
-  $('player')
-   .classList.remove(
-    'show'
-   );
+ if(v.requestFullscreen)
+  v.requestFullscreen();
 
- };
-
-
-$('full').onclick =
- () => {
-
-  let v =
-   $('video');
-
-  if(
-   v.requestFullscreen
-  ){
-
-   v.requestFullscreen();
-
-  }else if(
-   v.webkitEnterFullscreen
-  ){
-
-   v.webkitEnterFullscreen();
-
-  }
-
- };
-
-
-/* Navigation */
+ else if(v.webkitEnterFullscreen)
+  v.webkitEnterFullscreen();
+};
 
 function view(name){
 
  document
-  .querySelectorAll(
-   '.view'
-  )
+  .querySelectorAll('.view')
   .forEach(
-   x =>
-    x.classList.toggle(
-     'hidden',
-     x.id !== name
-    )
+   x=>x.classList.toggle(
+    'hidden',
+    x.id!==name
+   )
   );
 
  document
-  .querySelectorAll(
-   '.nav'
-  )
+  .querySelectorAll('.nav')
   .forEach(
-   x =>
-    x.classList.toggle(
-     'active',
-     x.dataset.view === name
-    )
+   x=>x.classList.toggle(
+    'active',
+    x.dataset.view===name
+   )
   );
 
  window.scrollTo({
@@ -2398,142 +1020,108 @@ function view(name){
   behavior:'smooth'
  });
 
+ if(name==='tv')
+  renderTVPage();
 }
-
 
 document
  .querySelectorAll(
   '.nav,[data-go]'
  )
  .forEach(
-  b =>
-   b.onclick =
-    () =>
-     view(
-      b.dataset.view ||
-      b.dataset.go
-     )
+  b=>b.onclick=()=>
+   view(
+    b.dataset.view||
+    b.dataset.go
+   )
  );
 
+$('search').oninput=e=>{
 
-$('search').oninput =
- e => {
+ S.q=e.target.value;
 
-  S.q =
-   e.target.value;
+ S.page=1;
 
-  render();
-
- };
-
-
-/* Onglets sources */
+ render();
+};
 
 document
  .querySelectorAll(
   '.stype'
  )
  .forEach(
-  b =>
-   b.onclick =
-    () => {
+  b=>b.onclick=()=>{
 
-     document
-      .querySelectorAll(
-       '.stype'
-      )
-      .forEach(
-       x =>
-        x.classList.remove(
-         'active'
-        )
-      );
-
-     b.classList.add(
+   document
+    .querySelectorAll(
+     '.stype'
+    )
+    .forEach(
+     x=>x.classList.remove(
       'active'
-     );
-
-     document
-      .querySelectorAll(
-       '.sourceform'
-      )
-      .forEach(
-       x =>
-        x.classList.add(
-         'hidden'
-        )
-      );
-
-     $(
-      'form-' +
-      b.dataset.type
      )
-     .classList.remove(
+    );
+
+   b.classList.add(
+    'active'
+   );
+
+   document
+    .querySelectorAll(
+     '.sourceform'
+    )
+    .forEach(
+     x=>x.classList.add(
       'hidden'
-     );
+     )
+    );
 
-    }
+   $('form-'+b.dataset.type)
+    .classList.remove(
+     'hidden'
+    );
+  }
+);
+
+function saveSources(){
+ save(
+  'nexworld_v74_sources',
+  S.sources
  );
-
-
-/* M3U URL */
+}
 
 async function addURL(e){
 
  e.preventDefault();
 
- let s = {
-
-  id:
-   uid(),
-
-  name:
-   $('urlName')
-    .value
-    .trim(),
-
-  type:
-   'url',
-
-  url:
-   $('urlValue')
-    .value
-    .trim(),
-
-  enabled:
-   true,
-
-  count:
-   0
-
+ let s={
+  id:uid(),
+  name:$('urlName').value.trim(),
+  type:'url',
+  url:$('urlValue').value.trim(),
+  enabled:true,
+  count:0
  };
 
- S.sources.push(
-  s
- );
-
- saveSources();
+ S.sources.push(s);
 
  try{
 
-  let t =
-   await fetch(
-    s.url
-   );
+  let r=
+   await fetch(s.url);
 
-  let a =
+  let a=
    parseM3U(
-    await t.text(),
+    await r.text(),
     s.id
    );
 
-  s.count =
-   a.length;
+  s.count=a.length;
 
   addItems(a);
 
   toast(
-   a.length +
+   a.length+
    ' contenu(s) chargé(s)'
   );
 
@@ -2542,68 +1130,48 @@ async function addURL(e){
   toast(
    'Source URL inaccessible (CORS ou URL)'
   );
-
  }
 
  saveSources();
 
- $('urlForm')
-  .reset();
+ $('urlForm').reset();
+
+ dedupe();
 
  render();
-
 }
-
-
-/* Fichier M3U */
 
 async function addFile(e){
 
  e.preventDefault();
 
- let f =
-  $('file')
-   .files[0];
+ let f=
+  $('file').files[0];
 
- if(!f)
-  return;
+ if(!f)return;
 
- let id =
-  uid();
+ let id=uid();
 
- let text =
+ let text=
   await f.text();
 
- let a =
+ let a=
   parseM3U(
    text,
    id
   );
 
- let s = {
-
+ let s={
   id,
-
   name:
-   $('fileName')
-    .value
-    .trim() ||
+   $('fileName').value.trim()||
    f.name,
-
-  type:
-   'file',
-
-  enabled:
-   true,
-
-  count:
-   a.length
-
+  type:'file',
+  enabled:true,
+  count:a.length
  };
 
- S.sources.push(
-  s
- );
+ S.sources.push(s);
 
  try{
 
@@ -2618,172 +1186,119 @@ async function addFile(e){
   toast(
    'Stockage local indisponible'
   );
-
  }
 
  addItems(a);
 
+ dedupe();
+
  saveSources();
 
- $('fileForm')
-  .reset();
+ $('fileForm').reset();
 
  render();
 
  toast(
-  a.length +
+  a.length+
   ' contenu(s) importé(s)'
  );
-
 }
-
-
-/* Flux direct */
 
 function direct(e){
 
  e.preventDefault();
 
- let id =
-  uid();
+ let id=uid();
 
- let kind =
-  $('directKind')
-   .value;
+ let kind=
+  $('directKind').value;
 
- let c = {
-
+ let c={
   id,
-
   name:
    $('directName')
     .value
     .trim(),
-
   url:
    $('directUrl')
     .value
     .trim(),
-
   logo:
    $('directLogo')
     .value
     .trim(),
-
   kind,
-
-  sourceId:
-   id
-
+  sourceId:id
  };
 
- let s = {
-
+ let s={
   id,
-
-  name:
-   c.name,
-
-  type:
-   'direct',
-
-  enabled:
-   true,
-
-  count:
-   1,
-
-  kind
-
+  name:c.name,
+  type:'direct',
+  enabled:true,
+  count:1,
+  kind,
+  url:c.url,
+  logo:c.logo
  };
 
- S.sources.push(
-  s
- );
+ S.sources.push(s);
 
- addItems([
-  c
- ]);
+ addItems([c]);
 
  saveSources();
 
- $('directForm')
-  .reset();
+ $('directForm').reset();
 
  render();
 
  toast(
   'Contenu ajouté'
  );
-
 }
-
-
-/* Xtream */
 
 function xtream(e){
 
  e.preventDefault();
 
- let s = {
-
-  id:
-   uid(),
-
+ let s={
+  id:uid(),
   name:
    $('xname')
     .value
     .trim(),
-
-  type:
-   'xtream',
-
+  type:'xtream',
   server:
    $('xserver')
     .value
     .trim(),
-
   username:
    $('xuser')
     .value
     .trim(),
-
-  enabled:
-   true,
-
-  count:
-   0,
-
-  configured:
-   true
-
+  enabled:true,
+  count:0,
+  configured:true
  };
 
- S.sources.push(
-  s
- );
+ S.sources.push(s);
 
  saveSources();
 
- $('xtreamForm')
-  .reset();
+ $('xtreamForm').reset();
 
  render();
 
  toast(
   'Profil Xtream enregistré'
  );
-
 }
-
-
-/* Stalker/MAG */
 
 function stalker(e){
 
  e.preventDefault();
 
- let mac =
+ let mac=
   $('smac')
    .value
    .trim()
@@ -2795,399 +1310,418 @@ function stalker(e){
  ){
 
   toast(
-   'MAC invalide : utilisez 00:1A:79:XX:XX:XX'
+   'MAC invalide : 00:1A:79:XX:XX:XX'
   );
 
   return;
-
  }
 
- let s = {
-
-  id:
-   uid(),
-
+ let s={
+  id:uid(),
   name:
    $('sname')
     .value
     .trim(),
-
-  type:
-   'stalker',
-
+  type:'stalker',
   portal:
    $('sportal')
     .value
     .trim(),
-
   mac,
-
   model:
    $('smodel')
     .value,
-
-  enabled:
-   true,
-
-  count:
-   0,
-
-  configured:
-   true
-
+  enabled:true,
+  count:0,
+  configured:true
  };
 
- S.sources.push(
-  s
- );
+ S.sources.push(s);
 
  saveSources();
 
- $('stalkerForm')
-  .reset();
+ $('stalkerForm').reset();
 
  render();
 
  toast(
   'Profil Stalker/MAG enregistré'
  );
-
 }
 
-
-$('urlForm').onsubmit =
+$('urlForm').onsubmit=
  addURL;
 
-$('fileForm').onsubmit =
+$('fileForm').onsubmit=
  addFile;
 
-$('directForm').onsubmit =
+$('directForm').onsubmit=
  direct;
 
-$('xtreamForm').onsubmit =
+$('xtreamForm').onsubmit=
  xtream;
 
-$('stalkerForm').onsubmit =
+$('stalkerForm').onsubmit=
  stalker;
-
-
-/* Sources */
-
-function saveSources(){
-
- save(
-  'nexworld_v73_sources',
-  S.sources
- );
-
-}
-
 
 function renderSources(){
 
- let e =
-  $('sourceList');
+ let e=$('sourceList');
 
- e.innerHTML =
+ e.innerHTML=
   S.sources.length
+   ?S.sources
+    .map(
+     s=>
+      `<div class="source">
 
-   ? S.sources
-      .map(
-       s =>
-        `<div class="source">
+       <div>📡</div>
 
-          <div>📡</div>
+       <div class="sourceinfo">
 
-          <div class="sourceinfo">
+        <b>
+         ${esc(s.name)}
+        </b>
 
-           <b>
-            ${esc(s.name)}
-           </b>
+        <small>
+         ${esc(s.type)}
+         •
+         ${s.count||0}
+         contenu(s)
+         ${
+          s.type==='stalker'
+           ?' • MAC '+esc(s.mac)
+           :''
+         }
+        </small>
 
-           <small>
-            ${esc(s.type)}
-            •
-            ${s.count || 0}
-            contenu(s)
+       </div>
 
-            ${
-             s.type === 'stalker'
-              ? ' • ' +
-                esc(s.mac)
-              : ''
-            }
+       <button
+        class="switch ${
+         s.enabled!==false
+          ?'on'
+          :''
+        }"
+        data-toggle="${s.id}"
+       >
+        <i></i>
+       </button>
 
-           </small>
+       <button
+        class="btn"
+        data-del="${s.id}"
+       >
+        ✕
+       </button>
 
-          </div>
-
-          <button
-           class="switch ${
-            s.enabled !== false
-             ? 'on'
-             : ''
-           }"
-           data-toggle="${s.id}"
-          >
-           <i></i>
-          </button>
-
-          <button
-           class="btn"
-           data-del="${s.id}"
-          >
-           ✕
-          </button>
-
-        </div>`
-      )
-      .join('')
-
-   : `<div class="empty">
-       Aucune source personnelle.
-      </div>`;
-
+      </div>`
+    )
+    .join('')
+   :`<div class="empty">
+      Aucune source personnelle.
+     </div>`;
 
  e.querySelectorAll(
   '[data-del]'
- )
- .forEach(
-  b =>
-   b.onclick =
-    async () => {
+ ).forEach(
+  b=>b.onclick=async()=>{
 
-     let s =
-      S.sources.find(
-       x =>
-        x.id ===
-        b.dataset.del
-      );
+   let id=b.dataset.del;
 
-     S.sources =
-      S.sources.filter(
-       x =>
-        x.id !==
-        b.dataset.del
-      );
+   let s=
+    S.sources.find(
+     x=>x.id===id
+    );
 
-     S.tv =
-      S.tv.filter(
-       x =>
-        x.sourceId !==
-        b.dataset.del
-      );
+   S.sources=
+    S.sources.filter(
+     x=>x.id!==id
+    );
 
-     S.movies =
-      S.movies.filter(
-       x =>
-        x.sourceId !==
-        b.dataset.del
-      );
+   for(
+    let k of [
+     'tv',
+     'movies',
+     'series'
+    ]
+   ){
 
-     S.series =
-      S.series.filter(
-       x =>
-        x.sourceId !==
-        b.dataset.del
-      );
+    S[k]=
+     S[k].filter(
+      x=>x.sourceId!==id
+     );
+   }
 
-     if(
-      s?.type === 'file'
-     ){
+   if(
+    s?.type==='file'
+   ){
 
-      try{
+    try{
+     await dbdel(id);
+    }catch(e){}
+   }
 
-       await dbdel(
-        s.id
-       );
+   saveSources();
 
-      }catch(e){}
-
-     }
-
-     saveSources();
-
-     render();
-
-    }
+   render();
+  }
  );
-
 
  e.querySelectorAll(
   '[data-toggle]'
- )
- .forEach(
-  b =>
-   b.onclick =
-    async () => {
+ ).forEach(
+  b=>b.onclick=async()=>{
 
-     let s =
-      S.sources.find(
-       x =>
-        x.id ===
-        b.dataset.toggle
+   let s=
+    S.sources.find(
+     x=>x.id===
+     b.dataset.toggle
+    );
+
+   if(!s)return;
+
+   s.enabled=
+    s.enabled===false;
+
+   if(!s.enabled){
+
+    for(
+     let k of [
+      'tv',
+      'movies',
+      'series'
+     ]
+    ){
+
+     S[k]=
+      S[k].filter(
+       x=>x.sourceId!==s.id
+      );
+    }
+
+   }else if(
+    s.type==='file'
+   ){
+
+    try{
+
+     let d=
+      await dbget(
+       s.id
       );
 
-     if(!s)
-      return;
+     if(d)
+      addItems(
+       parseM3U(
+        d.content,
+        s.id
+       )
+      );
 
-     s.enabled =
-      s.enabled === false;
+    }catch(e){}
 
-     if(
-      !s.enabled
-     ){
+   }else if(
+    s.type==='direct'
+   ){
 
-      S.tv =
-       S.tv.filter(
-        x =>
-         x.sourceId !==
-         s.id
-       );
+    addItems([{
+     id:s.id,
+     name:s.name,
+     url:s.url,
+     logo:s.logo||'',
+     kind:s.kind||'tv',
+     sourceId:s.id
+    }]);
 
-      S.movies =
-       S.movies.filter(
-        x =>
-         x.sourceId !==
-         s.id
-       );
+   }else if(
+    s.type==='url'
+   ){
 
-      S.series =
-       S.series.filter(
-        x =>
-         x.sourceId !==
-         s.id
-       );
+    try{
 
-     }
+     let r=
+      await fetch(
+       s.url
+      );
 
-     else if(
-      s.type === 'file'
-     ){
+     let a=
+      parseM3U(
+       await r.text(),
+       s.id
+      );
 
-      try{
+     addItems(a);
 
-       let d =
-        await dbget(
-         s.id
-        );
+    }catch(e){
 
-       if(d){
-
-        addItems(
-         parseM3U(
-          d.content,
-          s.id
-         )
-        );
-
-       }
-
-      }catch(e){}
-
-     }
-
-     else if(
-      s.type === 'direct'
-     ){
-
-      addItems([
-       {
-        id:s.id,
-        name:s.name,
-        url:s.url,
-        logo:s.logo || '',
-        kind:s.kind || 'tv',
-        sourceId:s.id
-       }
-      ]);
-
-     }
-
-     else if(
-      s.type === 'url'
-     ){
-
-      try{
-
-       let r =
-        await fetch(
-         s.url
-        );
-
-       addItems(
-        parseM3U(
-         await r.text(),
-         s.id
-        )
-       );
-
-      }catch(e){}
-
-     }
-
-     saveSources();
-
-     render();
-
+     toast(
+      'Source inaccessible'
+     );
     }
- );
+   }
 
+   dedupe();
+
+   saveSources();
+
+   render();
+  }
+ );
 }
 
+function openDB(){
 
-/* Restauration */
+ return new Promise(
+  (ok,no)=>{
+
+   let r=
+    indexedDB.open(
+     DB,
+     1
+    );
+
+   r.onupgradeneeded=
+    ()=>
+     r.result
+      .createObjectStore(
+       STORE,
+       {keyPath:'id'}
+      );
+
+   r.onsuccess=
+    ()=>ok(r.result);
+
+   r.onerror=
+    ()=>no(r.error);
+  }
+ );
+}
+
+async function dbput(v){
+
+ let d=
+  await openDB();
+
+ return new Promise(
+  (ok,no)=>{
+
+   let t=
+    d.transaction(
+     STORE,
+     'readwrite'
+    );
+
+   t.objectStore(
+    STORE
+   ).put(v);
+
+   t.oncomplete=ok;
+
+   t.onerror=
+    ()=>no(t.error);
+  }
+ );
+}
+
+async function dbget(id){
+
+ let d=
+  await openDB();
+
+ return new Promise(
+  (ok,no)=>{
+
+   let r=
+    d.transaction(
+     STORE
+    )
+    .objectStore(
+     STORE
+    )
+    .get(id);
+
+   r.onsuccess=
+    ()=>ok(r.result);
+
+   r.onerror=
+    ()=>no(r.error);
+  }
+ );
+}
+
+async function dbdel(id){
+
+ let d=
+  await openDB();
+
+ return new Promise(
+  (ok,no)=>{
+
+   let t=
+    d.transaction(
+     STORE,
+     'readwrite'
+    );
+
+   t.objectStore(
+    STORE
+   ).delete(id);
+
+   t.oncomplete=ok;
+
+   t.onerror=
+    ()=>no(t.error);
+  }
+ );
+}
 
 async function loadSaved(){
 
- S.favorites =
+ S.favorites=
   load(
-   'nexworld_v73_fav',
+   'nexworld_v74_fav',
    []
   );
 
- S.history =
+ S.history=
   load(
-   'nexworld_v73_hist',
+   'nexworld_v74_hist',
    []
   );
 
- S.sources =
+ S.sources=
   load(
-   'nexworld_v73_sources',
+   'nexworld_v74_sources',
    []
   )
   .map(
-   x => ({
+   x=>({
     ...x,
     enabled:
-     x.enabled !== false
+     x.enabled!==false
    })
   );
 
-
  for(
-  let s
-  of S.sources
-   .filter(
-    x =>
-     x.enabled !== false
-   )
+  const s of
+  S.sources.filter(
+   x=>x.enabled!==false
+  )
  ){
 
   if(
-   s.type === 'file'
+   s.type==='file'
   ){
 
    try{
 
-    let d =
+    let d=
      await dbget(
       s.id
      );
 
-    if(d){
-
+    if(d)
      addItems(
       parseM3U(
        d.content,
@@ -3195,80 +1729,66 @@ async function loadSaved(){
       )
      );
 
-    }
-
    }catch(e){}
-
   }
 
-
   if(
-   s.type === 'direct'
+   s.type==='direct'
   ){
 
-   addItems([
-    {
-     id:s.id,
-     name:s.name,
-     url:s.url,
-     logo:s.logo || '',
-     kind:s.kind || 'tv',
-     sourceId:s.id
-    }
-   ]);
-
+   addItems([{
+    id:s.id,
+    name:s.name,
+    url:s.url,
+    logo:s.logo||'',
+    kind:s.kind||'tv',
+    sourceId:s.id
+   }]);
   }
 
-
   if(
-   s.type === 'url'
+   s.type==='url'
   ){
 
    try{
 
-    let r =
+    let r=
      await fetch(
       s.url
      );
 
-    addItems(
+    let a=
      parseM3U(
       await r.text(),
       s.id
-     )
-    );
+     );
+
+    addItems(a);
 
    }catch(e){}
-
   }
-
  }
 
+ dedupe();
 }
-
-
-/* Démarrage */
 
 async function boot(){
 
  try{
 
-  $('status')
-   .textContent =
+  $('status').textContent=
    'Catalogue mondial...';
 
   let [
    ct,
    res
-  ] =
+  ]=
    await Promise.all([
 
     fetch(
      COUNTRIES
-    )
-    .then(
-     x =>
-      x.json()
+    ).then(
+     x=>x.json()
     ),
 
     fetch(
@@ -3278,19 +1798,14 @@ async function boot(){
    ]);
 
   for(
-   let x
-   of ct
+   let x of ct
   ){
 
-   if(x.code){
-
+   if(x.code)
     S.countries.set(
      x.code.toUpperCase(),
      x
     );
-
-   }
-
   }
 
   addItems(
@@ -3301,8 +1816,7 @@ async function boot(){
 
   await loadSaved();
 
-  $('status')
-   .textContent =
+  $('status').textContent=
    'En ligne';
 
   render();
@@ -3311,22 +1825,16 @@ async function boot(){
 
   console.error(e);
 
-  $('status')
-   .textContent =
+  $('status').textContent=
    'Erreur';
 
   toast(
    'Le catalogue mondial n’a pas pu être chargé'
   );
-
  }
-
 }
 
-
 boot();
-
 </script>
-
 </body>
 </html>
