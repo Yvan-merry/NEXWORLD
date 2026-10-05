@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0F172A">
 <title>NEXWORLD V7.2</title>
+
+<!-- NEXWORLD — Firebase Authentication -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+
 <style>
 :root{
 --bg:#0F172A;
@@ -1752,8 +1757,7 @@ b.onclick=()=>{
 if(type==='movie')
 state.movieGenre=
 b.dataset.g;
-else
-state.seriesGenre=
+else state.seriesGenre=
 b.dataset.g;
 
 renderVOD(type);
@@ -2432,7 +2436,7 @@ Mot de passe
 <input
 id="xtPass"
 type="password"
-placeholder="Non stocké dans cette version"
+placeholder="Mot de passe"
 >
 
 <div class="actions">
@@ -3558,6 +3562,9 @@ loadWorld();
 boot();
 
 </script>
+
+<!-- NEXWORLD — Firebase Authentication -->
+<script src="/firebase-auth.js"></script>
 
 </body>
 </html>
