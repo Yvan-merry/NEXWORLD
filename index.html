@@ -5,438 +5,468 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0F172A">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>NEXWORLD V7.2</title>
+<title>NEXWORLD V7.3</title>
 
 <style>
 :root{
-  --bg:#0F172A;
-  --panel:#111c31;
-  --panel2:#162238;
-  --line:rgba(255,255,255,.09);
-  --text:#f8fafc;
-  --muted:#94a3b8;
-  --cyan:#22d3ee;
-  --green:#34d399;
-  --amber:#fbbf24;
-  --pink:#f472b6;
-  --danger:#fb7185;
-  --radius:20px;
+ --bg:#0F172A;
+ --p:#111c31;
+ --p2:#17243a;
+ --line:#ffffff17;
+ --txt:#f8fafc;
+ --mut:#94a3b8;
+ --c:#22d3ee;
+ --g:#34d399;
+ --a:#fbbf24;
 }
+
 *{box-sizing:border-box}
-html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-body{min-height:100vh}
+
+body{
+ margin:0;
+ background:var(--bg);
+ color:var(--txt);
+ font:14px system-ui,-apple-system,Segoe UI,sans-serif
+}
+
 button,input,select{font:inherit}
 button{cursor:pointer}
-.hidden{display:none!important}
 
 header{
-  position:sticky;
-  top:0;
-  z-index:20;
-  background:rgba(15,23,42,.9);
-  backdrop-filter:blur(18px);
-  border-bottom:1px solid var(--line);
+ position:sticky;
+ top:0;
+ z-index:20;
+ background:#0f172ae8;
+ backdrop-filter:blur(18px);
+ border-bottom:1px solid var(--line)
 }
+
 .top{
-  max-width:1200px;
-  margin:auto;
-  padding:14px 16px;
-  display:flex;
-  align-items:center;
-  gap:12px;
+ max-width:1200px;
+ margin:auto;
+ padding:12px 15px;
+ display:flex;
+ align-items:center;
+ gap:11px
 }
+
 .logo{
-  width:42px;height:42px;
-  border-radius:14px;
-  display:grid;
-  place-items:center;
-  background:linear-gradient(135deg,var(--cyan),var(--green));
-  color:#06111c;
-  font-weight:900;
+ width:42px;
+ height:42px;
+ border-radius:14px;
+ display:grid;
+ place-items:center;
+ background:linear-gradient(135deg,var(--c),var(--g));
+ color:#06111c;
+ font-weight:900;
+ font-size:20px
 }
+
 .brand{flex:1}
-.brand strong{display:block;font-size:18px}
-.brand span{font-size:11px;color:var(--muted)}
+
+.brand b{
+ display:block;
+ font-size:18px
+}
+
+.brand small{
+ color:var(--mut)
+}
+
 .status{
-  font-size:11px;
-  color:var(--green);
-  white-space:nowrap;
+ font-size:11px;
+ color:var(--g)
 }
 
 main{
-  max-width:1200px;
-  margin:auto;
-  padding:16px 16px 100px;
+ max-width:1200px;
+ margin:auto;
+ padding:15px 15px 100px
 }
 
-.hero{
-  padding:20px;
-  border:1px solid var(--line);
-  border-radius:26px;
-  background:
-    radial-gradient(circle at top right,rgba(34,211,238,.13),transparent 35%),
-    linear-gradient(145deg,#111c31,#0d1729);
-  box-shadow:0 20px 50px rgba(0,0,0,.22);
+.hero,.panel{
+ background:linear-gradient(145deg,#111c31,#0c1628);
+ border:1px solid var(--line);
+ border-radius:24px;
+ padding:18px;
+ box-shadow:0 15px 40px #0002
 }
-.hero h1{margin:0 0 6px;font-size:26px}
-.hero p{margin:0;color:var(--muted);font-size:13px}
+
+.hero h1{
+ margin:0 0 5px;
+ font-size:25px
+}
+
+.mut{
+ color:var(--mut);
+ font-size:12px;
+ line-height:1.55
+}
 
 .stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-top:16px;
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:8px;
+ margin-top:14px
 }
+
 .stat{
-  padding:14px;
-  border-radius:18px;
-  background:rgba(255,255,255,.04);
-  border:1px solid var(--line);
+ padding:12px;
+ border:1px solid var(--line);
+ border-radius:16px;
+ background:#ffffff06
 }
-.stat b{font-size:20px;display:block}
-.stat span{font-size:10px;color:var(--muted)}
+
+.stat b{
+ display:block;
+ font-size:19px
+}
+
+.stat small{
+ color:var(--mut)
+}
 
 .search{
-  margin-top:16px;
-  display:flex;
-  gap:8px;
-}
-.search input{
-  flex:1;
-  min-width:0;
-  padding:13px 15px;
-  border-radius:15px;
-  border:1px solid var(--line);
-  background:#0b1425;
-  color:var(--text);
-  outline:none;
-}
-.search input:focus{border-color:rgba(34,211,238,.5)}
-
-.filters{
-  margin-top:12px;
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  padding-bottom:4px;
-}
-.filters::-webkit-scrollbar{height:0}
-.chip{
-  flex:0 0 auto;
-  border:1px solid var(--line);
-  color:var(--muted);
-  background:#111b2d;
-  padding:9px 13px;
-  border-radius:999px;
-  font-size:12px;
-}
-.chip.active{
-  color:#06111c;
-  background:var(--cyan);
-  border-color:var(--cyan);
-  font-weight:800;
+ display:flex;
+ gap:8px;
+ margin-top:13px
 }
 
-.section-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:24px 0 12px;
+.search input,
+.form input,
+.form select{
+ width:100%;
+ padding:12px;
+ border:1px solid var(--line);
+ background:#091322;
+ color:var(--txt);
+ border-radius:13px;
+ outline:0
 }
-.section-head h2{font-size:17px;margin:0}
-.section-head span{font-size:11px;color:var(--muted)}
+
+.tabs,.chips{
+ display:flex;
+ gap:8px;
+ overflow:auto;
+ padding:10px 0
+}
+
+.tabs button,.chip,.btn{
+ border:1px solid var(--line);
+ background:var(--p2);
+ color:var(--txt);
+ border-radius:12px;
+ padding:9px 12px;
+ font-size:12px
+}
+
+.tabs button.active,
+.chip.active,
+.btn.primary{
+ background:var(--c);
+ color:#06111c;
+ border-color:var(--c);
+ font-weight:800
+}
+
+.section{
+ margin-top:20px
+}
+
+.sectionhead{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin:0 0 10px
+}
+
+.sectionhead h2{
+ font-size:17px;
+ margin:0
+}
+
+.sectionhead span{
+ font-size:11px;
+ color:var(--mut)
+}
 
 .grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
-  gap:12px;
+ display:grid;
+ grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
+ gap:11px
 }
+
 .card{
-  overflow:hidden;
-  border-radius:19px;
-  border:1px solid var(--line);
-  background:linear-gradient(145deg,#111c31,#0d1728);
-  box-shadow:0 10px 28px rgba(0,0,0,.18);
-}
-.card-logo{
-  height:110px;
-  display:grid;
-  place-items:center;
-  background:rgba(255,255,255,.035);
-  position:relative;
-}
-.card-logo img{
-  width:72px;
-  height:72px;
-  object-fit:contain;
-}
-.card-logo .no-logo{
-  font-size:26px;
-  font-weight:900;
-  color:rgba(255,255,255,.25);
-}
-.live{
-  position:absolute;
-  top:8px;
-  left:8px;
-  padding:4px 7px;
-  border-radius:8px;
-  background:#ef4444;
-  color:#fff;
-  font-size:9px;
-  font-weight:900;
-}
-.card-body{padding:11px}
-.card-title{
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  font-weight:800;
-  font-size:13px;
-}
-.card-meta{
-  color:var(--muted);
-  font-size:10px;
-  margin-top:5px;
-  min-height:28px;
-}
-.card-actions{
-  display:flex;
-  gap:7px;
-  margin-top:9px;
-}
-.btn{
-  border:1px solid var(--line);
-  background:#162238;
-  color:var(--text);
-  border-radius:11px;
-  padding:9px 10px;
-  font-size:11px;
-}
-.btn.primary{
-  background:var(--cyan);
-  color:#06111c;
-  border-color:var(--cyan);
-  font-weight:800;
-}
-.btn.favorite{
-  margin-left:auto;
-}
-.btn.favorite.on{
-  color:var(--amber);
-  border-color:rgba(251,191,36,.35);
+ overflow:hidden;
+ border:1px solid var(--line);
+ border-radius:18px;
+ background:linear-gradient(145deg,#111c31,#0b1526)
 }
 
-.panel{
-  margin-top:16px;
-  padding:16px;
-  border-radius:22px;
-  background:linear-gradient(145deg,#111c31,#0d1729);
-  border:1px solid var(--line);
+.poster{
+ height:190px;
+ background:#0b1423;
+ display:grid;
+ place-items:center;
+ position:relative
 }
-.panel h3{margin:0 0 12px;font-size:16px}
-.panel p{font-size:12px;color:var(--muted);line-height:1.6}
 
-.source-tabs{
-  display:flex;
-  gap:8px;
-  overflow:auto;
-  margin-bottom:14px;
+.poster img{
+ width:100%;
+ height:100%;
+ object-fit:cover
 }
-.source-tab{
-  flex:0 0 auto;
-  padding:9px 12px;
-  border-radius:999px;
-  border:1px solid var(--line);
-  background:#101b2d;
-  color:var(--muted);
-  font-size:11px;
+
+.poster .fallback{
+ font-size:35px;
+ font-weight:900;
+ color:#ffffff2a
 }
-.source-tab.active{
-  background:var(--cyan);
-  color:#06111c;
-  font-weight:800;
+
+.badge{
+ position:absolute;
+ top:8px;
+ left:8px;
+ background:#ef4444;
+ color:#fff;
+ border-radius:8px;
+ padding:4px 7px;
+ font-size:9px;
+ font-weight:900;
+ z-index:2
+}
+
+.body{
+ padding:10px
+}
+
+.title{
+ font-weight:800;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis
+}
+
+.meta{
+ font-size:10px;
+ color:var(--mut);
+ margin:5px 0 9px;
+ min-height:27px
+}
+
+.actions{
+ display:flex;
+ gap:7px
+}
+
+.actions .fav{
+ margin-left:auto
+}
+
+.fav.on{
+ color:var(--a);
+ border-color:#fbbf2440
+}
+
+.hidden{
+ display:none!important
+}
+
+.empty{
+ grid-column:1/-1;
+ padding:30px;
+ text-align:center;
+ color:var(--mut);
+ border:1px dashed var(--line);
+ border-radius:17px
 }
 
 .form{
-  display:grid;
-  gap:9px;
-}
-.form input,.form select{
-  width:100%;
-  padding:12px;
-  border-radius:13px;
-  border:1px solid var(--line);
-  background:#0a1424;
-  color:var(--text);
-  outline:none;
-}
-.form-row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:9px;
-}
-.form-actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
+ display:grid;
+ gap:9px
 }
 
-.source-item{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:12px;
-  border:1px solid var(--line);
-  border-radius:15px;
-  background:rgba(255,255,255,.025);
-  margin-top:8px;
+.row{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:9px
 }
-.source-icon{
-  width:38px;height:38px;
-  display:grid;place-items:center;
-  border-radius:12px;
-  background:#17243a;
+
+.formactions{
+ display:flex;
+ gap:8px;
+ flex-wrap:wrap
 }
-.source-info{flex:1;min-width:0}
-.source-info b{
-  display:block;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  font-size:12px;
+
+.source{
+ display:flex;
+ align-items:center;
+ gap:9px;
+ border:1px solid var(--line);
+ border-radius:15px;
+ padding:11px;
+ margin-top:8px
 }
-.source-info span{font-size:10px;color:var(--muted)}
+
+.sourceinfo{
+ flex:1;
+ min-width:0
+}
+
+.sourceinfo b,
+.sourceinfo small{
+ display:block;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis
+}
+
+.sourceinfo small{
+ color:var(--mut);
+ font-size:10px
+}
+
 .switch{
-  width:42px;height:24px;
-  border-radius:999px;
-  background:#334155;
-  padding:3px;
+ width:42px;
+ height:24px;
+ border:0;
+ border-radius:99px;
+ background:#334155;
+ padding:3px
 }
+
 .switch i{
-  display:block;
-  width:18px;height:18px;
-  border-radius:50%;
-  background:#fff;
-  transition:.2s;
-}
-.switch.on{background:var(--green)}
-.switch.on i{transform:translateX(18px)}
-
-.empty{
-  padding:35px 15px;
-  text-align:center;
-  border:1px dashed var(--line);
-  border-radius:18px;
-  color:var(--muted);
-  font-size:12px;
+ display:block;
+ width:18px;
+ height:18px;
+ border-radius:50%;
+ background:white
 }
 
-#playerModal{
-  position:fixed;
-  inset:0;
-  z-index:100;
-  background:rgba(0,0,0,.92);
-  display:none;
-  flex-direction:column;
+.switch.on{
+ background:var(--g)
 }
-#playerModal.show{display:flex}
-.player-top{
-  padding:12px 14px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.player-top strong{flex:1}
-.player{
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-video{
-  width:100%;
-  max-height:78vh;
-  background:#000;
-}
-.player-info{
-  padding:12px 15px 20px;
-  font-size:11px;
-  color:var(--muted);
+
+.switch.on i{
+ transform:translateX(18px)
 }
 
 .bottom{
-  position:fixed;
-  z-index:50;
-  left:10px;
-  right:10px;
-  bottom:10px;
-  max-width:700px;
-  margin:auto;
-  height:62px;
-  border:1px solid var(--line);
-  border-radius:22px;
-  background:rgba(12,22,38,.94);
-  backdrop-filter:blur(18px);
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  box-shadow:0 15px 40px rgba(0,0,0,.35);
+ position:fixed;
+ z-index:30;
+ left:9px;
+ right:9px;
+ bottom:9px;
+ max-width:750px;
+ margin:auto;
+ height:62px;
+ display:grid;
+ grid-template-columns:repeat(5,1fr);
+ background:#0b1628ed;
+ backdrop-filter:blur(18px);
+ border:1px solid var(--line);
+ border-radius:21px
 }
+
 .nav{
-  border:0;
-  background:none;
-  color:var(--muted);
-  font-size:10px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  gap:4px;
+ border:0;
+ background:0;
+ color:var(--mut);
+ font-size:9px;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ gap:3px
 }
-.nav b{font-size:19px}
-.nav.active{color:var(--cyan)}
+
+.nav b{
+ font-size:18px
+}
+
+.nav.active{
+ color:var(--c)
+}
+
+#player{
+ position:fixed;
+ inset:0;
+ z-index:100;
+ background:#000e;
+ display:none;
+ flex-direction:column
+}
+
+#player.show{
+ display:flex
+}
+
+.ptop{
+ padding:11px;
+ display:flex;
+ gap:8px;
+ align-items:center
+}
+
+.ptop strong{
+ flex:1
+}
+
+.video{
+ flex:1;
+ display:grid;
+ place-items:center
+}
+
+.video video{
+ width:100%;
+ max-height:78vh;
+ background:#000
+}
+
+.pinfo{
+ padding:12px;
+ color:var(--mut);
+ font-size:11px
+}
 
 .toast{
-  position:fixed;
-  z-index:200;
-  left:50%;
-  bottom:88px;
-  transform:translateX(-50%) translateY(15px);
-  padding:11px 15px;
-  border-radius:13px;
-  background:#e2e8f0;
-  color:#0f172a;
-  font-size:11px;
-  font-weight:700;
-  opacity:0;
-  pointer-events:none;
-  transition:.25s;
-}
-.toast.show{
-  opacity:1;
-  transform:translateX(-50%) translateY(0);
+ position:fixed;
+ z-index:200;
+ bottom:85px;
+ left:50%;
+ transform:translate(-50%,10px);
+ background:#e2e8f0;
+ color:#0f172a;
+ padding:10px 14px;
+ border-radius:12px;
+ font-size:11px;
+ font-weight:800;
+ opacity:0;
+ transition:.2s
 }
 
-.spinner{
-  width:18px;height:18px;
-  border:2px solid rgba(255,255,255,.2);
-  border-top-color:var(--cyan);
-  border-radius:50%;
-  animation:spin .8s linear infinite;
-  display:inline-block;
+.toast.show{
+ opacity:1;
+ transform:translate(-50%,0)
 }
-@keyframes spin{to{transform:rotate(360deg)}}
 
 @media(max-width:650px){
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .card-logo{height:95px}
-  .card-logo img{width:58px;height:58px}
-}
-@media(min-width:900px){
-  main{padding-bottom:35px}
-  .bottom{position:sticky;bottom:10px}
+ .stats{
+  grid-template-columns:repeat(2,1fr)
+ }
+
+ .grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))
+ }
+
+ .poster{
+  height:150px
+ }
+
+ .row{
+  grid-template-columns:1fr
+ }
 }
 </style>
 </head>
@@ -444,1985 +474,2857 @@ video{
 <body>
 
 <header>
-  <div class="top">
-    <div class="logo">N</div>
-    <div class="brand">
-      <strong>NEXWORLD</strong>
-      <span>TV • Streaming • Catalogue mondial</span>
-    </div>
-    <div id="status" class="status">Connexion...</div>
+ <div class="top">
+  <div class="logo">N</div>
+
+  <div class="brand">
+   <b>NEXWORLD</b>
+   <small>TV • Films • Séries • VOD</small>
   </div>
+
+  <span id="status" class="status">
+   Initialisation...
+  </span>
+ </div>
 </header>
 
 <main>
 
-  <section id="view-home">
+<!-- ACCUEIL -->
+<section id="home" class="view">
 
-    <div class="hero">
-      <h1>TV connectée</h1>
-      <p>Découvrez les chaînes disponibles dans le monde entier et ajoutez vos propres sources autorisées.</p>
+ <div class="hero">
 
-      <div class="stats">
-        <div class="stat">
-          <b id="statChannels">0</b>
-          <span>Chaînes</span>
-        </div>
-        <div class="stat">
-          <b id="statFavorites">0</b>
-          <span>Favoris</span>
-        </div>
-        <div class="stat">
-          <b id="statSources">1</b>
-          <span>Sources</span>
-        </div>
-        <div class="stat">
-          <b id="statCountries">0</b>
-          <span>Pays</span>
-        </div>
-      </div>
+  <h1>NEXWORLD</h1>
 
-      <div class="search">
-        <input id="searchInput" type="search" placeholder="Rechercher une chaîne...">
-      </div>
+  <div class="mut">
+   Votre espace de divertissement :
+   télévision en direct, films, séries et
+   contenus provenant de vos sources autorisées.
+  </div>
 
-      <div id="regionFilters" class="filters"></div>
-      <div id="countryFilters" class="filters"></div>
+  <div class="stats">
+
+   <div class="stat">
+    <b id="nTV">0</b>
+    <small>TV Live</small>
+   </div>
+
+   <div class="stat">
+    <b id="nMovies">0</b>
+    <small>Films</small>
+   </div>
+
+   <div class="stat">
+    <b id="nSeries">0</b>
+    <small>Séries</small>
+   </div>
+
+   <div class="stat">
+    <b id="nSources">1</b>
+    <small>Sources</small>
+   </div>
+
+  </div>
+
+  <div class="search">
+   <input
+    id="search"
+    placeholder="Rechercher TV, film, série..."
+   >
+  </div>
+
+ </div>
+
+ <div class="section">
+
+  <div class="sectionhead">
+   <h2>Accès rapide</h2>
+  </div>
+
+  <div class="tabs">
+
+   <button data-go="tv">
+    📺 TV en direct
+   </button>
+
+   <button data-go="movies">
+    🎬 Films
+   </button>
+
+   <button data-go="series">
+    📚 Séries
+   </button>
+
+   <button data-go="favorites">
+    ⭐ Favoris
+   </button>
+
+  </div>
+
+ </div>
+
+ <div class="section">
+
+  <div class="sectionhead">
+   <h2>Continuer</h2>
+   <span id="homeHistoryCount"></span>
+  </div>
+
+  <div id="homeHistory" class="grid"></div>
+
+ </div>
+
+</section>
+
+
+<!-- TV -->
+<section id="tv" class="view hidden">
+
+ <div class="panel">
+
+  <div class="sectionhead">
+   <h2>📺 TV en direct</h2>
+   <span id="tvCount"></span>
+  </div>
+
+  <div id="regions" class="chips"></div>
+
+  <div id="countries" class="chips"></div>
+
+ </div>
+
+ <div class="section">
+  <div id="tvGrid" class="grid"></div>
+ </div>
+
+</section>
+
+
+<!-- FILMS -->
+<section id="movies" class="view hidden">
+
+ <div class="panel">
+
+  <div class="sectionhead">
+   <h2>🎬 Films</h2>
+   <span id="movieCount"></span>
+  </div>
+
+  <div class="mut">
+   Les films affichés proviennent uniquement
+   des sources qui déclarent des contenus VOD/films.
+  </div>
+
+ </div>
+
+ <div class="section">
+  <div id="movieGrid" class="grid"></div>
+ </div>
+
+</section>
+
+
+<!-- SERIES -->
+<section id="series" class="view hidden">
+
+ <div class="panel">
+
+  <div class="sectionhead">
+   <h2>📚 Séries</h2>
+   <span id="seriesCount"></span>
+  </div>
+
+  <div class="mut">
+   Les séries et épisodes sont affichés lorsqu'ils
+   sont fournis par une source compatible.
+  </div>
+
+ </div>
+
+ <div class="section">
+  <div id="seriesGrid" class="grid"></div>
+ </div>
+
+</section>
+
+
+<!-- FAVORIS -->
+<section id="favorites" class="view hidden">
+
+ <div class="panel">
+
+  <h2>⭐ Mes favoris</h2>
+
+  <div class="mut">
+   TV, films et séries réunis dans une seule liste.
+  </div>
+
+ </div>
+
+ <div class="section">
+  <div id="favGrid" class="grid"></div>
+ </div>
+
+</section>
+
+
+<!-- HISTORIQUE -->
+<section id="history" class="view hidden">
+
+ <div class="panel">
+
+  <h2>🕘 Historique</h2>
+
+  <div class="mut">
+   Reprenez vos contenus récemment consultés.
+  </div>
+
+ </div>
+
+ <div class="section">
+  <div id="historyGrid" class="grid"></div>
+ </div>
+
+</section>
+
+
+<!-- SOURCES -->
+<section id="sources" class="view hidden">
+
+ <div class="panel">
+
+  <h2>📡 Mes sources</h2>
+
+  <div class="mut">
+   Ajoutez uniquement des sources que vous êtes
+   autorisé à utiliser.
+  </div>
+
+  <div class="tabs">
+
+   <button class="stype active" data-type="url">
+    M3U/M3U8 URL
+   </button>
+
+   <button class="stype" data-type="file">
+    Fichier M3U
+   </button>
+
+   <button class="stype" data-type="direct">
+    Flux direct
+   </button>
+
+   <button class="stype" data-type="xtream">
+    Xtream
+   </button>
+
+   <button class="stype" data-type="stalker">
+    Stalker/MAG
+   </button>
+
+  </div>
+
+
+  <!-- M3U URL -->
+  <div id="form-url" class="sourceform">
+
+   <form id="urlForm" class="form">
+
+    <input
+     id="urlName"
+     placeholder="Nom de la source"
+     required
+    >
+
+    <input
+     id="urlValue"
+     type="url"
+     placeholder="https://.../playlist.m3u"
+     required
+    >
+
+    <button class="btn primary">
+     Ajouter
+    </button>
+
+   </form>
+
+  </div>
+
+
+  <!-- FICHIER M3U -->
+  <div id="form-file" class="sourceform hidden">
+
+   <form id="fileForm" class="form">
+
+    <input
+     id="fileName"
+     placeholder="Nom (facultatif)"
+    >
+
+    <input
+     id="file"
+     type="file"
+     accept=".m3u,.m3u8,text/plain,audio/x-mpegurl"
+     required
+    >
+
+    <button class="btn primary">
+     Importer
+    </button>
+
+   </form>
+
+  </div>
+
+
+  <!-- FLUX DIRECT -->
+  <div id="form-direct" class="sourceform hidden">
+
+   <form id="directForm" class="form">
+
+    <input
+     id="directName"
+     placeholder="Nom"
+     required
+    >
+
+    <input
+     id="directUrl"
+     type="url"
+     placeholder="URL du flux"
+     required
+    >
+
+    <input
+     id="directLogo"
+     placeholder="URL logo (facultatif)"
+    >
+
+    <select id="directKind">
+
+     <option value="tv">
+      TV
+     </option>
+
+     <option value="movie">
+      Film
+     </option>
+
+     <option value="series">
+      Série
+     </option>
+
+    </select>
+
+    <button class="btn primary">
+     Ajouter
+    </button>
+
+   </form>
+
+  </div>
+
+
+  <!-- XTREAM -->
+  <div id="form-xtream" class="sourceform hidden">
+
+   <form id="xtreamForm" class="form">
+
+    <input
+     id="xname"
+     placeholder="Nom"
+     required
+    >
+
+    <input
+     id="xserver"
+     type="url"
+     placeholder="URL serveur"
+     required
+    >
+
+    <div class="row">
+
+     <input
+      id="xuser"
+      placeholder="Utilisateur"
+      required
+     >
+
+     <input
+      id="xpass"
+      type="password"
+      placeholder="Mot de passe"
+      required
+     >
+
     </div>
 
-    <div class="section-head">
-      <h2 id="catalogTitle">À découvrir</h2>
-      <span id="catalogCount">0 / 0</span>
-    </div>
+    <button class="btn primary">
+     Enregistrer le profil
+    </button>
 
-    <div id="catalog" class="grid"></div>
+   </form>
 
-  </section>
+   <p class="mut">
+    La connexion Xtream complète nécessite un backend
+    sécurisé. NEXWORLD ne stocke pas le mot de passe
+    dans localStorage.
+   </p>
 
-  <section id="view-favorites" class="hidden">
-    <div class="panel">
-      <h3>⭐ Mes favoris</h3>
-      <p>Retrouvez ici vos chaînes préférées.</p>
-    </div>
-    <div id="favoritesGrid" class="grid" style="margin-top:12px"></div>
-  </section>
+  </div>
 
-  <section id="view-history" class="hidden">
-    <div class="panel">
-      <h3>🕘 Historique</h3>
-      <p>Vos dernières chaînes regardées apparaissent ici.</p>
-    </div>
-    <div id="historyGrid" class="grid" style="margin-top:12px"></div>
-  </section>
 
-  <section id="view-sources" class="hidden">
+  <!-- STALKER MAG -->
+  <div id="form-stalker" class="sourceform hidden">
 
-    <div class="panel">
-      <h3>📡 Mes sources</h3>
-      <p>
-        Ajoutez uniquement des sources que vous êtes autorisé à utiliser.
-        Les identifiants sensibles ne doivent pas être exposés dans une application statique publique.
-      </p>
+   <form id="stalkerForm" class="form">
 
-      <div class="source-tabs">
-        <button class="source-tab active" data-source-tab="url">M3U / M3U8 URL</button>
-        <button class="source-tab" data-source-tab="file">Fichier M3U</button>
-        <button class="source-tab" data-source-tab="direct">Flux direct</button>
-        <button class="source-tab" data-source-tab="xtream">Xtream</button>
-        <button class="source-tab" data-source-tab="stalker">Stalker / MAG</button>
-      </div>
+    <input
+     id="sname"
+     placeholder="Nom de la source"
+     required
+    >
 
-      <div id="sourceForm-url" class="source-form">
-        <form id="urlForm" class="form">
-          <input id="urlName" placeholder="Nom de la source" required>
-          <input id="urlValue" type="url" placeholder="https://exemple.com/playlist.m3u" required>
-          <div class="form-actions">
-            <button class="btn primary" type="submit">Ajouter la source</button>
-          </div>
-        </form>
-      </div>
+    <input
+     id="sportal"
+     type="url"
+     placeholder="Portal URL : https://serveur/c/"
+     required
+    >
 
-      <div id="sourceForm-file" class="source-form hidden">
-        <form id="fileForm" class="form">
-          <input id="fileName" placeholder="Nom de la source">
-          <input id="m3uFile" type="file" accept=".m3u,.m3u8,text/plain,audio/x-mpegurl">
-          <div class="form-actions">
-            <button class="btn primary" type="submit">Importer la playlist</button>
-          </div>
-        </form>
-      </div>
+    <div class="row">
 
-      <div id="sourceForm-direct" class="source-form hidden">
-        <form id="directForm" class="form">
-          <input id="directName" placeholder="Nom de la chaîne" required>
-          <input id="directUrl" type="url" placeholder="https://exemple.com/live.m3u8" required>
-          <input id="directLogo" type="url" placeholder="URL du logo (facultatif)">
-          <div class="form-actions">
-            <button class="btn primary" type="submit">Ajouter le flux</button>
-          </div>
-        </form>
-      </div>
+     <input
+      id="smac"
+      placeholder="MAC : 00:1A:79:XX:XX:XX"
+      required
+     >
 
-      <div id="sourceForm-xtream" class="source-form hidden">
-        <form id="xtreamForm" class="form">
-          <input id="xtreamName" placeholder="Nom de la source" required>
-          <input id="xtreamServer" type="url" placeholder="https://serveur.example.com" required>
-          <div class="form-row">
-            <input id="xtreamUser" placeholder="Utilisateur" required>
-            <input id="xtreamPass" type="password" placeholder="Mot de passe" required>
-          </div>
-          <div class="form-actions">
-            <button class="btn primary" type="submit">Enregistrer</button>
-          </div>
-        </form>
-        <p>
-          ⚠️ Cette version statique n'effectue pas encore la connexion Xtream.
-          Pour une intégration de production, les identifiants doivent passer par un backend sécurisé.
-        </p>
-      </div>
+     <select id="smodel">
 
-      <div id="sourceForm-stalker" class="source-form hidden">
-        <form id="stalkerForm" class="form">
-          <input id="stalkerName" placeholder="Nom de la source" required>
-          <input id="stalkerPortal" type="url" placeholder="https://serveur.example.com/c/" required>
-          <input id="stalkerMac" placeholder="Adresse MAC : 00:1A:79:XX:XX:XX" required>
-          <select id="stalkerModel">
-            <option value="MAG254">MAG 254</option>
-            <option value="MAG256">MAG 256</option>
-            <option value="MAG322">MAG 322</option>
-            <option value="MAG324">MAG 324</option>
-            <option value="MAG424">MAG 424</option>
-            <option value="generic">Autre / générique</option>
-          </select>
-          <div class="form-actions">
-            <button class="btn primary" type="submit">Enregistrer</button>
-            <button class="btn" type="button" id="testStalkerBtn">Tester le portail</button>
-          </div>
-        </form>
-        <p>
-          ⚠️ Le protocole Stalker/MAG nécessite généralement une session,
-          des cookies/en-têtes spécifiques et un backend pour une intégration fiable.
-        </p>
-      </div>
+      <option>
+       MAG254
+      </option>
+
+      <option>
+       MAG256
+      </option>
+
+      <option>
+       MAG322
+      </option>
+
+      <option>
+       MAG324
+      </option>
+
+      <option>
+       MAG424
+      </option>
+
+      <option>
+       MAG520
+      </option>
+
+      <option>
+       Autre
+      </option>
+
+     </select>
 
     </div>
 
-    <div class="panel">
-      <h3>Sources enregistrées</h3>
-      <div id="sourcesList"></div>
-    </div>
+    <button class="btn primary">
+     Enregistrer Stalker/MAG
+    </button>
 
-  </section>
+   </form>
+
+   <p class="mut">
+    Le portail et la MAC sont enregistrés comme profil.
+    L'authentification Stalker complète doit passer par
+    un backend/proxy pour gérer correctement session,
+    cookies et en-têtes.
+   </p>
+
+  </div>
+
+ </div>
+
+
+ <div class="panel section">
+
+  <h3>
+   Sources enregistrées
+  </h3>
+
+  <div id="sourceList"></div>
+
+ </div>
+
+</section>
 
 </main>
 
+
+<!-- NAVIGATION -->
 <nav class="bottom">
-  <button class="nav active" data-view="home">
-    <b>⌂</b>
-    Accueil
-  </button>
-  <button class="nav" data-view="favorites">
-    <b>☆</b>
-    Favoris
-  </button>
-  <button class="nav" data-view="history">
-    <b>◷</b>
-    Historique
-  </button>
-  <button class="nav" data-view="sources">
-    <b>＋</b>
-    Sources
-  </button>
+
+ <button
+  class="nav active"
+  data-view="home"
+ >
+  <b>⌂</b>
+  Accueil
+ </button>
+
+ <button
+  class="nav"
+  data-view="tv"
+ >
+  <b>📺</b>
+  TV
+ </button>
+
+ <button
+  class="nav"
+  data-view="movies"
+ >
+  <b>🎬</b>
+  Films
+ </button>
+
+ <button
+  class="nav"
+  data-view="series"
+ >
+  <b>📚</b>
+  Séries
+ </button>
+
+ <button
+  class="nav"
+  data-view="sources"
+ >
+  <b>＋</b>
+  Sources
+ </button>
+
 </nav>
 
-<div id="playerModal">
-  <div class="player-top">
-    <button class="btn" id="closePlayer">← Fermer</button>
-    <strong id="playerTitle">Lecture</strong>
-    <button class="btn" id="fullscreenBtn">⛶</button>
-  </div>
-  <div class="player">
-    <video id="video" controls playsinline></video>
-  </div>
-  <div id="playerInfo" class="player-info"></div>
+
+<!-- PLAYER -->
+<div id="player">
+
+ <div class="ptop">
+
+  <button
+   class="btn"
+   id="close"
+  >
+   ←
+  </button>
+
+  <strong id="ptitle">
+   Lecture
+  </strong>
+
+  <button
+   class="btn"
+   id="full"
+  >
+   ⛶
+  </button>
+
+ </div>
+
+ <div class="video">
+
+  <video
+   id="video"
+   controls
+   playsinline
+  ></video>
+
+ </div>
+
+ <div
+  id="pinfo"
+  class="pinfo"
+ ></div>
+
 </div>
 
-<div id="toast" class="toast"></div>
+
+<div
+ id="toast"
+ class="toast"
+></div>
+
 
 <script>
 'use strict';
 
-/* =========================================================
-   NEXWORLD V7.2
-   Catalogue mondial + sources personnelles + IndexedDB
-   ========================================================= */
+const WORLD =
+ 'https://iptv-org.github.io/iptv/index.country.m3u';
 
-const WORLD_URL =
-  'https://iptv-org.github.io/iptv/index.country.m3u';
+const COUNTRIES =
+ 'https://iptv-org.github.io/api/countries.json';
 
-const API_COUNTRIES =
-  'https://iptv-org.github.io/api/countries.json';
+const DB =
+ 'nexworld_v73';
 
-const API_GUIDES =
-  'https://iptv-org.github.io/api/guides.json';
+const STORE =
+ 'local_m3u';
 
-const DB_NAME = 'nexworld_v72_db';
-const DB_VERSION = 1;
-const STORE_PLAYLISTS = 'playlists';
 
-const state = {
-  channels: [],
-  favorites: [],
-  history: [],
-  sources: [],
-  country: 'all',
-  region: 'all',
-  search: '',
-  view: 'home',
-  loading: false,
-  meta: {
-    countries: new Map()
-  }
+const S = {
+
+ tv:[],
+
+ movies:[],
+
+ series:[],
+
+ favorites:[],
+
+ history:[],
+
+ sources:[],
+
+ country:'all',
+
+ region:'all',
+
+ q:'',
+
+ countries:new Map()
+
 };
 
-const REGIONS = {
-  all: 'Monde',
-  afr: 'Afrique',
-  eur: 'Europe',
-  amer: 'Amériques',
-  asia: 'Asie',
-  oce: 'Océanie',
-  mena: 'Moyen-Orient',
-  waf: 'Afrique de l’Ouest'
+
+const REG = {
+
+ all:'Monde',
+
+ afr:'Afrique',
+
+ eur:'Europe',
+
+ amer:'Amériques',
+
+ asia:'Asie',
+
+ oce:'Océanie',
+
+ waf:'Afrique de l’Ouest'
+
 };
 
-const COUNTRY_ALIASES = {
-  'ivory coast': 'CI',
-  'cote divoire': 'CI',
-  'côte divoire': 'CI',
-  "côte d'ivoire": 'CI',
-  'côte-d’ivoire': 'CI',
-  'south korea': 'KR',
-  'korea south': 'KR',
-  'russia': 'RU',
-  'russian federation': 'RU',
-  'united states': 'US',
-  'usa': 'US',
-  'united kingdom': 'GB',
-  'uk': 'GB',
-  'uae': 'AE',
-  'emirates': 'AE',
-  'czech republic': 'CZ',
-  'czechia': 'CZ'
+
+const ALIAS = {
+
+ 'ivory coast':'CI',
+
+ 'cote divoire':'CI',
+
+ 'côte d’ivoire':'CI',
+
+ 'côte d\'ivoire':'CI',
+
+ 'usa':'US',
+
+ 'united states':'US',
+
+ 'uk':'GB',
+
+ 'united kingdom':'GB'
+
 };
 
-const REGION_CODES = {
-  CI: 'waf',
-  SN: 'waf',
-  GH: 'waf',
-  NG: 'waf',
-  BJ: 'waf',
-  TG: 'waf',
-  BF: 'waf',
-  ML: 'waf',
-  NE: 'waf',
-  GN: 'waf',
-  LR: 'waf',
-  SL: 'waf',
-  GM: 'waf',
-  GW: 'waf',
-  MR: 'waf'
+
+const RMAP = {
+
+ CI:'waf',
+
+ SN:'waf',
+
+ GH:'waf',
+
+ NG:'waf',
+
+ BJ:'waf',
+
+ TG:'waf',
+
+ BF:'waf',
+
+ ML:'waf',
+
+ NE:'waf',
+
+ GN:'waf',
+
+ SL:'waf',
+
+ LR:'waf',
+
+ GM:'waf',
+
+ GW:'waf',
+
+ MR:'waf'
+
 };
 
-const $ = id => document.getElementById(id);
 
-function toast(message){
-  const el = $('toast');
-  el.textContent = message;
-  el.classList.add('show');
-  clearTimeout(toast.timer);
-  toast.timer = setTimeout(() => {
-    el.classList.remove('show');
-  }, 2500);
+const $ =
+ id => document.getElementById(id);
+
+
+const esc =
+ x => String(x ?? '')
+ .replace(
+  /[&<>"']/g,
+  m => ({
+   '&':'&amp;',
+   '<':'&lt;',
+   '>':'&gt;',
+   '"':'&quot;',
+   "'":'&#039;'
+  }[m])
+ );
+
+
+function toast(x){
+
+ const e =
+  $('toast');
+
+ e.textContent =
+  x;
+
+ e.classList.add(
+  'show'
+ );
+
+ clearTimeout(
+  toast.t
+ );
+
+ toast.t =
+  setTimeout(
+   () =>
+    e.classList.remove(
+     'show'
+    ),
+   2300
+  );
+
 }
 
-function read(key, fallback){
-  try{
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : fallback;
-  }catch{
-    return fallback;
-  }
+
+function save(k,v){
+
+ try{
+
+  localStorage.setItem(
+   k,
+   JSON.stringify(v)
+  );
+
+ }catch(e){}
+
 }
 
-function write(key,value){
-  try{
-    localStorage.setItem(key,JSON.stringify(value));
-  }catch(err){
-    console.warn('localStorage error',err);
-  }
+
+function load(k,d){
+
+ try{
+
+  return (
+   JSON.parse(
+    localStorage.getItem(k)
+   ) ?? d
+  );
+
+ }catch(e){
+
+  return d;
+
+ }
+
 }
 
-function uid(prefix='id'){
-  return prefix + '_' +
-    Date.now().toString(36) + '_' +
-    Math.random().toString(36).slice(2,9);
+
+function uid(){
+
+ return 'n_' +
+  Date.now().toString(36) +
+  '_' +
+  Math.random()
+   .toString(36)
+   .slice(2,8);
+
 }
 
-/* =========================================================
-   IndexedDB
-   ========================================================= */
 
-let dbPromise = null;
+/* IndexedDB */
 
-function openDB(){
-  if(dbPromise) return dbPromise;
+function db(){
 
-  dbPromise = new Promise((resolve,reject)=>{
-    if(!('indexedDB' in window)){
-      reject(new Error('IndexedDB non disponible'));
-      return;
-    }
+ return new Promise(
+  (ok,no)=>{
 
-    const req = indexedDB.open(DB_NAME,DB_VERSION);
+   let r =
+    indexedDB.open(
+     DB,
+     1
+    );
 
-    req.onupgradeneeded = () => {
-      const db = req.result;
+   r.onupgradeneeded =
+    () => {
 
-      if(!db.objectStoreNames.contains(STORE_PLAYLISTS)){
-        db.createObjectStore(STORE_PLAYLISTS,{keyPath:'id'});
-      }
+     r.result
+      .createObjectStore(
+       STORE,
+       {keyPath:'id'}
+      );
+
     };
 
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
+   r.onsuccess =
+    () => ok(
+     r.result
+    );
 
-  return dbPromise;
-}
+   r.onerror =
+    () => no(
+     r.error
+    );
 
-async function dbPutPlaylist(record){
-  const db = await openDB();
-
-  return new Promise((resolve,reject)=>{
-    const tx = db.transaction(STORE_PLAYLISTS,'readwrite');
-    tx.objectStore(STORE_PLAYLISTS).put(record);
-
-    tx.oncomplete = () => resolve(true);
-    tx.onerror = () => reject(tx.error);
-  });
-}
-
-async function dbGetPlaylist(id){
-  const db = await openDB();
-
-  return new Promise((resolve,reject)=>{
-    const tx = db.transaction(STORE_PLAYLISTS,'readonly');
-    const req = tx.objectStore(STORE_PLAYLISTS).get(id);
-
-    req.onsuccess = () => resolve(req.result || null);
-    req.onerror = () => reject(req.error);
-  });
-}
-
-async function dbDeletePlaylist(id){
-  const db = await openDB();
-
-  return new Promise((resolve,reject)=>{
-    const tx = db.transaction(STORE_PLAYLISTS,'readwrite');
-    tx.objectStore(STORE_PLAYLISTS).delete(id);
-
-    tx.oncomplete = () => resolve(true);
-    tx.onerror = () => reject(tx.error);
-  });
-}
-
-async function dbGetAllPlaylists(){
-  const db = await openDB();
-
-  return new Promise((resolve,reject)=>{
-    const tx = db.transaction(STORE_PLAYLISTS,'readonly');
-    const req = tx.objectStore(STORE_PLAYLISTS).getAll();
-
-    req.onsuccess = () => resolve(req.result || []);
-    req.onerror = () => reject(req.error);
-  });
-}
-
-/* =========================================================
-   M3U PARSER
-   ========================================================= */
-
-function parseAttrs(text){
-  const attrs = {};
-  const re = /([\w-]+)="([^"]*)"/g;
-  let m;
-
-  while((m = re.exec(text))){
-    attrs[m[1]] = m[2];
   }
+ );
 
-  return attrs;
 }
 
-function cleanName(name){
-  return String(name || '')
-    .replace(/\s+/g,' ')
-    .trim();
+
+async function dbput(v){
+
+ let d =
+  await db();
+
+ return new Promise(
+  (ok,no)=>{
+
+   let t =
+    d.transaction(
+     STORE,
+     'readwrite'
+    );
+
+   t.objectStore(
+    STORE
+   ).put(v);
+
+   t.oncomplete =
+    ok;
+
+   t.onerror =
+    () => no(
+     t.error
+    );
+
+  }
+ );
+
 }
 
-function countryCode(name){
-  const raw = cleanName(name);
-  if(!raw) return '';
 
-  const direct = raw.toUpperCase();
+async function dbget(id){
 
-  if(/^[A-Z]{2}$/.test(direct)){
-    return direct;
-  }
+ let d =
+  await db();
 
-  const normalized = raw
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g,'')
-    .replace(/[’']/g,' ')
-    .replace(/[-_]/g,' ')
-    .replace(/\s+/g,' ')
-    .trim();
+ return new Promise(
+  (ok,no)=>{
 
-  if(COUNTRY_ALIASES[raw.toLowerCase()]){
-    return COUNTRY_ALIASES[raw.toLowerCase()];
-  }
-
-  if(COUNTRY_ALIASES[normalized]){
-    return COUNTRY_ALIASES[normalized];
-  }
-
-  for(const [code,country] of state.meta.countries){
-    const candidate = String(
-      country.name ||
-      country.title ||
-      country.label ||
-      ''
+   let r =
+    d.transaction(
+     STORE
     )
+    .objectStore(
+     STORE
+    )
+    .get(id);
+
+   r.onsuccess =
+    () => ok(
+     r.result
+    );
+
+   r.onerror =
+    () => no(
+     r.error
+    );
+
+  }
+ );
+
+}
+
+
+async function dbdel(id){
+
+ let d =
+  await db();
+
+ return new Promise(
+  (ok,no)=>{
+
+   let t =
+    d.transaction(
+     STORE,
+     'readwrite'
+    );
+
+   t.objectStore(
+    STORE
+   ).delete(id);
+
+   t.oncomplete =
+    ok;
+
+   t.onerror =
+    () => no(
+     t.error
+    );
+
+  }
+ );
+
+}
+
+
+/* M3U */
+
+function attrs(s){
+
+ let a = {};
+
+ let r =
+  /([\w-]+)="([^"]*)"/g;
+
+ let m;
+
+ while(
+  m = r.exec(s)
+ ){
+
+  a[m[1]] =
+   m[2];
+
+ }
+
+ return a;
+
+}
+
+
+function parseM3U(
+ text,
+ source='world'
+){
+
+ let out = [];
+
+ let cur =
+  null;
+
+ for(
+  let line of
+  String(text)
+   .replace(/\r/g,'')
+   .split('\n')
+ ){
+
+  line =
+   line.trim();
+
+  if(!line)
+   continue;
+
+  if(
+   line.startsWith(
+    '#EXTINF:'
+   )
+  ){
+
+   let p =
+    line.indexOf(',');
+
+   let a =
+    attrs(
+     p < 0
+      ? line
+      : line.slice(0,p)
+    );
+
+   let name =
+    p < 0
+     ? 'Chaîne'
+     : line
+        .slice(p+1)
+        .trim();
+
+   cur = {
+
+    id:
+     a['tvg-id'] ||
+     uid(),
+
+    name:
+     name ||
+     'Sans titre',
+
+    logo:
+     a['tvg-logo'] ||
+     '',
+
+    group:
+     a['group-title'] ||
+     '',
+
+    country:
+     a['tvg-country'] ||
+     a['country'] ||
+     '',
+
+    language:
+     a['tvg-language'] ||
+     '',
+
+    url:'',
+
+    sourceId:
+     source,
+
+    kind:
+     guessKind(
+      name,
+      a['group-title'] || ''
+     )
+
+   };
+
+  }
+
+  else if(
+   line[0] !== '#' &&
+   cur
+  ){
+
+   cur.url =
+    line;
+
+   out.push(
+    cur
+   );
+
+   cur =
+    null;
+
+  }
+
+ }
+
+ return out;
+
+}
+
+
+function guessKind(
+ name,
+ group
+){
+
+ let x =
+  (
+   name +
+   ' ' +
+   group
+  )
+  .toLowerCase();
+
+ if(
+  /\b(series|serie|série|season|saison|episode|épisode)\b/
+   .test(x)
+ ){
+
+  return 'series';
+
+ }
+
+ if(
+  /\b(movie|film|cinema|cinéma|vod)\b/
+   .test(x)
+ ){
+
+  return 'movie';
+
+ }
+
+ return 'tv';
+
+}
+
+
+/* Pays */
+
+function cc(x){
+
+ let raw =
+  String(x || '')
+   .trim();
+
+ let low =
+  raw.toLowerCase();
+
+ if(
+  ALIAS[low]
+ ){
+
+  return ALIAS[low];
+
+ }
+
+ if(
+  /^[A-Za-z]{2}$/.test(raw)
+ ){
+
+  return raw.toUpperCase();
+
+ }
+
+ let n =
+  low
+   .normalize('NFD')
+   .replace(
+    /[\u0300-\u036f]/g,
+    ''
+   )
+   .replace(
+    /[’']/g,
+    ' '
+   )
+   .replace(
+    /\s+/g,
+    ' '
+   )
+   .trim();
+
+ for(
+  let [k,v]
+  of S.countries
+ ){
+
+  let z =
+   String(v.name || '')
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g,'')
-    .replace(/[’']/g,' ')
-    .replace(/[-_]/g,' ')
-    .replace(/\s+/g,' ')
+    .replace(
+     /[\u0300-\u036f]/g,
+     ''
+    )
+    .replace(
+     /[’']/g,
+     ' '
+    )
+    .replace(
+     /\s+/g,
+     ' '
+    )
     .trim();
 
-    if(candidate === normalized){
-      return code.toUpperCase();
-    }
+  if(
+   z === n
+  ){
+
+   return k;
+
   }
 
-  return '';
+ }
+
+ return '';
+
 }
 
-function parseM3U(text,sourceId='world'){
-  const lines = String(text || '')
-    .replace(/\r/g,'')
-    .split('\n');
 
-  const result = [];
-  let current = null;
+function region(c){
 
-  for(let i=0;i<lines.length;i++){
-    const line = lines[i].trim();
+ let code =
+  cc(c.country);
 
-    if(!line) continue;
+ if(
+  RMAP[code]
+ ){
 
-    if(line.startsWith('#EXTINF:')){
-      const comma = line.indexOf(',');
-      const info = comma >= 0 ? line.slice(0,comma) : line;
-      const name = comma >= 0 ? line.slice(comma+1).trim() : 'Chaîne';
+  return RMAP[code];
 
-      const attrs = parseAttrs(info);
+ }
 
-      current = {
-        id: attrs['tvg-id'] ||
-           attrs['channel-id'] ||
-           uid('channel'),
+ return c.region || '';
 
-        name: cleanName(name) || 'Chaîne sans nom',
+}
 
-        logo: attrs['tvg-logo'] || '',
 
-        group: attrs['group-title'] || '',
+/* Classement */
 
-        country:
-          attrs['tvg-country'] ||
-          attrs['country'] ||
-          attrs['group-title'] ||
-          '',
+function addItems(items){
 
-        language:
-          attrs['tvg-language'] ||
-          attrs['language'] ||
-          '',
+ for(
+  let c
+  of items
+ ){
 
-        sourceId,
+  if(!c.url)
+   continue;
 
-        url: '',
-        categories: []
-      };
+  let a =
+   Object.assign(
+    {kind:'tv'},
+    c
+   );
 
-      continue;
-    }
+  if(
+   a.kind === 'movie'
+  ){
 
-    if(line.startsWith('#')) continue;
+   S.movies.push(a);
 
-    if(current){
-      current.url = line;
-
-      if(current.url){
-        result.push(current);
-      }
-
-      current = null;
-    }
   }
 
-  return result;
-}
+  else if(
+   a.kind === 'series'
+  ){
 
-/* =========================================================
-   NORMALISATION
-   ========================================================= */
+   S.series.push(a);
 
-function inferRegion(channel){
-  const code = countryCode(channel.country);
-
-  if(REGION_CODES[code]){
-    return REGION_CODES[code];
   }
 
-  const name = String(channel.country || '').toLowerCase();
+  else{
 
-  if(name.includes('africa')) return 'afr';
-  if(name.includes('europe')) return 'eur';
-  if(name.includes('asia')) return 'asia';
-  if(name.includes('america')) return 'amer';
-  if(name.includes('oceania')) return 'oce';
+   S.tv.push(a);
 
-  return '';
-}
-
-function normalizeChannel(channel){
-  const c = {
-    id: String(channel.id || uid('channel')),
-    name: cleanName(channel.name || 'Chaîne'),
-    logo: channel.logo || '',
-    group: channel.group || '',
-    country: channel.country || '',
-    language: channel.language || '',
-    sourceId: channel.sourceId || 'world',
-    url: channel.url || '',
-    categories: Array.isArray(channel.categories)
-      ? channel.categories
-      : [],
-    region: channel.region || inferRegion(channel)
-  };
-
-  return c;
-}
-
-function uniqueChannels(list){
-  const map = new Map();
-
-  for(const raw of list){
-    const c = normalizeChannel(raw);
-
-    if(!c.url) continue;
-
-    const key =
-      c.id +
-      '|' +
-      c.url;
-
-    if(!map.has(key)){
-      map.set(key,c);
-    }
   }
 
-  return [...map.values()];
+ }
+
 }
 
-/* =========================================================
-   METADATA
-   ========================================================= */
 
-async function loadMeta(){
-  try{
-    const response = await fetch(API_COUNTRIES,{
-      cache:'no-store'
-    });
+function allFor(kind){
 
-    if(!response.ok) throw new Error('countries');
+ let a =
+  kind === 'movie'
+   ? S.movies
+   : kind === 'series'
+     ? S.series
+     : S.tv;
 
-    const data = await response.json();
+ let q =
+  S.q
+   .toLowerCase()
+   .trim();
 
-    state.meta.countries.clear();
+ if(q){
 
-    for(const item of data){
-      if(!item || !item.code) continue;
+  a =
+   a.filter(
+    c =>
+     (
+      c.name +
+      ' ' +
+      c.group +
+      ' ' +
+      c.country +
+      ' ' +
+      c.language
+     )
+     .toLowerCase()
+     .includes(q)
+   );
 
-      state.meta.countries.set(
-        String(item.code).toUpperCase(),
-        item
-      );
-    }
+ }
 
-  }catch(err){
-    console.warn('Métadonnées pays indisponibles',err);
+ if(
+  kind === 'tv'
+ ){
+
+  if(
+   S.country !== 'all'
+  ){
+
+   a =
+    a.filter(
+     c =>
+      cc(c.country) ===
+      S.country
+    );
+
   }
 
-  renderCountryFilters();
-}
+  if(
+   S.region !== 'all'
+  ){
 
-/* =========================================================
-   WORLD CATALOG
-   ========================================================= */
+   a =
+    a.filter(
+     c =>
+      region(c) ===
+      S.region
+    );
 
-async function loadWorld(){
-  setStatus('Chargement du monde...');
-
-  try{
-    const response = await fetch(WORLD_URL,{
-      cache:'no-store'
-    });
-
-    if(!response.ok){
-      throw new Error('Impossible de charger le catalogue mondial');
-    }
-
-    const text = await response.text();
-
-    const channels = parseM3U(text,'world');
-
-    state.channels = uniqueChannels(channels);
-
-    setStatus('En ligne');
-
-  }catch(err){
-    console.error(err);
-    setStatus('Erreur catalogue');
-    toast('Impossible de charger le catalogue mondial');
   }
+
+ }
+
+ return a;
+
 }
 
-/* =========================================================
-   SOURCES
-   ========================================================= */
 
-function sourceTypeLabel(type){
-  switch(type){
-    case 'url': return 'M3U URL';
-    case 'file': return 'M3U local';
-    case 'direct': return 'Flux direct';
-    case 'xtream': return 'Xtream';
-    case 'stalker': return 'Stalker / MAG';
-    default: return 'Source';
-  }
+/* Cartes */
+
+function isFav(c){
+
+ return S.favorites.some(
+  x =>
+   x.id === c.id &&
+   x.url === c.url
+ );
+
 }
 
-function persistSources(){
-  write(
-    'nexworld_v7_sources',
-    state.sources.map(s=>{
-      const copy = {...s};
 
-      /*
-       * Le mot de passe Xtream n'est volontairement
-       * pas stocké dans localStorage.
-       */
-      delete copy.password;
+function card(c){
 
-      return copy;
-    })
+ let f =
+  isFav(c);
+
+ let poster =
+  c.logo
+   ? `<img src="${esc(c.logo)}"
+        loading="lazy"
+        onerror="this.remove()">`
+   : `<span class="fallback">N</span>`;
+
+ return `
+
+ <article class="card">
+
+  <div class="poster">
+
+   ${
+    c.kind === 'tv'
+     ? '<span class="badge">LIVE</span>'
+     : ''
+   }
+
+   ${poster}
+
+  </div>
+
+  <div class="body">
+
+   <div class="title">
+    ${esc(c.name)}
+   </div>
+
+   <div class="meta">
+    ${esc(
+     c.year ||
+     c.group ||
+     c.country ||
+     'Source personnelle'
+    )}
+   </div>
+
+   <div class="actions">
+
+    <button
+     class="btn primary"
+     data-play="${esc(
+      c.id + '|' + c.url
+     )}"
+    >
+     ▶ ${
+      c.kind === 'tv'
+       ? 'Regarder'
+       : 'Lire'
+     }
+    </button>
+
+    <button
+     class="btn fav ${f?'on':''}"
+     data-fav="${esc(
+      c.id + '|' + c.url
+     )}"
+    >
+     ${f?'★':'☆'}
+    </button>
+
+   </div>
+
+  </div>
+
+ </article>
+
+ `;
+
+}
+
+
+function find(key){
+
+ return [
+
+  ...S.tv,
+
+  ...S.movies,
+
+  ...S.series,
+
+  ...S.history,
+
+  ...S.favorites
+
+ ].find(
+  c =>
+   c.id +
+   '|' +
+   c.url ===
+   key
+ );
+
+}
+
+
+function bindCards(root){
+
+ root
+  .querySelectorAll(
+   '[data-play]'
+  )
+  .forEach(
+   b =>
+    b.onclick =
+     () => {
+
+      let c =
+       find(
+        b.dataset.play
+       );
+
+      if(c)
+       play(c);
+
+     }
   );
+
+ root
+  .querySelectorAll(
+   '[data-fav]'
+  )
+  .forEach(
+   b =>
+    b.onclick =
+     () => {
+
+      let c =
+       find(
+        b.dataset.fav
+       );
+
+      if(c)
+       fav(c);
+
+     }
+  );
+
 }
 
-async function restoreLocalSources(){
-  let records = [];
 
-  try{
-    records = await dbGetAllPlaylists();
-  }catch(err){
-    console.warn('IndexedDB indisponible',err);
-  }
+function renderGrid(
+ id,
+ list,
+ empty
+){
 
-  for(const record of records){
-    const source = state.sources.find(
-      s => s.id === record.id
-    );
+ let e =
+  $(id);
 
-    if(!source) continue;
+ e.innerHTML =
+  list.length
+   ? list
+      .slice(0,200)
+      .map(card)
+      .join('')
+   : `<div class="empty">
+       ${empty}
+      </div>`;
 
-    if(source.enabled === false) continue;
+ bindCards(e);
 
-    const parsed = parseM3U(
-      record.content || '',
-      source.id
-    );
-
-    state.channels = uniqueChannels(
-      state.channels.concat(parsed)
-    );
-  }
 }
 
-async function loadUrlSource(source){
-  if(!source.url) return;
 
-  try{
-    const response = await fetch(source.url,{
-      cache:'no-store'
-    });
+function render(){
 
-    if(!response.ok){
-      throw new Error(
-        'HTTP ' + response.status
-      );
+ let tv =
+  allFor('tv');
+
+ let mv =
+  allFor('movie');
+
+ let se =
+  allFor('series');
+
+ renderGrid(
+  'tvGrid',
+  tv,
+  'Aucune chaîne TV trouvée.'
+ );
+
+ renderGrid(
+  'movieGrid',
+  mv,
+  'Aucun film fourni par vos sources.'
+ );
+
+ renderGrid(
+  'seriesGrid',
+  se,
+  'Aucune série fournie par vos sources.'
+ );
+
+ renderGrid(
+  'favGrid',
+  S.favorites,
+  'Aucun favori.'
+ );
+
+ renderGrid(
+  'historyGrid',
+  S.history,
+  'Aucun historique.'
+ );
+
+ renderGrid(
+  'homeHistory',
+  S.history.slice(0,8),
+  'Votre historique est vide.'
+ );
+
+ $('tvCount').textContent =
+  tv.length;
+
+ $('movieCount').textContent =
+  mv.length;
+
+ $('seriesCount').textContent =
+  se.length;
+
+ $('homeHistoryCount').textContent =
+  S.history.length +
+  ' élément(s)';
+
+ $('nTV').textContent =
+  S.tv.length
+   .toLocaleString('fr-FR');
+
+ $('nMovies').textContent =
+  S.movies.length
+   .toLocaleString('fr-FR');
+
+ $('nSeries').textContent =
+  S.series.length
+   .toLocaleString('fr-FR');
+
+ $('nSources').textContent =
+  1 +
+  S.sources.length;
+
+ renderFilters();
+
+ renderSources();
+
+}
+
+
+/* Filtres */
+
+function renderFilters(){
+
+ let r =
+  $('regions');
+
+ r.innerHTML =
+  Object.entries(REG)
+   .map(
+    ([k,v]) =>
+     `<button
+       class="chip ${
+        S.region === k
+         ? 'active'
+         : ''
+       }"
+       data-r="${k}"
+      >
+       ${v}
+      </button>`
+   )
+   .join('');
+
+ r.querySelectorAll(
+  '[data-r]'
+ )
+ .forEach(
+  b =>
+   b.onclick =
+    () => {
+
+     S.region =
+      b.dataset.r;
+
+     S.country =
+      'all';
+
+     render();
+
     }
+ );
 
-    const text = await response.text();
+ let list =
+  [
+   ...new Set(
+    S.tv
+     .map(
+      x =>
+       cc(x.country)
+     )
+     .filter(Boolean)
+   )
+  ]
+  .map(
+   x => [
+    x,
+    S.countries.get(x)?.name ||
+    x
+   ]
+  )
+  .sort(
+   (a,b) =>
+    a[1].localeCompare(
+     b[1],
+     'fr'
+    )
+  );
 
-    const parsed = parseM3U(
-      text,
-      source.id
-    );
+ if(
+  S.region !== 'all'
+ ){
 
-    state.channels = uniqueChannels(
-      state.channels.filter(
-        c => c.sourceId !== source.id
-      ).concat(parsed)
-    );
+  list =
+   list.filter(
+    x =>
+     region({
+      country:x[0]
+     }) ===
+     S.region
+   );
 
-    source.count = parsed.length;
-    source.lastLoaded = Date.now();
+ }
 
-    persistSources();
+ let c =
+  $('countries');
 
-  }catch(err){
-    console.warn(
-      'Source inaccessible:',
-      source.name,
-      err
-    );
+ c.innerHTML =
+  `<button
+    class="chip ${
+     S.country === 'all'
+      ? 'active'
+      : ''
+    }"
+    data-c="all"
+   >
+    Tous les pays
+   </button>` +
 
+  list
+   .map(
+    x =>
+     `<button
+       class="chip ${
+        S.country === x[0]
+         ? 'active'
+         : ''
+       }"
+       data-c="${x[0]}"
+      >
+       ${esc(x[1])}
+      </button>`
+   )
+   .join('');
+
+ c.querySelectorAll(
+  '[data-c]'
+ )
+ .forEach(
+  b =>
+   b.onclick =
+    () => {
+
+     S.country =
+      b.dataset.c;
+
+     render();
+
+    }
+ );
+
+}
+
+
+/* Favoris */
+
+function fav(c){
+
+ let before =
+  isFav(c);
+
+ if(before){
+
+  S.favorites =
+   S.favorites.filter(
+    x =>
+     !(
+      x.id === c.id &&
+      x.url === c.url
+     )
+   );
+
+  toast(
+   'Retiré des favoris'
+  );
+
+ }else{
+
+  S.favorites =
+   [c,...S.favorites];
+
+  toast(
+   'Ajouté aux favoris'
+  );
+
+ }
+
+ save(
+  'nexworld_v73_fav',
+  S.favorites
+ );
+
+ render();
+
+}
+
+
+/* Historique */
+
+function history(c){
+
+ S.history =
+  [
+   c,
+   ...S.history.filter(
+    x =>
+     !(
+      x.id === c.id &&
+      x.url === c.url
+     )
+   )
+  ]
+  .slice(
+   0,
+   60
+  );
+
+ save(
+  'nexworld_v73_hist',
+  S.history
+ );
+
+}
+
+
+/* Lecteur */
+
+function play(c){
+
+ history(c);
+
+ render();
+
+ $('ptitle').textContent =
+  c.name;
+
+ $('pinfo').textContent =
+  [
+   c.kind === 'tv'
+    ? 'TV en direct'
+    : c.kind === 'movie'
+      ? 'Film'
+      : 'Série',
+
+   c.group,
+
+   c.country
+
+  ]
+  .filter(Boolean)
+  .join(' • ');
+
+ let v =
+  $('video');
+
+ v.src =
+  c.url;
+
+ $('player')
+  .classList.add(
+   'show'
+  );
+
+ v.play()
+  .catch(
+   () =>
     toast(
-      'Source inaccessible : ' +
-      source.name
-    );
-  }
-}
-
-async function loadDirectSource(source){
-  const channel = normalizeChannel({
-    id: source.channelId || source.id,
-    name: source.name,
-    logo: source.logo || '',
-    sourceId: source.id,
-    url: source.url,
-    country: source.country || '',
-    group: source.group || 'Personnel'
-  });
-
-  state.channels = uniqueChannels(
-    state.channels
-      .filter(c => c.sourceId !== source.id)
-      .concat([channel])
-  );
-
-  source.count = 1;
-  persistSources();
-}
-
-async function loadSavedSources(){
-  for(const source of state.sources){
-    if(source.enabled === false) continue;
-
-    if(source.type === 'url'){
-      await loadUrlSource(source);
-    }
-
-    if(source.type === 'direct'){
-      await loadDirectSource(source);
-    }
-  }
-
-  await restoreLocalSources();
-}
-
-/* =========================================================
-   FILTERS
-   ========================================================= */
-
-function getCountryName(code){
-  const item = state.meta.countries.get(
-    String(code || '').toUpperCase()
-  );
-
-  if(item){
-    return item.name || code;
-  }
-
-  return code || 'Pays';
-}
-
-function countriesAvailable(){
-  const map = new Map();
-
-  for(const channel of state.channels){
-    const code = countryCode(channel.country);
-
-    if(!code) continue;
-
-    if(!map.has(code)){
-      map.set(code,getCountryName(code));
-    }
-  }
-
-  return [...map.entries()]
-    .sort((a,b)=>a[1].localeCompare(b[1],'fr'));
-}
-
-function renderRegionFilters(){
-  const el = $('regionFilters');
-
-  el.innerHTML = '';
-
-  for(const [code,label] of Object.entries(REGIONS)){
-    const btn = document.createElement('button');
-
-    btn.className =
-      'chip' +
-      (state.region === code ? ' active' : '');
-
-    btn.textContent = label;
-
-    btn.onclick = () => {
-      state.region = code;
-      state.country = 'all';
-      state.page = 1;
-
-      renderRegionFilters();
-      renderCountryFilters();
-      renderCatalog();
-    };
-
-    el.appendChild(btn);
-  }
-}
-
-function renderCountryFilters(){
-  const el = $('countryFilters');
-
-  el.innerHTML = '';
-
-  const all = document.createElement('button');
-
-  all.className =
-    'chip' +
-    (state.country === 'all' ? ' active' : '');
-
-  all.textContent = 'Tous les pays';
-
-  all.onclick = () => {
-    state.country = 'all';
-    state.page = 1;
-    renderCountryFilters();
-    renderCatalog();
-  };
-
-  el.appendChild(all);
-
-  let list = countriesAvailable();
-
-  if(state.region !== 'all'){
-    list = list.filter(([code]) => {
-      if(REGION_CODES[code] === state.region){
-        return true;
-      }
-
-      return false;
-    });
-  }
-
-  for(const [code,name] of list){
-    const btn = document.createElement('button');
-
-    btn.className =
-      'chip' +
-      (state.country === code ? ' active' : '');
-
-    btn.textContent = name;
-
-    btn.onclick = () => {
-      state.country = code;
-      state.page = 1;
-
-      renderCountryFilters();
-      renderCatalog();
-    };
-
-    el.appendChild(btn);
-  }
-}
-
-function filteredChannels(){
-  let list = state.channels.slice();
-
-  if(state.country !== 'all'){
-    list = list.filter(
-      c => countryCode(c.country) === state.country
-    );
-  }
-
-  if(state.region !== 'all'){
-    list = list.filter(
-      c => inferRegion(c) === state.region
-    );
-  }
-
-  const q = state.search
-    .trim()
-    .toLowerCase();
-
-  if(q){
-    list = list.filter(c =>
-      [
-        c.name,
-        c.group,
-        c.country,
-        c.language
-      ].join(' ')
-       .toLowerCase()
-       .includes(q)
-    );
-  }
-
-  return list;
-}
-
-/* =========================================================
-   CARD
-   ========================================================= */
-
-function isFavorite(channelId){
-  return state.favorites.some(
-    x => String(x.id) === String(channelId)
-  );
-}
-
-function addHistory(channel){
-  state.history = [
-    channel,
-    ...state.history.filter(
-      x => x.id !== channel.id
+     'Appuyez sur lecture pour démarrer'
     )
-  ].slice(0,50);
-
-  write(
-    'nexworld_v7_history',
-    state.history
   );
+
 }
 
-function toggleFavorite(channel){
-  if(isFavorite(channel.id)){
-    state.favorites =
-      state.favorites.filter(
-        x => x.id !== channel.id
+
+$('close').onclick =
+ () => {
+
+  let v =
+   $('video');
+
+  v.pause();
+
+  v.removeAttribute(
+   'src'
+  );
+
+  v.load();
+
+  $('player')
+   .classList.remove(
+    'show'
+   );
+
+ };
+
+
+$('full').onclick =
+ () => {
+
+  let v =
+   $('video');
+
+  if(
+   v.requestFullscreen
+  ){
+
+   v.requestFullscreen();
+
+  }else if(
+   v.webkitEnterFullscreen
+  ){
+
+   v.webkitEnterFullscreen();
+
+  }
+
+ };
+
+
+/* Navigation */
+
+function view(name){
+
+ document
+  .querySelectorAll(
+   '.view'
+  )
+  .forEach(
+   x =>
+    x.classList.toggle(
+     'hidden',
+     x.id !== name
+    )
+  );
+
+ document
+  .querySelectorAll(
+   '.nav'
+  )
+  .forEach(
+   x =>
+    x.classList.toggle(
+     'active',
+     x.dataset.view === name
+    )
+  );
+
+ window.scrollTo({
+  top:0,
+  behavior:'smooth'
+ });
+
+}
+
+
+document
+ .querySelectorAll(
+  '.nav,[data-go]'
+ )
+ .forEach(
+  b =>
+   b.onclick =
+    () =>
+     view(
+      b.dataset.view ||
+      b.dataset.go
+     )
+ );
+
+
+$('search').oninput =
+ e => {
+
+  S.q =
+   e.target.value;
+
+  render();
+
+ };
+
+
+/* Onglets sources */
+
+document
+ .querySelectorAll(
+  '.stype'
+ )
+ .forEach(
+  b =>
+   b.onclick =
+    () => {
+
+     document
+      .querySelectorAll(
+       '.stype'
+      )
+      .forEach(
+       x =>
+        x.classList.remove(
+         'active'
+        )
       );
 
-    toast('Retiré des favoris');
-  }else{
-    state.favorites.unshift(channel);
+     b.classList.add(
+      'active'
+     );
 
-    toast('Ajouté aux favoris');
-  }
+     document
+      .querySelectorAll(
+       '.sourceform'
+      )
+      .forEach(
+       x =>
+        x.classList.add(
+         'hidden'
+        )
+      );
 
-  write(
-    'nexworld_v7_favorites',
-    state.favorites
+     $(
+      'form-' +
+      b.dataset.type
+     )
+     .classList.remove(
+      'hidden'
+     );
+
+    }
+ );
+
+
+/* M3U URL */
+
+async function addURL(e){
+
+ e.preventDefault();
+
+ let s = {
+
+  id:
+   uid(),
+
+  name:
+   $('urlName')
+    .value
+    .trim(),
+
+  type:
+   'url',
+
+  url:
+   $('urlValue')
+    .value
+    .trim(),
+
+  enabled:
+   true,
+
+  count:
+   0
+
+ };
+
+ S.sources.push(
+  s
+ );
+
+ saveSources();
+
+ try{
+
+  let t =
+   await fetch(
+    s.url
+   );
+
+  let a =
+   parseM3U(
+    await t.text(),
+    s.id
+   );
+
+  s.count =
+   a.length;
+
+  addItems(a);
+
+  toast(
+   a.length +
+   ' contenu(s) chargé(s)'
   );
 
-  updateStats();
-  renderCatalog();
-  renderFavorites();
-}
+ }catch(err){
 
-function createCard(channel){
-  const article = document.createElement('article');
-  article.className = 'card';
-
-  const logo = channel.logo
-    ? '<img src="' +
-      escapeHtml(channel.logo) +
-      '" loading="lazy" onerror="this.style.display=\'none\'">'
-    : '<div class="no-logo">N</div>';
-
-  const favorite = isFavorite(channel.id);
-
-  article.innerHTML = `
-    <div class="card-logo">
-      <span class="live">LIVE</span>
-      ${logo}
-    </div>
-
-    <div class="card-body">
-      <div class="card-title">
-        ${escapeHtml(channel.name)}
-      </div>
-
-      <div class="card-meta">
-        ${escapeHtml(
-          getCountryName(countryCode(channel.country)) ||
-          channel.country ||
-          'International'
-        )}
-        ${channel.group ? ' • ' + escapeHtml(channel.group) : ''}
-      </div>
-
-      <div class="card-actions">
-        <button class="btn primary play-btn">
-          ▶ Regarder
-        </button>
-
-        <button class="btn favorite ${favorite ? 'on' : ''}">
-          ${favorite ? '★' : '☆'}
-        </button>
-      </div>
-    </div>
-  `;
-
-  article.querySelector('.play-btn').onclick = () => {
-    playChannel(channel);
-  };
-
-  article.querySelector('.favorite').onclick = () => {
-    toggleFavorite(channel);
-  };
-
-  return article;
-}
-
-function renderCatalog(){
-  const el = $('catalog');
-
-  if(!el) return;
-
-  const list = filteredChannels();
-
-  el.innerHTML = '';
-
-  if(!list.length){
-    el.innerHTML = `
-      <div class="empty" style="grid-column:1/-1">
-        Aucune chaîne trouvée.
-      </div>
-    `;
-
-    $('catalogCount').textContent = '0 / 0';
-    return;
-  }
-
-  const max = 100;
-
-  list.slice(0,max).forEach(
-    c => el.appendChild(createCard(c))
+  toast(
+   'Source URL inaccessible (CORS ou URL)'
   );
 
-  $('catalogCount').textContent =
-    Math.min(max,list.length) +
-    ' / ' +
-    list.length;
+ }
 
-  $('catalogTitle').textContent =
-    state.country === 'all'
-      ? 'À découvrir'
-      : getCountryName(state.country);
+ saveSources();
+
+ $('urlForm')
+  .reset();
+
+ render();
+
 }
 
-/* =========================================================
-   FAVORITES / HISTORY
-   ========================================================= */
 
-function renderFavorites(){
-  const el = $('favoritesGrid');
+/* Fichier M3U */
 
-  if(!el) return;
+async function addFile(e){
 
-  el.innerHTML = '';
+ e.preventDefault();
 
-  if(!state.favorites.length){
-    el.innerHTML = `
-      <div class="empty" style="grid-column:1/-1">
-        Aucun favori pour le moment.
-      </div>
-    `;
-    return;
-  }
+ let f =
+  $('file')
+   .files[0];
 
-  state.favorites.forEach(
-    c => el.appendChild(createCard(c))
+ if(!f)
+  return;
+
+ let id =
+  uid();
+
+ let text =
+  await f.text();
+
+ let a =
+  parseM3U(
+   text,
+   id
   );
-}
 
-function renderHistory(){
-  const el = $('historyGrid');
+ let s = {
 
-  if(!el) return;
+  id,
 
-  el.innerHTML = '';
+  name:
+   $('fileName')
+    .value
+    .trim() ||
+   f.name,
 
-  if(!state.history.length){
-    el.innerHTML = `
-      <div class="empty" style="grid-column:1/-1">
-        Aucun historique.
-      </div>
-    `;
-    return;
-  }
+  type:
+   'file',
 
-  state.history.forEach(
-    c => el.appendChild(createCard(c))
+  enabled:
+   true,
+
+  count:
+   a.length
+
+ };
+
+ S.sources.push(
+  s
+ );
+
+ try{
+
+  await dbput({
+   id,
+   content:text,
+   name:s.name
+  });
+
+ }catch(err){
+
+  toast(
+   'Stockage local indisponible'
   );
+
+ }
+
+ addItems(a);
+
+ saveSources();
+
+ $('fileForm')
+  .reset();
+
+ render();
+
+ toast(
+  a.length +
+  ' contenu(s) importé(s)'
+ );
+
 }
 
-/* =========================================================
-   SOURCES UI
-   ========================================================= */
+
+/* Flux direct */
+
+function direct(e){
+
+ e.preventDefault();
+
+ let id =
+  uid();
+
+ let kind =
+  $('directKind')
+   .value;
+
+ let c = {
+
+  id,
+
+  name:
+   $('directName')
+    .value
+    .trim(),
+
+  url:
+   $('directUrl')
+    .value
+    .trim(),
+
+  logo:
+   $('directLogo')
+    .value
+    .trim(),
+
+  kind,
+
+  sourceId:
+   id
+
+ };
+
+ let s = {
+
+  id,
+
+  name:
+   c.name,
+
+  type:
+   'direct',
+
+  enabled:
+   true,
+
+  count:
+   1,
+
+  kind
+
+ };
+
+ S.sources.push(
+  s
+ );
+
+ addItems([
+  c
+ ]);
+
+ saveSources();
+
+ $('directForm')
+  .reset();
+
+ render();
+
+ toast(
+  'Contenu ajouté'
+ );
+
+}
+
+
+/* Xtream */
+
+function xtream(e){
+
+ e.preventDefault();
+
+ let s = {
+
+  id:
+   uid(),
+
+  name:
+   $('xname')
+    .value
+    .trim(),
+
+  type:
+   'xtream',
+
+  server:
+   $('xserver')
+    .value
+    .trim(),
+
+  username:
+   $('xuser')
+    .value
+    .trim(),
+
+  enabled:
+   true,
+
+  count:
+   0,
+
+  configured:
+   true
+
+ };
+
+ S.sources.push(
+  s
+ );
+
+ saveSources();
+
+ $('xtreamForm')
+  .reset();
+
+ render();
+
+ toast(
+  'Profil Xtream enregistré'
+ );
+
+}
+
+
+/* Stalker/MAG */
+
+function stalker(e){
+
+ e.preventDefault();
+
+ let mac =
+  $('smac')
+   .value
+   .trim()
+   .toUpperCase();
+
+ if(
+  !/^([0-9A-F]{2}:){5}[0-9A-F]{2}$/
+   .test(mac)
+ ){
+
+  toast(
+   'MAC invalide : utilisez 00:1A:79:XX:XX:XX'
+  );
+
+  return;
+
+ }
+
+ let s = {
+
+  id:
+   uid(),
+
+  name:
+   $('sname')
+    .value
+    .trim(),
+
+  type:
+   'stalker',
+
+  portal:
+   $('sportal')
+    .value
+    .trim(),
+
+  mac,
+
+  model:
+   $('smodel')
+    .value,
+
+  enabled:
+   true,
+
+  count:
+   0,
+
+  configured:
+   true
+
+ };
+
+ S.sources.push(
+  s
+ );
+
+ saveSources();
+
+ $('stalkerForm')
+  .reset();
+
+ render();
+
+ toast(
+  'Profil Stalker/MAG enregistré'
+ );
+
+}
+
+
+$('urlForm').onsubmit =
+ addURL;
+
+$('fileForm').onsubmit =
+ addFile;
+
+$('directForm').onsubmit =
+ direct;
+
+$('xtreamForm').onsubmit =
+ xtream;
+
+$('stalkerForm').onsubmit =
+ stalker;
+
+
+/* Sources */
+
+function saveSources(){
+
+ save(
+  'nexworld_v73_sources',
+  S.sources
+ );
+
+}
+
 
 function renderSources(){
-  const el = $('sourcesList');
 
-  if(!el) return;
+ let e =
+  $('sourceList');
 
-  el.innerHTML = '';
+ e.innerHTML =
+  S.sources.length
 
-  if(!state.sources.length){
-    el.innerHTML = `
-      <div class="empty">
-        Aucune source personnelle.
-      </div>
-    `;
-    return;
-  }
+   ? S.sources
+      .map(
+       s =>
+        `<div class="source">
 
-  state.sources.forEach(source=>{
-    const row = document.createElement('div');
-    row.className = 'source-item';
+          <div>📡</div>
 
-    row.innerHTML = `
-      <div class="source-icon">📡</div>
+          <div class="sourceinfo">
 
-      <div class="source-info">
-        <b>${escapeHtml(source.name || 'Source')}</b>
-        <span>
-          ${sourceTypeLabel(source.type)}
-          • ${Number(source.count || 0)} élément(s)
-        </span>
-      </div>
+           <b>
+            ${esc(s.name)}
+           </b>
 
-      <button
-        class="switch ${source.enabled !== false ? 'on' : ''}"
-        aria-label="Activer ou désactiver">
-        <i></i>
-      </button>
+           <small>
+            ${esc(s.type)}
+            •
+            ${s.count || 0}
+            contenu(s)
 
-      <button class="btn delete-source">
-        ✕
-      </button>
-    `;
-
-    row.querySelector('.switch').onclick =
-      async () => {
-        source.enabled =
-          source.enabled === false;
-
-        persistSources();
-
-        if(source.enabled){
-          if(source.type === 'url'){
-            await loadUrlSource(source);
-          }else if(source.type === 'direct'){
-            await loadDirectSource(source);
-          }else if(source.type === 'file'){
-            try{
-              const record =
-                await dbGetPlaylist(source.id);
-
-              if(record){
-                const parsed =
-                  parseM3U(
-                    record.content || '',
-                    source.id
-                  );
-
-                state.channels =
-                  uniqueChannels(
-                    state.channels.concat(parsed)
-                  );
-              }
-            }catch(err){
-              console.warn(err);
+            ${
+             s.type === 'stalker'
+              ? ' • ' +
+                esc(s.mac)
+              : ''
             }
-          }
-        }else{
-          state.channels =
-            state.channels.filter(
-              c => c.sourceId !== source.id
-            );
-        }
-
-        renderSources();
-        renderCountryFilters();
-        renderCatalog();
-        updateStats();
-      };
-
-    row.querySelector('.delete-source').onclick =
-      async () => {
-        if(!confirm(
-          'Supprimer cette source ?'
-        )){
-          return;
-        }
-
-        state.channels =
-          state.channels.filter(
-            c => c.sourceId !== source.id
-          );
-
-        state.sources =
-          state.sources.filter(
-            s => s.id !== source.id
-          );
-
-        if(source.type === 'file'){
-          try{
-            await dbDeletePlaylist(source.id);
-          }catch(err){
-            console.warn(err);
-          }
-        }
-
-        persistSources();
-        renderSources();
-        renderCountryFilters();
-        renderCatalog();
-        updateStats();
-
-        toast('Source supprimée');
-      };
-
-    el.appendChild(row);
-  });
-}
-
-/* =========================================================
-   ADD SOURCE
-   ========================================================= */
-
-async function addUrlSource(event){
-  event.preventDefault();
-
-  const name =
-    $('urlName').value.trim();
-
-  const url =
-    $('urlValue').value.trim();
-
-  if(!name || !url){
-    toast('Complétez les champs');
-    return;
-  }
-
-  const source = {
-    id: uid('src'),
-    name,
-    type: 'url',
-    url,
-    enabled:true,
-    count:0,
-    createdAt:Date.now()
-  };
-
-  state.sources.push(source);
-  persistSources();
-
-  await loadUrlSource(source);
-
-  $('urlForm').reset();
-
-  renderSources();
-  renderCountryFilters();
-  renderCatalog();
-  updateStats();
-
-  toast('Source ajoutée');
-}
-
-async function addFileSource(event){
-  event.preventDefault();
-
-  const input = $('m3uFile');
-  const file = input.files[0];
-
-  if(!file){
-    toast('Sélectionnez une playlist M3U');
-    return;
-  }
-
-  const name =
-    $('fileName').value.trim() ||
-    file.name;
-
-  const content =
-    await file.text();
-
-  const source = {
-    id: uid('src'),
-    name,
-    type:'file',
-    enabled:true,
-    count:0,
-    createdAt:Date.now()
-  };
-
-  const parsed =
-    parseM3U(
-      content,
-      source.id
-    );
-
-  source.count = parsed.length;
-
-  state.sources.push(source);
-
-  try{
-    await dbPutPlaylist({
-      id:source.id,
-      name,
-      content,
-      createdAt:Date.now()
-    });
-  }catch(err){
-    console.warn(err);
-    toast(
-      'Stockage local indisponible'
-    );
-  }
-
-  state.channels =
-    uniqueChannels(
-      state.channels.concat(parsed)
-    );
-
-  persistSources();
-
-  $('fileForm').reset();
-
-  renderSources();
-  renderCountryFilters();
-  renderCatalog();
-  updateStats();
-
-  toast(
-    parsed.length +
-    ' chaîne(s) importée(s)'
-  );
-}
-
-function addDirectSource(event){
-  event.preventDefault();
-
-  const name =
-    $('directName').value.trim();
-
-  const url =
-    $('directUrl').value.trim();
-
-  const logo =
-    $('directLogo').value.trim();
-
-  if(!name || !url){
-    toast('Complétez les champs');
-    return;
-  }
-
-  const source = {
-    id:uid('src'),
-    name,
-    type:'direct',
-    url,
-    logo,
-    enabled:true,
-    count:1,
-    createdAt:Date.now()
-  };
-
-  state.sources.push(source);
-
-  state.channels =
-    uniqueChannels(
-      state.channels.concat([
-        normalizeChannel({
-          id:source.id,
-          name,
-          logo,
-          sourceId:source.id,
-          url
-        })
-      ])
-    );
-
-  persistSources();
-
-  $('directForm').reset();
-
-  renderSources();
-  renderCountryFilters();
-  renderCatalog();
-  updateStats();
-
-  toast('Flux ajouté');
-}
-
-function saveXtream(event){
-  event.preventDefault();
-
-  const name =
-    $('xtreamName').value.trim();
-
-  const server =
-    $('xtreamServer').value.trim();
-
-  const username =
-    $('xtreamUser').value.trim();
-
-  const password =
-    $('xtreamPass').value;
-
-  if(!name || !server || !username || !password){
-    toast('Complétez tous les champs');
-    return;
-  }
-
-  /*
-   * IMPORTANT :
-   * Le mot de passe n'est pas sauvegardé dans localStorage.
-   * La connexion réelle sera faite via backend sécurisé.
-   */
-
-  const source = {
-    id:uid('src'),
-    name,
-    type:'xtream',
-    server,
-    username,
-    enabled:true,
-    count:0,
-    configured:true,
-    createdAt:Date.now()
-  };
-
-  state.sources.push(source);
-  persistSources();
-
-  $('xtreamForm').reset();
-
-  renderSources();
-  updateStats();
-
-  toast(
-    'Profil Xtream enregistré'
-  );
-}
-
-function saveStalker(event){
-  event.preventDefault();
-
-  const name =
-    $('stalkerName').value.trim();
-
-  const portal =
-    $('stalkerPortal').value.trim();
-
-  const mac =
-    $('stalkerMac').value.trim();
-
-  const model =
-    $('stalkerModel').value;
-
-  if(!name || !portal || !mac){
-    toast('Complétez les champs');
-    return;
-  }
-
-  const source = {
-    id:uid('src'),
-    name,
-    type:'stalker',
-    portal,
-    mac,
-    model,
-    enabled:true,
-    count:0,
-    configured:true,
-    createdAt:Date.now()
-  };
-
-  state.sources.push(source);
-  persistSources();
-
-  $('stalkerForm').reset();
-
-  renderSources();
-  updateStats();
-
-  toast(
-    'Profil Stalker/MAG enregistré'
-  );
-}
-
-async function testStalker(){
-  const portal =
-    $('stalkerPortal').value.trim();
-
-  const mac =
-    $('stalkerMac').value.trim();
-
-  if(!portal || !mac){
-    toast('Entrez le portail et la MAC');
-    return;
-  }
-
-  /*
-   * Test léger uniquement.
-   * Un vrai handshake Stalker nécessite
-   * généralement cookies + headers + backend.
-   */
-
-  const base =
-    portal.replace(/\/+$/,'');
-
-  const candidates = [
-    base + '/portal.php?type=stb&action=handshake',
-    base + '/server/load.php?type=stb&action=handshake'
-  ];
-
-  toast('Test du portail...');
-
-  for(const url of candidates){
-    try{
-      const response =
-        await fetch(url,{
-          method:'GET',
-          mode:'cors',
-          cache:'no-store'
-        });
-
-      if(response.ok){
-        toast(
-          'Portail accessible. Authentification complète à faire via backend.'
+
+           </small>
+
+          </div>
+
+          <button
+           class="switch ${
+            s.enabled !== false
+             ? 'on'
+             : ''
+           }"
+           data-toggle="${s.id}"
+          >
+           <i></i>
+          </button>
+
+          <button
+           class="btn"
+           data-del="${s.id}"
+          >
+           ✕
+          </button>
+
+        </div>`
+      )
+      .join('')
+
+   : `<div class="empty">
+       Aucune source personnelle.
+      </div>`;
+
+
+ e.querySelectorAll(
+  '[data-del]'
+ )
+ .forEach(
+  b =>
+   b.onclick =
+    async () => {
+
+     let s =
+      S.sources.find(
+       x =>
+        x.id ===
+        b.dataset.del
+      );
+
+     S.sources =
+      S.sources.filter(
+       x =>
+        x.id !==
+        b.dataset.del
+      );
+
+     S.tv =
+      S.tv.filter(
+       x =>
+        x.sourceId !==
+        b.dataset.del
+      );
+
+     S.movies =
+      S.movies.filter(
+       x =>
+        x.sourceId !==
+        b.dataset.del
+      );
+
+     S.series =
+      S.series.filter(
+       x =>
+        x.sourceId !==
+        b.dataset.del
+      );
+
+     if(
+      s?.type === 'file'
+     ){
+
+      try{
+
+       await dbdel(
+        s.id
+       );
+
+      }catch(e){}
+
+     }
+
+     saveSources();
+
+     render();
+
+    }
+ );
+
+
+ e.querySelectorAll(
+  '[data-toggle]'
+ )
+ .forEach(
+  b =>
+   b.onclick =
+    async () => {
+
+     let s =
+      S.sources.find(
+       x =>
+        x.id ===
+        b.dataset.toggle
+      );
+
+     if(!s)
+      return;
+
+     s.enabled =
+      s.enabled === false;
+
+     if(
+      !s.enabled
+     ){
+
+      S.tv =
+       S.tv.filter(
+        x =>
+         x.sourceId !==
+         s.id
+       );
+
+      S.movies =
+       S.movies.filter(
+        x =>
+         x.sourceId !==
+         s.id
+       );
+
+      S.series =
+       S.series.filter(
+        x =>
+         x.sourceId !==
+         s.id
+       );
+
+     }
+
+     else if(
+      s.type === 'file'
+     ){
+
+      try{
+
+       let d =
+        await dbget(
+         s.id
         );
-        return;
-      }
-    }catch(err){
-      console.warn(
-        'Stalker test',
-        url,
-        err
-      );
-    }
-  }
 
-  toast(
-    'Test bloqué par CORS ou authentification du portail'
-  );
-}
+       if(d){
 
-/* =========================================================
-   PLAYER
-   ========================================================= */
-
-function playChannel(channel){
-  if(!channel || !channel.url){
-    toast('Flux indisponible');
-    return;
-  }
-
-  addHistory(channel);
-
-  const modal = $('playerModal');
-  const video = $('video');
-
-  $('playerTitle').textContent =
-    channel.name;
-
-  $('playerInfo').textContent =
-    [
-      channel.country
-        ? getCountryName(
-            countryCode(channel.country)
-          )
-        : 'International',
-      channel.group || '',
-      channel.language || ''
-    ]
-    .filter(Boolean)
-    .join(' • ');
-
-  video.pause();
-  video.removeAttribute('src');
-  video.load();
-
-  video.src = channel.url;
-
-  modal.classList.add('show');
-
-  video.play().catch(err=>{
-    console.warn(
-      'Autoplay bloqué',
-      err
-    );
-
-    toast(
-      'Appuyez sur lecture pour démarrer'
-    );
-  });
-
-  renderHistory();
-}
-
-function closePlayer(){
-  const video = $('video');
-
-  video.pause();
-  video.removeAttribute('src');
-  video.load();
-
-  $('playerModal')
-    .classList.remove('show');
-}
-
-async function fullscreen(){
-  const video = $('video');
-
-  try{
-    if(document.fullscreenElement){
-      await document.exitFullscreen();
-    }else if(video.requestFullscreen){
-      await video.requestFullscreen();
-    }else if(video.webkitEnterFullscreen){
-      video.webkitEnterFullscreen();
-    }
-  }catch(err){
-    console.warn(err);
-  }
-}
-
-/* =========================================================
-   NAVIGATION
-   ========================================================= */
-
-function setView(view){
-  state.view = view;
-
-  [
-    'home',
-    'favorites',
-    'history',
-    'sources'
-  ].forEach(name=>{
-    const el =
-      $('view-' + name);
-
-    if(el){
-      el.classList.toggle(
-        'hidden',
-        name !== view
-      );
-    }
-  });
-
-  document
-    .querySelectorAll('.nav')
-    .forEach(btn=>{
-      btn.classList.toggle(
-        'active',
-        btn.dataset.view === view
-      );
-    });
-
-  if(view === 'favorites'){
-    renderFavorites();
-  }
-
-  if(view === 'history'){
-    renderHistory();
-  }
-
-  if(view === 'sources'){
-    renderSources();
-  }
-
-  window.scrollTo({
-    top:0,
-    behavior:'smooth'
-  });
-}
-
-/* =========================================================
-   STATS
-   ========================================================= */
-
-function updateStats(){
-  $('statChannels').textContent =
-    state.channels.length
-      .toLocaleString('fr-FR');
-
-  $('statFavorites').textContent =
-    state.favorites.length;
-
-  $('statSources').textContent =
-    1 + state.sources.length;
-
-  $('statCountries').textContent =
-    countriesAvailable().length;
-}
-
-function setStatus(text){
-  $('status').textContent = text;
-}
-
-/* =========================================================
-   HELPERS
-   ========================================================= */
-
-function escapeHtml(value){
-  return String(value ?? '')
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/'/g,'&#039;');
-}
-
-/* =========================================================
-   EVENTS
-   ========================================================= */
-
-$('searchInput').addEventListener(
-  'input',
-  event=>{
-    state.search =
-      event.target.value || '';
-
-    renderCatalog();
-  }
-);
-
-document
-  .querySelectorAll('.nav')
-  .forEach(btn=>{
-    btn.addEventListener(
-      'click',
-      ()=>{
-        setView(
-          btn.dataset.view
+        addItems(
+         parseM3U(
+          d.content,
+          s.id
+         )
         );
-      }
-    );
-  });
 
-document
-  .querySelectorAll('.source-tab')
-  .forEach(tab=>{
-    tab.addEventListener(
-      'click',
-      ()=>{
-        document
-          .querySelectorAll('.source-tab')
-          .forEach(x =>
-            x.classList.remove('active')
-          );
+       }
 
-        tab.classList.add('active');
+      }catch(e){}
 
-        document
-          .querySelectorAll('.source-form')
-          .forEach(form=>{
-            form.classList.add('hidden');
-          });
+     }
 
-        const target =
-          $('sourceForm-' +
-            tab.dataset.sourceTab);
+     else if(
+      s.type === 'direct'
+     ){
 
-        if(target){
-          target.classList.remove('hidden');
-        }
-      }
-    );
-  });
+      addItems([
+       {
+        id:s.id,
+        name:s.name,
+        url:s.url,
+        logo:s.logo || '',
+        kind:s.kind || 'tv',
+        sourceId:s.id
+       }
+      ]);
 
-$('urlForm').addEventListener(
-  'submit',
-  addUrlSource
-);
+     }
 
-$('fileForm').addEventListener(
-  'submit',
-  addFileSource
-);
+     else if(
+      s.type === 'url'
+     ){
 
-$('directForm').addEventListener(
-  'submit',
-  addDirectSource
-);
+      try{
 
-$('xtreamForm').addEventListener(
-  'submit',
-  saveXtream
-);
+       let r =
+        await fetch(
+         s.url
+        );
 
-$('stalkerForm').addEventListener(
-  'submit',
-  saveStalker
-);
+       addItems(
+        parseM3U(
+         await r.text(),
+         s.id
+        )
+       );
 
-$('testStalkerBtn').addEventListener(
-  'click',
-  testStalker
-);
+      }catch(e){}
 
-$('closePlayer').addEventListener(
-  'click',
-  closePlayer
-);
+     }
 
-$('fullscreenBtn').addEventListener(
-  'click',
-  fullscreen
-);
+     saveSources();
 
-$('playerModal').addEventListener(
-  'click',
-  event=>{
-    if(event.target === $('playerModal')){
-      closePlayer();
+     render();
+
     }
-  }
-);
+ );
 
-/* =========================================================
-   BOOT
-   ========================================================= */
+}
+
+
+/* Restauration */
+
+async function loadSaved(){
+
+ S.favorites =
+  load(
+   'nexworld_v73_fav',
+   []
+  );
+
+ S.history =
+  load(
+   'nexworld_v73_hist',
+   []
+  );
+
+ S.sources =
+  load(
+   'nexworld_v73_sources',
+   []
+  )
+  .map(
+   x => ({
+    ...x,
+    enabled:
+     x.enabled !== false
+   })
+  );
+
+
+ for(
+  let s
+  of S.sources
+   .filter(
+    x =>
+     x.enabled !== false
+   )
+ ){
+
+  if(
+   s.type === 'file'
+  ){
+
+   try{
+
+    let d =
+     await dbget(
+      s.id
+     );
+
+    if(d){
+
+     addItems(
+      parseM3U(
+       d.content,
+       s.id
+      )
+     );
+
+    }
+
+   }catch(e){}
+
+  }
+
+
+  if(
+   s.type === 'direct'
+  ){
+
+   addItems([
+    {
+     id:s.id,
+     name:s.name,
+     url:s.url,
+     logo:s.logo || '',
+     kind:s.kind || 'tv',
+     sourceId:s.id
+    }
+   ]);
+
+  }
+
+
+  if(
+   s.type === 'url'
+  ){
+
+   try{
+
+    let r =
+     await fetch(
+      s.url
+     );
+
+    addItems(
+     parseM3U(
+      await r.text(),
+      s.id
+     )
+    );
+
+   }catch(e){}
+
+  }
+
+ }
+
+}
+
+
+/* Démarrage */
 
 async function boot(){
-  try{
-    setStatus('Initialisation...');
 
-    state.favorites =
-      read(
-        'nexworld_v7_favorites',
-        []
-      );
+ try{
 
-    state.history =
-      read(
-        'nexworld_v7_history',
-        []
-      );
+  $('status')
+   .textContent =
+   'Catalogue mondial...';
 
-    state.sources =
-      read(
-        'nexworld_v7_sources',
-        []
-      ).map(source=>({
-        ...source,
-        enabled:
-          source.enabled !== false
-      }));
+  let [
+   ct,
+   res
+  ] =
+   await Promise.all([
 
-    renderRegionFilters();
-    renderCountryFilters();
-    renderFavorites();
-    renderHistory();
-    renderSources();
-    updateStats();
+    fetch(
+     COUNTRIES
+    )
+    .then(
+     x =>
+      x.json()
+    ),
 
-    await loadMeta();
+    fetch(
+     WORLD
+    )
 
-    await loadWorld();
+   ]);
 
-    /*
-     * Les sources personnelles sont chargées
-     * après le catalogue mondial.
-     */
-    await loadSavedSources();
+  for(
+   let x
+   of ct
+  ){
 
-    renderRegionFilters();
-    renderCountryFilters();
-    renderCatalog();
-    renderFavorites();
-    renderHistory();
-    renderSources();
-    updateStats();
+   if(x.code){
 
-    setStatus('En ligne');
-
-  }catch(err){
-    console.error(
-      'Erreur boot NEXWORLD',
-      err
+    S.countries.set(
+     x.code.toUpperCase(),
+     x
     );
 
-    setStatus('Erreur');
+   }
 
-    toast(
-      'Erreur d’initialisation'
-    );
   }
-}
 
-window.addEventListener(
-  'error',
-  event=>{
-    console.error(
-      'NEXWORLD error',
-      event.error || event.message
-    );
-  }
-);
-
-window.addEventListener(
-  'unhandledrejection',
-  event=>{
-    console.error(
-      'NEXWORLD promise',
-      event.reason
-    );
-  }
-);
-
-if(
-  document.readyState === 'loading'
-){
-  document.addEventListener(
-    'DOMContentLoaded',
-    boot,
-    {once:true}
+  addItems(
+   parseM3U(
+    await res.text()
+   )
   );
-}else{
-  boot();
+
+  await loadSaved();
+
+  $('status')
+   .textContent =
+   'En ligne';
+
+  render();
+
+ }catch(e){
+
+  console.error(e);
+
+  $('status')
+   .textContent =
+   'Erreur';
+
+  toast(
+   'Le catalogue mondial n’a pas pu être chargé'
+  );
+
+ }
+
 }
+
+
+boot();
 
 </script>
 
