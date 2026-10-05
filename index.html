@@ -1,802 +1,3570 @@
-/* NEXWORLD — Firebase Auth
-   Version corrigée : le panneau Compte est FERMÉ au démarrage.
-   Le moteur TV et les données NEXWORLD ne sont pas touchés.
-*/
-(function(){
-  'use strict';
-
-  const FIREBASE_CONFIG = {
-    apiKey: 'AIzaSyDyxcMxY0KX8EI_Al-zF1LvlTBapDnbDXQ',
-    authDomain: 'nexworld-tv.firebaseapp.com',
-    projectId: 'nexworld-tv',
-    storageBucket: 'nexworld-tv.firebasestorage.app',
-    messagingSenderId: '262610525162',
-    appId: '1:262610525162:web:b49643340dcd0fb7bb7093'
-  };
-
-  const XTREAM_ENDPOINT = '/.netlify/functions/xtream';
-  const BOOTSTRAP_ENDPOINT = '/.netlify/functions/bootstrap-admin';
-
-  let app = null;
-  let auth = null;
-  let initialized = false;
-  let panel = null;
-  let toggleButton = null;
-
-  function $(id){
-    return document.getElementById(id);
-  }
-
-  function setMessage(message, ok){
-    const el = $('nx-auth-message');
-    if(!el) return;
-
-    el.textContent = message || '';
-    el.style.display = message ? 'block' : 'none';
-    el.style.borderColor = ok
-      ? 'rgba(52,211,153,.45)'
-      : 'rgba(248,113,113,.35)';
-  }
-
-  function ensureFirebase(){
-    if(initialized) return true;
-
-    if(!window.firebase){
-      setMessage('Firebase n’est pas chargé. Rechargez la page.', false);
-      return false;
-    }
-
-    try{
-      app = window.firebase.apps && window.firebase.apps.length
-        ? window.firebase.app()
-        : window.firebase.initializeApp(FIREBASE_CONFIG);
-
-      auth = window.firebase.auth();
-      initialized = true;
-
-      auth.onAuthStateChanged(renderAuthState);
-
-      return true;
-    }catch(err){
-      console.error('[NEXWORLD] Firebase:', err);
-      setMessage(
-        'Impossible d’initialiser le compte NEXWORLD.',
-        false
-      );
-      return false;
-    }
-  }
-
-  function openPanel(){
-    if(!panel) return;
-
-    panel.hidden = false;
-    panel.setAttribute('aria-hidden','false');
-
-    if(toggleButton){
-      toggleButton.setAttribute('aria-expanded','true');
-    }
-
-    ensureFirebase();
-  }
-
-  function closePanel(){
-    if(!panel) return;
-
-    panel.hidden = true;
-    panel.setAttribute('aria-hidden','true');
-
-    if(toggleButton){
-      toggleButton.setAttribute('aria-expanded','false');
-    }
-  }
-
-  function togglePanel(){
-    if(!panel) return;
-
-    if(panel.hidden){
-      openPanel();
-    }else{
-      closePanel();
-    }
-  }
-
-  function renderAuthState(user){
-    const status = $('nx-auth-status');
-    const logout = $('nx-logout');
-    const signIn = $('nx-signin');
-    const create = $('nx-create');
-    const reset = $('nx-reset');
-    const email = $('nx-email');
-    const password = $('nx-password');
-    const admin = $('nx-admin');
-
-    if(user){
-
-      if(status){
-        status.textContent =
-          'Connecté : ' + (user.email || user.uid);
-      }
-
-      if(logout) logout.style.display = 'block';
-      if(signIn) signIn.style.display = 'none';
-      if(create) create.style.display = 'none';
-      if(reset) reset.style.display = 'none';
-      if(admin) admin.style.display = 'block';
-
-      if(email){
-        email.value = user.email || '';
-      }
-
-      if(password){
-        password.value = '';
-      }
-
-      setMessage('Compte connecté.', true);
-
-      if(toggleButton){
-        toggleButton.textContent = '👤 Compte ✓';
-      }
-
-    }else{
-
-      if(status){
-        status.textContent = 'Aucun compte connecté.';
-      }
-
-      if(logout) logout.style.display = 'none';
-      if(signIn) signIn.style.display = 'block';
-      if(create) create.style.display = 'block';
-      if(reset) reset.style.display = 'block';
-      if(admin) admin.style.display = 'block';
-
-      if(toggleButton){
-        toggleButton.textContent = '👤 Compte';
-      }
-    }
-  }
-
-  async function signIn(){
-    if(!ensureFirebase()) return;
-
-    const email = $('nx-email')?.value.trim();
-    const password = $('nx-password')?.value;
-
-    if(!email || !password){
-      setMessage(
-        'Saisissez votre e-mail et votre mot de passe.',
-        false
-      );
-      return;
-    }
-
-    setMessage('Connexion…', true);
-
-    try{
-      await auth.signInWithEmailAndPassword(
-        email,
-        password
-      );
-
-      setMessage('Connexion réussie.', true);
-
-    }catch(err){
-      console.error(err);
-      setMessage(firebaseError(err), false);
-    }
-  }
-
-  async function createAccount(){
-    if(!ensureFirebase()) return;
-
-    const email = $('nx-email')?.value.trim();
-    const password = $('nx-password')?.value;
-
-    if(!email || !password){
-      setMessage(
-        'Saisissez un e-mail et un mot de passe.',
-        false
-      );
-      return;
-    }
-
-    if(password.length < 6){
-      setMessage(
-        'Le mot de passe doit contenir au moins 6 caractères.',
-        false
-      );
-      return;
-    }
-
-    setMessage('Création du compte…', true);
-
-    try{
-      await auth.createUserWithEmailAndPassword(
-        email,
-        password
-      );
-
-      setMessage(
-        'Compte créé et connecté.',
-        true
-      );
-
-    }catch(err){
-      console.error(err);
-      setMessage(firebaseError(err), false);
-    }
-  }
-
-  async function resetPassword(){
-    if(!ensureFirebase()) return;
-
-    const email = $('nx-email')?.value.trim();
-
-    if(!email){
-      setMessage(
-        'Saisissez d’abord votre adresse e-mail.',
-        false
-      );
-      return;
-    }
-
-    try{
-      await auth.sendPasswordResetEmail(email);
-
-      setMessage(
-        'E-mail de réinitialisation envoyé.',
-        true
-      );
-
-    }catch(err){
-      console.error(err);
-      setMessage(firebaseError(err), false);
-    }
-  }
-
-  async function logout(){
-    if(!ensureFirebase()) return;
-
-    try{
-      await auth.signOut();
-
-      setMessage(
-        'Vous êtes déconnecté.',
-        true
-      );
-
-    }catch(err){
-      console.error(err);
-
-      setMessage(
-        'Déconnexion impossible.',
-        false
-      );
-    }
-  }
-
-  async function activateSuperAdmin(){
-    if(!ensureFirebase()) return;
-
-    const user = auth.currentUser;
-
-    if(!user){
-      setMessage(
-        'Connectez-vous d’abord avec le compte administrateur.',
-        false
-      );
-      return;
-    }
-
-    if(!confirm(
-      'Activer les droits Super Admin pour ce compte ?'
-    )){
-      return;
-    }
-
-    setMessage(
-      'Vérification Super Admin…',
-      true
-    );
-
-    try{
-
-      const token = await user.getIdToken(true);
-
-      const response = await fetch(
-        BOOTSTRAP_ENDPOINT,
-        {
-          method:'POST',
-          headers:{
-            'Content-Type':'application/json',
-            'Authorization':'Bearer ' + token
-          },
-          body:JSON.stringify({})
-        }
-      );
-
-      const data =
-        await response.json().catch(
-          ()=>({})
-        );
-
-      if(!response.ok || data.ok === false){
-        throw new Error(
-          data.error ||
-          'Activation refusée.'
-        );
-      }
-
-      setMessage(
-        data.message ||
-        'Super Admin activé.',
-        true
-      );
-
-    }catch(err){
-
-      console.error(err);
-
-      setMessage(
-        err.message ||
-        'Activation Super Admin impossible.',
-        false
-      );
-    }
-  }
-
-  async function getToken(){
-
-    if(
-      !ensureFirebase() ||
-      !auth.currentUser
-    ){
-      throw new Error(
-        'Compte NEXWORLD non connecté.'
-      );
-    }
-
-    return auth.currentUser.getIdToken(true);
-  }
-
-  async function secureRequest(payload){
-
-    const token = await getToken();
-
-    const response = await fetch(
-      XTREAM_ENDPOINT,
-      {
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json',
-          'Authorization':'Bearer ' + token
-        },
-        body:JSON.stringify(
-          payload || {}
-        )
-      }
-    );
-
-    const data =
-      await response.json().catch(
-        ()=>({
-          ok:false,
-          error:'Réponse serveur invalide.'
-        })
-      );
-
-    if(
-      !response.ok ||
-      data.ok === false
-    ){
-      throw new Error(
-        data.error ||
-        'Requête sécurisée refusée.'
-      );
-    }
-
-    return data;
-  }
-
-  function firebaseError(err){
-
-    const code =
-      String(err?.code || '');
-
-    const map = {
-
-      'auth/invalid-email':
-        'Adresse e-mail invalide.',
-
-      'auth/user-not-found':
-        'Compte introuvable.',
-
-      'auth/wrong-password':
-        'Mot de passe incorrect.',
-
-      'auth/invalid-credential':
-        'E-mail ou mot de passe incorrect.',
-
-      'auth/email-already-in-use':
-        'Cette adresse e-mail est déjà utilisée.',
-
-      'auth/weak-password':
-        'Mot de passe trop faible.',
-
-      'auth/too-many-requests':
-        'Trop de tentatives. Réessayez plus tard.'
-    };
-
-    return (
-      map[code] ||
-      err?.message ||
-      'Opération Firebase impossible.'
-    );
-  }
-
-  function injectStyles(){
-
-    if($('nx-auth-styles')) return;
-
-    const style =
-      document.createElement('style');
-
-    style.id = 'nx-auth-styles';
-
-    style.textContent = `
-
-      #nx-account-toggle{
-        position:fixed;
-        top:14px;
-        right:14px;
-        z-index:9998;
-        border:1px solid rgba(255,255,255,.14);
-        border-radius:999px;
-        padding:10px 14px;
-        background:rgba(15,23,42,.92);
-        color:#fff;
-        font:700 14px system-ui,sans-serif;
-        box-shadow:0 8px 30px rgba(0,0,0,.28);
-        backdrop-filter:blur(14px);
-        cursor:pointer;
-      }
-
-      #nx-account-panel[hidden]{
-        display:none!important
-      }
-
-      #nx-account-panel{
-        position:fixed;
-        inset:0;
-        z-index:9999;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        padding:18px;
-        background:rgba(2,6,23,.68);
-        backdrop-filter:blur(8px);
-      }
-
-      #nx-account-card{
-        width:min(430px,100%);
-        max-height:90vh;
-        overflow:auto;
-        border:1px solid rgba(255,255,255,.12);
-        border-radius:26px;
-        padding:22px;
-        background:#111a2d;
-        color:#fff;
-        box-shadow:0 24px 80px rgba(0,0,0,.45);
-        font-family:system-ui,sans-serif;
-      }
-
-      #nx-account-card h2{
-        margin:0 0 5px;
-        font-size:26px;
-      }
-
-      #nx-account-card p{
-        color:#aab5ca;
-        margin:6px 0 16px;
-      }
-
-      #nx-account-card input{
-        box-sizing:border-box;
-        width:100%;
-        margin:7px 0;
-        padding:15px;
-        border-radius:16px;
-        border:1px solid rgba(255,255,255,.12);
-        background:#202b40;
-        color:#fff;
-        font-size:16px;
-        outline:none;
-      }
-
-      #nx-account-card button{
-        box-sizing:border-box;
-        width:100%;
-        margin-top:9px;
-        padding:14px;
-        border:0;
-        border-radius:15px;
-        font-size:15px;
-        font-weight:800;
-        cursor:pointer;
-      }
-
-      #nx-signin{
-        background:#11b9d5;
-        color:#06111c;
-      }
-
-      #nx-create,
-      #nx-reset,
-      #nx-logout{
-        background:#29354c;
-        color:#fff;
-      }
-
-      #nx-admin{
-        background:#a855f7;
-        color:#fff;
-      }
-
-      #nx-close{
-        background:#172238;
-        color:#cbd5e1;
-      }
-
-      #nx-auth-status,
-      #nx-auth-message{
-        margin-top:12px;
-        padding:12px 14px;
-        border-radius:14px;
-        background:#202b40;
-        color:#e2e8f0;
-        font-size:14px;
-      }
-
-      #nx-auth-message{
-        display:none;
-        border:1px solid rgba(52,211,153,.45);
-      }
-    `;
-
-    document.head.appendChild(style);
-  }
-
-  function injectUI(){
-
-    if($('nx-account-panel')) return;
-
-    injectStyles();
-
-    toggleButton =
-      document.createElement('button');
-
-    toggleButton.id =
-      'nx-account-toggle';
-
-    toggleButton.type =
-      'button';
-
-    toggleButton.textContent =
-      '👤 Compte';
-
-    toggleButton.setAttribute(
-      'aria-expanded',
-      'false'
-    );
-
-    toggleButton.addEventListener(
-      'click',
-      togglePanel
-    );
-
-    document.body.appendChild(
-      toggleButton
-    );
-
-    panel =
-      document.createElement('div');
-
-    panel.id =
-      'nx-account-panel';
-
-    /* IMPORTANT : fermé par défaut */
-    panel.hidden = true;
-
-    panel.setAttribute(
-      'aria-hidden',
-      'true'
-    );
-
-    panel.innerHTML = `
-
-      <div
-        id="nx-account-card"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="nx-account-title"
-      >
-
-        <h2 id="nx-account-title">
-          Compte NEXWORLD
-        </h2>
-
-        <p>
-          Connexion sécurisée
-        </p>
-
-        <input
-          id="nx-email"
-          type="email"
-          autocomplete="email"
-          placeholder="Adresse e-mail"
-        >
-
-        <input
-          id="nx-password"
-          type="password"
-          autocomplete="current-password"
-          placeholder="Mot de passe"
-        >
-
-        <button
-          id="nx-signin"
-          type="button"
-        >
-          Se connecter
-        </button>
-
-        <button
-          id="nx-create"
-          type="button"
-        >
-          Créer un compte
-        </button>
-
-        <button
-          id="nx-reset"
-          type="button"
-        >
-          Mot de passe oublié
-        </button>
-
-        <button
-          id="nx-admin"
-          type="button"
-        >
-          Activer Super Admin
-        </button>
-
-        <button
-          id="nx-logout"
-          type="button"
-        >
-          Déconnexion
-        </button>
-
-        <div id="nx-auth-status">
-          Aucun compte connecté.
-        </div>
-
-        <div id="nx-auth-message"></div>
-
-        <button
-          id="nx-close"
-          type="button"
-        >
-          Fermer
-        </button>
-
-      </div>
-    `;
-
-    document.body.appendChild(
-      panel
-    );
-
-    $('nx-signin')
-      .addEventListener(
-        'click',
-        signIn
-      );
-
-    $('nx-create')
-      .addEventListener(
-        'click',
-        createAccount
-      );
-
-    $('nx-reset')
-      .addEventListener(
-        'click',
-        resetPassword
-      );
-
-    $('nx-admin')
-      .addEventListener(
-        'click',
-        activateSuperAdmin
-      );
-
-    $('nx-logout')
-      .addEventListener(
-        'click',
-        logout
-      );
-
-    $('nx-close')
-      .addEventListener(
-        'click',
-        closePanel
-      );
-
-    panel.addEventListener(
-      'click',
-      e=>{
-        if(e.target===panel){
-          closePanel();
-        }
-      }
-    );
-
-    document.addEventListener(
-      'keydown',
-      e=>{
-        if(e.key==='Escape'){
-          closePanel();
-        }
-      }
-    );
-
-    ensureFirebase();
-  }
-
-  function init(){
-
-    injectUI();
-
-    /*
-      IMPORTANT :
-      le panneau Compte reste fermé
-      au démarrage de NEXWORLD.
-    */
-    closePanel();
-  }
-
-  window.NEXWORLD_AUTH = {
-
-    initFirebaseAuth:init,
-
-    signInNexworld:signIn,
-
-    signOutNexworld:logout,
-
-    getNexworldIdToken:getToken,
-
-    xtreamSecureRequest:secureRequest,
-
-    openAccount:openPanel,
-
-    closeAccount:closePanel
-  };
-
-  if(
-    document.readyState === 'loading'
-  ){
-
-    document.addEventListener(
-      'DOMContentLoaded',
-      init,
-      {once:true}
-    );
-
-  }else{
-
-    init();
-  }
-
-})();
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0F172A">
+<title>NEXWORLD V7.2</title>
+
+<!-- NEXWORLD — Firebase Authentication -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+
+<style>
+:root{
+--bg:#0F172A;
+--panel:#111c31;
+--panel2:#16233b;
+--line:#263653;
+--text:#f4f7fb;
+--muted:#94a3b8;
+--accent:#22d3ee;
+--green:#34d399;
+--amber:#fbbf24;
+--pink:#f472b6;
+--danger:#fb7185;
+--radius:18px
+}
+
+*{box-sizing:border-box}
+
+html,body{
+margin:0;
+background:var(--bg);
+color:var(--text);
+font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif
+}
+
+body{
+min-height:100vh;
+padding-bottom:84px
+}
+
+.app{
+max-width:1180px;
+margin:auto;
+padding:14px
+}
+
+.top{
+position:sticky;
+top:0;
+z-index:20;
+background:rgba(15,23,42,.92);
+backdrop-filter:blur(18px);
+padding:8px 0 12px
+}
+
+.brand{
+display:flex;
+align-items:center;
+gap:10px
+}
+
+.logo{
+width:42px;
+height:42px;
+border:1px solid #36506f;
+border-radius:14px;
+display:grid;
+place-items:center;
+background:linear-gradient(135deg,#172b48,#0b1325);
+font-weight:900;
+color:var(--accent);
+box-shadow:0 0 24px rgba(34,211,238,.12)
+}
+
+.brand h1{
+font-size:20px;
+margin:0
+}
+
+.brand small{
+display:block;
+color:var(--muted);
+font-size:11px;
+margin-top:2px
+}
+
+.status{
+margin-left:auto;
+font-size:11px;
+color:var(--muted)
+}
+
+.hero{
+margin:14px 0;
+background:linear-gradient(
+135deg,
+rgba(34,211,238,.09),
+rgba(244,114,182,.05)
+);
+border:1px solid var(--line);
+border-radius:24px;
+padding:18px
+}
+
+.hero h2{
+margin:0 0 6px;
+font-size:25px
+}
+
+.hero p{
+margin:0;
+color:var(--muted);
+font-size:13px;
+line-height:1.5
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+margin:12px 0
+}
+
+.stat{
+background:var(--panel);
+border:1px solid var(--line);
+border-radius:16px;
+padding:12px
+}
+
+.stat b{
+font-size:21px;
+display:block
+}
+
+.stat span{
+color:var(--muted);
+font-size:11px
+}
+
+.toolbar{
+display:flex;
+gap:8px;
+overflow:auto;
+padding:3px 0 10px
+}
+
+.toolbar>*{
+flex:0 0 auto
+}
+
+.search{
+width:100%;
+background:var(--panel);
+border:1px solid var(--line);
+color:var(--text);
+border-radius:14px;
+padding:12px 14px;
+outline:none
+}
+
+.chips{
+display:flex;
+gap:8px;
+overflow:auto;
+padding:3px 0 10px
+}
+
+.chip{
+background:var(--panel);
+border:1px solid var(--line);
+border-radius:999px;
+padding:8px 12px;
+font-size:12px;
+white-space:nowrap;
+cursor:pointer
+}
+
+.chip.active{
+border-color:var(--accent);
+color:var(--accent);
+box-shadow:0 0 18px rgba(34,211,238,.09)
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(4,minmax(0,1fr));
+gap:12px
+}
+
+.card{
+position:relative;
+background:var(--panel);
+border:1px solid var(--line);
+border-radius:18px;
+overflow:hidden;
+cursor:pointer;
+min-width:0
+}
+
+.poster{
+aspect-ratio:16/9;
+background:#0b1220;
+display:grid;
+place-items:center;
+overflow:hidden
+}
+
+.poster img{
+width:100%;
+height:100%;
+object-fit:cover
+}
+
+.cardbody{
+padding:10px
+}
+
+.title{
+font-weight:750;
+font-size:13px;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis
+}
+
+.meta{
+font-size:11px;
+color:var(--muted);
+margin-top:4px;
+line-height:1.4
+}
+
+.fav{
+position:absolute;
+right:8px;
+top:8px;
+width:34px;
+height:34px;
+border-radius:50%;
+background:rgba(15,23,42,.82);
+border:1px solid #33445f;
+cursor:pointer
+}
+
+.fav.on{
+color:var(--amber)
+}
+
+.empty{
+border:1px dashed var(--line);
+border-radius:18px;
+padding:24px;
+text-align:center;
+color:var(--muted);
+grid-column:1/-1
+}
+
+.bottom{
+position:fixed;
+z-index:50;
+left:0;
+right:0;
+bottom:0;
+background:rgba(11,18,32,.95);
+border-top:1px solid var(--line);
+backdrop-filter:blur(18px);
+padding:8px max(8px,env(safe-area-inset-left))
+calc(8px + env(safe-area-inset-bottom));
+display:grid;
+grid-template-columns:repeat(5,1fr)
+}
+
+.nav{
+background:none;
+color:var(--muted);
+font-size:10px;
+padding:6px 3px;
+cursor:pointer
+}
+
+.nav b{
+display:block;
+font-size:18px;
+margin-bottom:3px
+}
+
+.nav.active{
+color:var(--accent)
+}
+
+.page{
+display:none
+}
+
+.page.active{
+display:block
+}
+
+.source-tabs{
+display:flex;
+gap:7px;
+overflow:auto;
+margin:10px 0
+}
+
+.source-tab{
+white-space:nowrap;
+background:var(--panel);
+border:1px solid var(--line);
+padding:9px 12px;
+border-radius:12px;
+font-size:12px;
+cursor:pointer
+}
+
+.source-tab.active{
+border-color:var(--accent);
+color:var(--accent)
+}
+
+.form{
+background:var(--panel);
+border:1px solid var(--line);
+border-radius:18px;
+padding:14px
+}
+
+.form label{
+display:block;
+color:var(--muted);
+font-size:11px;
+margin:10px 0 5px
+}
+
+.form input,
+.form select{
+width:100%;
+background:#0b1325;
+color:var(--text);
+border:1px solid var(--line);
+border-radius:12px;
+padding:11px;
+outline:none
+}
+
+.row{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px
+}
+
+.actions{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-top:12px
+}
+
+.btn{
+background:#1b2b47;
+border:1px solid #334765;
+border-radius:12px;
+padding:10px 13px;
+cursor:pointer
+}
+
+.btn.primary{
+background:rgba(34,211,238,.12);
+border-color:rgba(34,211,238,.5);
+color:var(--accent)
+}
+
+.btn.danger{
+color:var(--danger);
+border-color:rgba(251,113,133,.35)
+}
+
+.source-list{
+display:grid;
+gap:9px;
+margin-top:12px
+}
+
+.source-item{
+background:var(--panel);
+border:1px solid var(--line);
+border-radius:15px;
+padding:12px;
+display:flex;
+align-items:center;
+gap:10px
+}
+
+.source-item .grow{
+flex:1
+}
+
+.source-item strong{
+display:block;
+font-size:13px
+}
+
+.source-item small{
+color:var(--muted);
+font-size:10px
+}
+
+.toggle{
+width:44px;
+height:24px;
+border-radius:99px;
+background:#26344c;
+padding:3px;
+cursor:pointer
+}
+
+.toggle i{
+display:block;
+width:18px;
+height:18px;
+background:#718096;
+border-radius:50%;
+transition:.2s
+}
+
+.toggle.on{
+background:rgba(34,211,238,.25)
+}
+
+.toggle.on i{
+transform:translateX(20px);
+background:var(--accent)
+}
+
+.notice{
+background:rgba(251,191,36,.06);
+border:1px solid rgba(251,191,36,.2);
+border-radius:14px;
+padding:11px;
+color:#d8c28a;
+font-size:11px;
+line-height:1.5;
+margin-top:10px
+}
+
+.pagination{
+display:flex;
+justify-content:center;
+gap:8px;
+margin:16px 0
+}
+
+.modal{
+position:fixed;
+inset:0;
+z-index:100;
+background:rgba(2,6,23,.82);
+backdrop-filter:blur(10px);
+display:none;
+align-items:flex-end;
+justify-content:center
+}
+
+.modal.show{
+display:flex
+}
+
+.sheet{
+width:min(760px,100%);
+max-height:92vh;
+overflow:auto;
+background:#101b2f;
+border:1px solid var(--line);
+border-radius:24px 24px 0 0;
+padding:16px
+}
+
+.sheet h3{
+margin:0 0 6px
+}
+
+.close{
+float:right;
+background:#1c2a43;
+border:1px solid var(--line);
+border-radius:10px;
+padding:7px 10px;
+cursor:pointer
+}
+
+.video{
+width:100%;
+background:#000;
+border-radius:16px;
+max-height:58vh
+}
+
+.details{
+display:grid;
+grid-template-columns:130px 1fr;
+gap:14px;
+margin-top:12px
+}
+
+.details img{
+width:130px;
+aspect-ratio:2/3;
+object-fit:cover;
+border-radius:12px;
+background:#0b1220
+}
+
+.details p{
+font-size:12px;
+line-height:1.55;
+color:#c5cfdd
+}
+
+.episode{
+background:#16233b;
+border:1px solid var(--line);
+border-radius:12px;
+padding:10px;
+margin-top:7px;
+cursor:pointer
+}
+
+.tiny{
+font-size:10px;
+color:var(--muted)
+}
+
+@media(max-width:820px){
+.grid{
+grid-template-columns:repeat(3,minmax(0,1fr))
+}
+}
+
+@media(max-width:580px){
+.app{
+padding:10px
+}
+
+.stats{
+grid-template-columns:repeat(2,1fr)
+}
+
+.grid{
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:9px
+}
+
+.hero{
+padding:15px
+}
+
+.details{
+grid-template-columns:95px 1fr
+}
+
+.details img{
+width:95px
+}
+
+.row{
+grid-template-columns:1fr
+}
+
+.status{
+display:none
+}
+}
+
+@media(min-width:1000px){
+body{
+padding-bottom:20px
+}
+
+.bottom{
+position:sticky;
+top:8px;
+bottom:auto;
+max-width:700px;
+margin:12px auto;
+border:1px solid var(--line);
+border-radius:18px
+}
+
+.nav{
+font-size:11px
+}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="top">
+<div class="brand">
+<div class="logo">N</div>
+<div>
+<h1>NEXWORLD</h1>
+<small>TV • Films • Séries • Sources</small>
+</div>
+<div class="status" id="status">Initialisation…</div>
+</div>
+</header>
+
+<section class="hero">
+<h2 id="heroTitle">Votre univers TV</h2>
+<p id="heroText">
+Catalogue mondial, contenus VOD de vos sources autorisées
+et lecture directement sur Android.
+</p>
+</section>
+
+<div class="stats">
+<div class="stat">
+<b id="nTv">0</b>
+<span>TV Live</span>
+</div>
+
+<div class="stat">
+<b id="nMovie">0</b>
+<span>Films</span>
+</div>
+
+<div class="stat">
+<b id="nSeries">0</b>
+<span>Séries</span>
+</div>
+
+<div class="stat">
+<b id="nSources">1</b>
+<span>Sources</span>
+</div>
+</div>
+
+<main>
+
+<section id="page-home" class="page active">
+<div id="homeGrid" class="grid"></div>
+</section>
+
+<section id="page-tv" class="page">
+
+<input
+id="tvSearch"
+class="search"
+placeholder="Rechercher une chaîne…"
+>
+
+<div id="regions" class="chips"></div>
+
+<div id="countries" class="chips"></div>
+
+<div id="tvGrid" class="grid"></div>
+
+<div id="tvPages" class="pagination"></div>
+
+</section>
+
+<section id="page-movies" class="page">
+
+<input
+id="movieSearch"
+class="search"
+placeholder="Rechercher un film…"
+>
+
+<div id="movieGenres" class="chips"></div>
+
+<div id="movieGrid" class="grid"></div>
+
+</section>
+
+<section id="page-series" class="page">
+
+<input
+id="seriesSearch"
+class="search"
+placeholder="Rechercher une série…"
+>
+
+<div id="seriesGenres" class="chips"></div>
+
+<div id="seriesGrid" class="grid"></div>
+
+</section>
+
+<section id="page-sources" class="page">
+
+<h2 style="margin:8px 0">Mes sources</h2>
+
+<p class="tiny">
+Ajoutez uniquement des flux et catalogues que vous êtes autorisé à utiliser.
+</p>
+
+<div class="source-tabs" id="sourceTabs">
+
+<button class="source-tab active" data-mode="url">
+M3U/M3U8
+</button>
+
+<button class="source-tab" data-mode="file">
+Fichier
+</button>
+
+<button class="source-tab" data-mode="direct">
+Flux direct
+</button>
+
+<button class="source-tab" data-mode="xtream">
+Xtream
+</button>
+
+<button class="source-tab" data-mode="stalker">
+Stalker/MAG
+</button>
+
+</div>
+
+<div id="sourceForms"></div>
+
+<div id="sourceList" class="source-list"></div>
+
+</section>
+
+</main>
+
+</div>
+
+<nav class="bottom">
+
+<button class="nav active" data-page="home">
+<b>⌂</b>
+Accueil
+</button>
+
+<button class="nav" data-page="tv">
+<b>▣</b>
+TV
+</button>
+
+<button class="nav" data-page="movies">
+<b>◉</b>
+Films
+</button>
+
+<button class="nav" data-page="series">
+<b>▶</b>
+Séries
+</button>
+
+<button class="nav" data-page="sources">
+<b>＋</b>
+Sources
+</button>
+
+</nav>
+
+<div id="modal" class="modal">
+
+<div class="sheet">
+
+<button class="close" id="closeModal">
+Fermer
+</button>
+
+<div id="modalContent"></div>
+
+</div>
+
+</div>
+
+<script>
+'use strict';
+
+const WORLD_URL =
+'https://iptv-org.github.io/iptv/index.country.m3u';
+
+const COUNTRIES_URL =
+'https://iptv-org.github.io/api/countries.json';
+
+const PAGE_SIZE = 48;
+
+const DB_NAME = 'nexworld_v72';
+
+const DB_STORE = 'sources';
+
+const GENRES = [
+'Tous',
+'Action',
+'Aventure',
+'Comédie',
+'Drame',
+'Romance',
+'Thriller',
+'Horreur',
+'Science-fiction',
+'Animation',
+'Documentaire',
+'Policier',
+'Famille',
+'Fantastique',
+'Mystère',
+'Western',
+'Guerre',
+'Historique',
+'Musical'
+];
+
+const REGIONS = {
+
+Monde:null,
+
+Afrique:[
+'DZ','AO','BJ','BW','BF','BI','CM','CV','CF','TD',
+'KM','CG','CD','CI','DJ','EG','GQ','ER','SZ','ET',
+'GA','GM','GH','GN','GW','KE','LS','LR','LY','MG',
+'MW','ML','MR','MU','MA','MZ','NA','NE','NG','RW',
+'ST','SN','SC','SL','SO','ZA','SS','SD','TZ','TG',
+'TN','UG','ZM','ZW'
+],
+
+Europe:[
+'AL','AD','AT','BY','BE','BA','BG','HR','CY','CZ',
+'DK','EE','FI','FR','DE','GR','HU','IS','IE','IT',
+'XK','LV','LI','LT','LU','MT','MD','MC','ME','NL',
+'MK','NO','PL','PT','RO','RU','SM','RS','SK','SI',
+'ES','SE','CH','TR','UA','GB','VA'
+],
+
+Amériques:[
+'AG','AR','BS','BB','BZ','BO','BR','CA','CL','CO',
+'CR','CU','DM','DO','EC','SV','GD','GT','GY','HT',
+'HN','JM','MX','NI','PA','PY','PE','KN','LC','VC',
+'SR','TT','US','UY','VE'
+],
+
+Asie:[
+'AF','AM','AZ','BH','BD','BT','BN','KH','CN','GE',
+'HK','IN','ID','IR','IQ','IL','JP','JO','KZ','KW',
+'KG','LA','LB','MY','MV','MN','MM','NP','KP','OM',
+'PK','PS','PH','QA','SA','SG','KR','LK','SY','TW',
+'TJ','TH','TL','TM','AE','UZ','VN','YE'
+],
+
+Océanie:[
+'AU','FJ','KI','MH','FM','NR','NZ','PW','PG','WS',
+'SB','TO','TV','VU'
+]
+
+};
+
+const state = {
+
+page:'home',
+
+channels:[],
+movies:[],
+series:[],
+
+favorites:[],
+history:[],
+
+sources:[],
+
+countries:[],
+
+country:'',
+
+region:'Monde',
+
+tvSearch:'',
+movieSearch:'',
+seriesSearch:'',
+
+movieGenre:'Tous',
+seriesGenre:'Tous',
+
+tvPage:1,
+
+sourceMode:'url',
+
+loading:true
+
+};
+
+const $ = id => document.getElementById(id);
+
+function esc(v){
+
+return String(v ?? '').replace(
+/[&<>"']/g,
+c => ({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#39;'
+}[c])
+);
+
+}
+
+function norm(v){
+
+return String(v || '').trim();
+
+}
+
+function slug(v){
+
+return norm(v)
+.toLowerCase()
+.normalize('NFD')
+.replace(/[\u0300-\u036f]/g,'')
+.replace(/[^a-z0-9]+/g,'-')
+.replace(/^-|-$/g,'');
+
+}
+
+function parseAttrs(line){
+
+const out={};
+
+const re =
+/([\w-]+)="([^"]*)"|([\w-]+)='([^']*)'/g;
+
+let m;
+
+while((m=re.exec(line))){
+
+out[m[1] || m[3]] =
+m[2] ?? m[4] ?? '';
+
+}
+
+return out;
+
+}
+
+function genreFrom(v){
+
+const s =
+norm(v).toLowerCase();
+
+for(const g of GENRES.slice(1)){
+
+if(
+s.includes(
+slug(g).replaceAll('-',' ')
+)
+||
+s.includes(g.toLowerCase())
+){
+
+return g;
+
+}
+
+}
+
+return '';
+
+}
+
+function classify(a,name,group){
+
+const explicit =
+(
+a['content-type'] ||
+a['content_type'] ||
+a['tvg-type'] ||
+a['tvg_type'] ||
+a.type ||
+a.kind ||
+''
+).toLowerCase();
+
+if(
+['movie','film','vod'].includes(explicit)
+){
+
+return 'movie';
+
+}
+
+if(
+['series','serie','tvshow','show'].includes(explicit)
+){
+
+return 'series';
+
+}
+
+const s =
+(group + ' ' + name).toLowerCase();
+
+if(
+/\b(series|serie|saison|season|episode|episodes|tv show|tvshow)\b/
+.test(s)
+){
+
+return 'series';
+
+}
+
+if(
+/\b(movie|film|films|vod|cinema|cinéma)\b/
+.test(s)
+){
+
+return 'movie';
+
+}
+
+return 'tv';
+
+}
+
+function parseM3U(text,source='user'){
+
+const lines =
+String(text || '').split(/\r?\n/);
+
+const out=[];
+
+let meta=null;
+
+for(let i=0;i<lines.length;i++){
+
+const line =
+lines[i].trim();
+
+if(!line)continue;
+
+if(line.startsWith('#EXTINF')){
+
+meta={
+attrs:parseAttrs(line),
+title:norm(
+line
+.split(',')
+.slice(1)
+.join(',')
+)
+};
+
+continue;
+
+}
+
+if(line.startsWith('#'))continue;
+
+if(
+meta &&
+/^https?:\/\//i.test(line)
+){
+
+const a=meta.attrs || {};
+
+const name =
+norm(
+a['tvg-name'] ||
+meta.title ||
+'Sans titre'
+);
+
+const group =
+norm(
+a['group-title'] ||
+''
+);
+
+const kind =
+source === 'world'
+? 'tv'
+: classify(a,name,group);
+
+out.push({
+
+id:
+(
+a.id ||
+a['tvg-id'] ||
+source+'-'+out.length
+)
++
+'|'
++
+line,
+
+name,
+
+logo:
+norm(
+a['tvg-logo'] ||
+a.logo
+),
+
+url:line,
+
+group,
+
+country:
+norm(
+a.country ||
+''
+),
+
+kind,
+
+genre:
+genreFrom(
+a.genre ||
+group +
+' ' +
+name
+),
+
+year:
+norm(
+a.year ||
+a.date ||
+''
+),
+
+description:
+norm(
+a.description ||
+a.plot ||
+a.overview ||
+''
+),
+
+duration:
+norm(
+a.duration ||
+a['duration-min'] ||
+''
+),
+
+rating:
+norm(
+a.rating ||
+a['rating'] ||
+''
+),
+
+seriesId:
+norm(
+a['series-id'] ||
+a.series_id ||
+''
+),
+
+season:
+norm(
+a.season ||
+a['season-number'] ||
+''
+),
+
+episode:
+norm(
+a.episode ||
+a['episode-number'] ||
+''
+),
+
+source
+
+});
+
+meta=null;
+
+}
+
+}
+
+return out;
+
+}
+
+function dedupe(arr){
+
+const m=new Map();
+
+for(const x of arr){
+
+const k =
+(x.url || '') +
+'|' +
+x.name +
+'|' +
+x.kind;
+
+if(!m.has(k))
+m.set(k,x);
+
+}
+
+return [...m.values()];
+
+}
+
+function saveLS(){
+
+localStorage.setItem(
+'nw72_fav',
+JSON.stringify(state.favorites)
+);
+
+localStorage.setItem(
+'nw72_hist',
+JSON.stringify(state.history)
+);
+
+}
+
+function loadLS(){
+
+try{
+
+state.favorites =
+JSON.parse(
+localStorage.getItem('nw72_fav') || '[]'
+);
+
+state.history =
+JSON.parse(
+localStorage.getItem('nw72_hist') || '[]'
+);
+
+}catch{
+
+state.favorites=[];
+state.history=[];
+
+}
+
+}
+
+function isFav(x){
+
+return state.favorites.includes(x.id);
+
+}
+
+function toggleFav(x,e){
+
+if(!x)return;
+
+e?.stopPropagation();
+
+if(isFav(x)){
+
+state.favorites =
+state.favorites.filter(
+id=>id!==x.id
+);
+
+}else{
+
+state.favorites.push(x.id);
+
+}
+
+saveLS();
+
+render();
+
+}
+
+function addHistory(x){
+
+state.history=[
+x.id,
+...state.history.filter(
+id=>id!==x.id
+)
+].slice(0,100);
+
+saveLS();
+
+}
+
+function findById(id){
+
+return [
+...state.channels,
+...state.movies,
+...state.series
+].find(
+x=>x.id===id
+);
+
+}
+
+function card(x){
+
+const poster=x.logo || '';
+
+return `
+<article
+class="card"
+data-id="${esc(x.id)}"
+>
+
+<button
+class="fav ${isFav(x)?'on':''}"
+data-fav="${esc(x.id)}"
+>
+${isFav(x)?'★':'☆'}
+</button>
+
+<div class="poster">
+
+${
+poster
+?
+`<img
+loading="lazy"
+src="${esc(poster)}"
+alt=""
+>`
+:
+'<span class="tiny">NEXWORLD</span>'
+}
+
+</div>
+
+<div class="cardbody">
+
+<div class="title">
+${esc(x.name)}
+</div>
+
+<div class="meta">
+
+${esc(
+x.genre ||
+x.group ||
+x.country ||
+''
+)}
+
+${
+x.year
+?
+' • ' + esc(x.year)
+:
+''
+}
+
+${
+x.rating
+?
+' • ★ ' + esc(x.rating)
+:
+''
+}
+
+</div>
+
+</div>
+
+</article>
+`;
+
+}
+
+function bindGrid(id,arr){
+
+const el=$(id);
+
+el.innerHTML =
+arr.length
+?
+arr.map(card).join('')
+:
+'<div class="empty">Aucun contenu correspondant.</div>';
+
+el.querySelectorAll('[data-fav]')
+.forEach(
+b=>b.addEventListener(
+'click',
+e=>
+toggleFav(
+findById(b.dataset.fav),
+e
+)
+)
+);
+
+el.querySelectorAll('.card')
+.forEach(
+c=>
+c.addEventListener(
+'click',
+e=>{
+
+if(
+e.target.closest('[data-fav]')
+)return;
+
+const x=
+findById(c.dataset.id);
+
+if(x)openItem(x);
+
+}
+)
+);
+
+}
+
+function filteredTV(){
+
+let a=state.channels;
+
+if(state.region!=='Monde'){
+
+const codes =
+REGIONS[state.region] || [];
+
+a=a.filter(
+x=>
+codes.includes(x.country)
+||
+codes.includes(
+(x.group || '').toUpperCase()
+)
+);
+
+}
+
+if(state.country){
+
+a=a.filter(
+x=>
+x.country===state.country
+||
+x.group===state.country
+);
+
+}
+
+const q =
+state.tvSearch.toLowerCase();
+
+if(q){
+
+a=a.filter(
+x=>
+(
+x.name +
+' ' +
+x.group
+)
+.toLowerCase()
+.includes(q)
+);
+
+}
+
+return a;
+
+}
+
+function filteredVOD(type){
+
+let a =
+type==='movie'
+?
+state.movies
+:
+state.series;
+
+const q =
+(
+type==='movie'
+?
+state.movieSearch
+:
+state.seriesSearch
+)
+.toLowerCase();
+
+const g =
+type==='movie'
+?
+state.movieGenre
+:
+state.seriesGenre;
+
+if(q){
+
+a=a.filter(
+x=>
+(
+x.name +
+' ' +
+x.genre +
+' ' +
+x.description
+)
+.toLowerCase()
+.includes(q)
+);
+
+}
+
+if(g!=='Tous'){
+
+a=a.filter(
+x=>x.genre===g
+);
+
+}
+
+return a;
+
+}
+
+function renderStats(){
+
+$('nTv').textContent =
+state.channels.length.toLocaleString('fr-FR');
+
+$('nMovie').textContent =
+state.movies.length.toLocaleString('fr-FR');
+
+$('nSeries').textContent =
+state.series.length.toLocaleString('fr-FR');
+
+$('nSources').textContent =
+String(1 + state.sources.length);
+
+}
+
+function renderRegions(){
+
+const el=$('regions');
+
+el.innerHTML =
+Object.keys(REGIONS)
+.map(
+r=>
+`
+<button
+class="chip ${state.region===r?'active':''}"
+data-region="${r}"
+>
+${r}
+</button>
+`
+)
+.join('');
+
+el.querySelectorAll('[data-region]')
+.forEach(
+b=>
+b.onclick=()=>{
+
+state.region=
+b.dataset.region;
+
+state.country='';
+
+state.tvPage=1;
+
+renderTV();
+
+}
+);
+
+}
+
+function renderCountries(){
+
+const list =
+[...state.countries]
+.sort(
+(a,b)=>
+a.name.localeCompare(
+b.name,
+'fr'
+)
+);
+
+const el=$('countries');
+
+el.innerHTML =
+`
+<button
+class="chip ${!state.country?'active':''}"
+data-country=""
+>
+Tous les pays
+</button>
+`
++
+list
+.map(
+c=>
+`
+<button
+class="chip ${state.country===c.code?'active':''}"
+data-country="${c.code}"
+>
+${esc(c.name)}
+</button>
+`
+)
+.join('');
+
+el.querySelectorAll('[data-country]')
+.forEach(
+b=>
+b.onclick=()=>{
+
+state.country=
+b.dataset.country;
+
+state.region='Monde';
+
+state.tvPage=1;
+
+renderTV();
+
+}
+);
+
+}
+
+function renderTV(){
+
+renderRegions();
+
+renderCountries();
+
+const all =
+filteredTV();
+
+const pages =
+Math.max(
+1,
+Math.ceil(
+all.length / PAGE_SIZE
+)
+);
+
+state.tvPage =
+Math.min(
+state.tvPage,
+pages
+);
+
+const start =
+(state.tvPage-1) *
+PAGE_SIZE;
+
+bindGrid(
+'tvGrid',
+all.slice(
+start,
+start + PAGE_SIZE
+)
+);
+
+$('tvPages').innerHTML =
+pages>1
+?
+`
+<button
+class="btn"
+id="prev"
+${state.tvPage===1?'disabled':''}
+>
+‹
+</button>
+
+<span class="tiny">
+${state.tvPage} / ${pages}
+</span>
+
+<button
+class="btn"
+id="next"
+${state.tvPage===pages?'disabled':''}
+>
+›
+</button>
+`
+:
+'';
+
+if($('prev'))
+$('prev').onclick=()=>{
+
+state.tvPage--;
+
+renderTV();
+
+};
+
+if($('next'))
+$('next').onclick=()=>{
+
+state.tvPage++;
+
+renderTV();
+
+};
+
+}
+
+function genreBar(id,type){
+
+const el=$(id);
+
+const sel =
+type==='movie'
+?
+state.movieGenre
+:
+state.seriesGenre;
+
+el.innerHTML =
+GENRES
+.map(
+g=>
+`
+<button
+class="chip ${sel===g?'active':''}"
+data-g="${esc(g)}"
+>
+${esc(g)}
+</button>
+`
+)
+.join('');
+
+el.querySelectorAll('[data-g]')
+.forEach(
+b=>
+b.onclick=()=>{
+
+if(type==='movie')
+state.movieGenre=
+b.dataset.g;
+else state.seriesGenre=
+b.dataset.g;
+
+renderVOD(type);
+
+}
+);
+
+}
+
+function renderVOD(type){
+
+genreBar(
+type==='movie'
+?
+'movieGenres'
+:
+'seriesGenres',
+type
+);
+
+bindGrid(
+type==='movie'
+?
+'movieGrid'
+:
+'seriesGrid',
+filteredVOD(type)
+);
+
+}
+
+function renderHome(){
+
+const recent =
+state.history
+.map(findById)
+.filter(Boolean)
+.slice(0,12);
+
+$('homeGrid').innerHTML =
+recent.length
+?
+recent.map(card).join('')
+:
+`
+<div class="empty">
+
+Bienvenue dans NEXWORLD.
+
+<br>
+
+<span class="tiny">
+Sélectionnez TV, Films, Séries
+ou ajoutez vos sources.
+</span>
+
+</div>
+`;
+
+$('homeGrid')
+.querySelectorAll('[data-fav]')
+.forEach(
+b=>
+b.addEventListener(
+'click',
+e=>
+toggleFav(
+findById(b.dataset.fav),
+e
+)
+)
+);
+
+$('homeGrid')
+.querySelectorAll('.card')
+.forEach(
+c=>
+c.onclick=e=>{
+
+if(
+!e.target.closest('[data-fav]')
+)
+openItem(
+findById(
+c.dataset.id
+)
+);
+
+}
+);
+
+}
+
+function render(){
+
+renderStats();
+
+renderTV();
+
+renderVOD('movie');
+
+renderVOD('series');
+
+renderHome();
+
+renderSources();
+
+}
+
+function setPage(page){
+
+state.page=page;
+
+document
+.querySelectorAll('.page')
+.forEach(
+p=>p.classList.remove('active')
+);
+
+$('page-'+page)
+.classList.add('active');
+
+document
+.querySelectorAll('.nav')
+.forEach(
+n=>
+n.classList.toggle(
+'active',
+n.dataset.page===page
+)
+);
+
+if(page==='tv')
+renderTV();
+
+if(page==='movies')
+renderVOD('movie');
+
+if(page==='series')
+renderVOD('series');
+
+if(page==='sources')
+renderSources();
+
+}
+
+function openItem(x){
+
+if(!x)return;
+
+addHistory(x);
+
+if(
+x.kind==='movie' ||
+x.kind==='series'
+){
+
+openDetails(x);
+
+}else{
+
+openPlayer(x);
+
+}
+
+}
+
+function openPlayer(x){
+
+$('modalContent').innerHTML =
+`
+<h3>${esc(x.name)}</h3>
+
+<video
+id="player"
+class="video"
+controls
+playsinline
+autoplay
+></video>
+
+<div class="actions">
+
+<button
+class="btn primary"
+id="retry"
+>
+Relancer
+</button>
+
+<button
+class="btn"
+id="favModal"
+>
+${
+isFav(x)
+?
+'★ Retirer des favoris'
+:
+'☆ Ajouter aux favoris'
+}
+</button>
+
+</div>
+
+<p class="tiny">
+Source :
+${
+x.source==='world'
+?
+'Catalogue mondial'
+:
+'Mes sources'
+}
+</p>
+`;
+
+$('modal')
+.classList.add('show');
+
+const v=$('player');
+
+v.src=x.url;
+
+v.play().catch(()=>{});
+
+$('retry').onclick=()=>{
+
+v.load();
+
+v.play().catch(()=>{});
+
+};
+
+$('favModal').onclick=()=>{
+
+toggleFav(x);
+
+openPlayer(x);
+
+};
+
+}
+
+function seriesEpisodes(series){
+
+const sid =
+series.seriesId ||
+series.name;
+
+return state.series
+.filter(
+x=>
+(
+x.seriesId &&
+x.seriesId===sid
+)
+||
+(
+!x.seriesId &&
+x.name===series.name
+)
+)
+.sort(
+(a,b)=>
+Number(a.season||0)
+-
+Number(b.season||0)
+||
+Number(a.episode||0)
+-
+Number(b.episode||0)
+);
+
+}
+
+function openDetails(x){
+
+const eps =
+x.kind==='series'
+?
+seriesEpisodes(x)
+:
+[];
+
+$('modalContent').innerHTML =
+`
+<div class="details">
+
+<div>
+
+${
+x.logo
+?
+`
+<img
+src="${esc(x.logo)}"
+alt=""
+>
+`
+:
+`
+<div
+class="poster"
+style="
+width:100%;
+aspect-ratio:2/3;
+border-radius:12px
+"
+>
+NEXWORLD
+</div>
+`
+}
+
+</div>
+
+<div>
+
+<h3>
+${esc(x.name)}
+</h3>
+
+<div class="meta">
+
+${esc(x.genre || '')}
+
+${
+x.year
+?
+' • '+esc(x.year)
+:
+''
+}
+
+${
+x.duration
+?
+' • '+esc(x.duration)
+:
+''
+}
+
+${
+x.rating
+?
+' • ★ '+esc(x.rating)
+:
+''
+}
+
+</div>
+
+<p>
+${esc(
+x.description ||
+'Informations fournies par la source. Aucun synopsis n’est inventé par NEXWORLD.'
+)}
+</p>
+
+<button
+class="btn primary"
+id="playMain"
+>
+${
+x.kind==='series'
+?
+'Lire un épisode'
+:
+'Lire'
+}
+</button>
+
+<button
+class="btn"
+id="favMain"
+>
+${isFav(x)?'★':'☆'} Favori
+</button>
+
+</div>
+
+</div>
+
+${
+x.kind==='series'
+?
+`
+<h4>
+Épisodes (${eps.length})
+</h4>
+
+<div>
+
+${
+eps.map(
+e=>
+`
+<div
+class="episode"
+data-ep="${esc(e.id)}"
+>
+
+<b>
+S${esc(e.season||'1')}
+E${esc(e.episode||'')}
+</b>
+
+—
+${esc(e.name)}
+
+</div>
+`
+)
+.join('')
+||
+`
+<div class="empty">
+Aucun épisode distinct fourni par la source.
+</div>
+`
+}
+
+</div>
+`
+:
+''
+}
+`;
+
+$('modal')
+.classList.add('show');
+
+$('playMain').onclick=
+()=>openPlayer(x);
+
+$('favMain').onclick=()=>{
+
+toggleFav(x);
+
+openDetails(x);
+
+};
+
+$('modalContent')
+.querySelectorAll('[data-ep]')
+.forEach(
+e=>
+e.onclick=()=>{
+
+const ep =
+findById(
+e.dataset.ep
+);
+
+if(ep)
+openPlayer(ep);
+
+}
+);
+
+}
+
+$('closeModal').onclick=()=>{
+
+$('modal')
+.classList.remove('show');
+
+const v=$('player');
+
+if(v){
+
+v.pause();
+
+v.removeAttribute('src');
+
+v.load();
+
+}
+
+};
+
+$('modal').onclick=e=>{
+
+if(e.target.id==='modal')
+$('modal')
+.classList.remove('show');
+
+};
+
+function formHTML(mode){
+
+if(mode==='url')
+
+return `
+<div class="form">
+
+<label>
+Nom de la source
+</label>
+
+<input
+id="srcName"
+placeholder="Ma playlist"
+>
+
+<label>
+URL M3U / M3U8
+</label>
+
+<input
+id="srcUrl"
+placeholder="https://…/playlist.m3u"
+>
+
+<div class="actions">
+
+<button
+class="btn primary"
+id="addUrl"
+>
+Ajouter la playlist
+</button>
+
+</div>
+
+</div>
+`;
+
+if(mode==='file')
+
+return `
+<div class="form">
+
+<label>
+Nom
+</label>
+
+<input
+id="fileName"
+placeholder="Playlist locale"
+>
+
+<label>
+Fichier M3U
+</label>
+
+<input
+id="srcFile"
+type="file"
+accept=".m3u,.m3u8,text/plain"
+>
+
+<div class="actions">
+
+<button
+class="btn primary"
+id="addFile"
+>
+Importer
+</button>
+
+</div>
+
+</div>
+`;
+
+if(mode==='direct')
+
+return `
+<div class="form">
+
+<label>
+Nom
+</label>
+
+<input
+id="directName"
+placeholder="Ma chaîne"
+>
+
+<label>
+URL du flux
+</label>
+
+<input
+id="directUrl"
+placeholder="https://…/stream.m3u8"
+>
+
+<label>
+Type
+</label>
+
+<select id="directKind">
+
+<option value="tv">
+TV Live
+</option>
+
+<option value="movie">
+Film
+</option>
+
+<option value="series">
+Série
+</option>
+
+</select>
+
+<label>
+Genre (VOD)
+</label>
+
+<select id="directGenre">
+
+${GENRES.slice(1)
+.map(
+g=>
+`<option>${esc(g)}</option>`
+)
+.join('')}
+
+</select>
+
+<div class="actions">
+
+<button
+class="btn primary"
+id="addDirect"
+>
+Ajouter le flux
+</button>
+
+</div>
+
+</div>
+`;
+
+if(mode==='xtream')
+
+return `
+<div class="form">
+
+<label>
+Nom du profil
+</label>
+
+<input
+id="xtName"
+placeholder="Mon serveur Xtream"
+>
+
+<label>
+URL du serveur
+</label>
+
+<input
+id="xtServer"
+placeholder="https://serveur.example"
+>
+
+<label>
+Identifiant
+</label>
+
+<input
+id="xtUser"
+placeholder="Utilisateur"
+>
+
+<label>
+Mot de passe
+</label>
+
+<input
+id="xtPass"
+type="password"
+placeholder="Mot de passe"
+>
+
+<div class="actions">
+
+<button
+class="btn primary"
+id="addXtream"
+>
+Enregistrer le profil
+</button>
+
+</div>
+
+<div class="notice">
+
+Le profil est enregistré localement,
+mais la connexion VOD Xtream réelle nécessite
+un backend sécurisé.
+
+Le mot de passe n'est pas sauvegardé
+dans le navigateur.
+
+</div>
+
+</div>
+`;
+
+return `
+<div class="form">
+
+<label>
+Nom du profil
+</label>
+
+<input
+id="stName"
+placeholder="Mon portail MAG"
+>
+
+<label>
+URL du portail
+</label>
+
+<input
+id="stPortal"
+placeholder="http://…/c/"
+>
+
+<label>
+Adresse MAC
+</label>
+
+<input
+id="stMac"
+placeholder="00:1A:79:XX:XX:XX"
+>
+
+<label>
+Modèle MAG
+</label>
+
+<select id="stModel">
+
+<option>MAG 254</option>
+<option>MAG 256</option>
+<option>MAG 322</option>
+<option>MAG 324</option>
+<option>MAG 420</option>
+<option>Autre</option>
+
+</select>
+
+<div class="actions">
+
+<button
+class="btn primary"
+id="addStalker"
+>
+Enregistrer le profil
+</button>
+
+</div>
+
+<div class="notice">
+
+La MAC et le portail sont conservés
+comme configuration.
+
+L'authentification Stalker/MAG réelle
+doit passer par un backend sécurisé.
+
+</div>
+
+</div>
+`;
+
+}
+
+function renderSources(){
+
+const f=$('sourceForms');
+
+f.innerHTML =
+formHTML(state.sourceMode);
+
+document
+.querySelectorAll('.source-tab')
+.forEach(
+t=>
+t.classList.toggle(
+'active',
+t.dataset.mode===state.sourceMode
+)
+);
+
+bindSourceForm();
+
+const list=$('sourceList');
+
+list.innerHTML =
+state.sources.length
+?
+state.sources
+.map(
+(s,i)=>
+`
+<div class="source-item">
+
+<div class="grow">
+
+<strong>
+${esc(s.name)}
+</strong>
+
+<small>
+
+${esc(s.type)}
+
+${
+s.url
+?
+' • '+esc(s.url)
+:
+''
+}
+
+${
+s.mac
+?
+' • MAC '+esc(s.mac)
+:
+''
+}
+
+${
+s.items
+?
+` • ${s.items} éléments`
+:
+''
+}
+
+</small>
+
+</div>
+
+<button
+class="toggle ${s.enabled!==false?'on':''}"
+data-toggle="${i}"
+>
+<i></i>
+</button>
+
+<button
+class="btn danger"
+data-del="${i}"
+>
+Supprimer
+</button>
+
+</div>
+`
+)
+.join('')
+:
+`
+<div class="empty">
+Aucune source utilisateur.
+</div>
+`;
+
+list
+.querySelectorAll('[data-toggle]')
+.forEach(
+b=>
+b.onclick=
+()=>toggleSource(
+Number(b.dataset.toggle)
+)
+);
+
+list
+.querySelectorAll('[data-del]')
+.forEach(
+b=>
+b.onclick=
+()=>deleteSource(
+Number(b.dataset.del)
+)
+);
+
+}
+
+document
+.querySelectorAll('.source-tab')
+.forEach(
+t=>
+t.onclick=()=>{
+
+state.sourceMode=
+t.dataset.mode;
+
+renderSources();
+
+}
+);
+
+function bindSourceForm(){
+
+if($('addUrl'))
+$('addUrl').onclick=addURL;
+
+if($('addFile'))
+$('addFile').onclick=addFile;
+
+if($('addDirect'))
+$('addDirect').onclick=addDirect;
+
+if($('addXtream'))
+$('addXtream').onclick=addXtream;
+
+if($('addStalker'))
+$('addStalker').onclick=addStalker;
+
+}
+
+function openDB(){
+
+return new Promise(
+(res,rej)=>{
+
+const r=
+indexedDB.open(
+DB_NAME,
+1
+);
+
+r.onupgradeneeded=()=>{
+
+if(
+!r.result.objectStoreNames
+.contains(DB_STORE)
+){
+
+r.result.createObjectStore(
+DB_STORE,
+{
+keyPath:'id'
+}
+);
+
+}
+
+};
+
+r.onsuccess=
+()=>res(r.result);
+
+r.onerror=
+()=>rej(r.error);
+
+}
+);
+
+}
+
+async function dbPut(x){
+
+const db=
+await openDB();
+
+return new Promise(
+(res,rej)=>{
+
+const tx=
+db.transaction(
+DB_STORE,
+'readwrite'
+);
+
+tx
+.objectStore(DB_STORE)
+.put(x);
+
+tx.oncomplete=()=>res();
+
+tx.onerror=()=>rej(tx.error);
+
+}
+);
+
+}
+
+async function dbAll(){
+
+const db=
+await openDB();
+
+return new Promise(
+(res,rej)=>{
+
+const tx=
+db.transaction(
+DB_STORE,
+'readonly'
+);
+
+const r=
+tx
+.objectStore(DB_STORE)
+.getAll();
+
+r.onsuccess=
+()=>res(r.result || []);
+
+r.onerror=
+()=>rej(r.error);
+
+}
+);
+
+}
+
+async function dbDel(id){
+
+const db=
+await openDB();
+
+return new Promise(
+(res,rej)=>{
+
+const tx=
+db.transaction(
+DB_STORE,
+'readwrite'
+);
+
+tx
+.objectStore(DB_STORE)
+.delete(id);
+
+tx.oncomplete=()=>res();
+
+tx.onerror=()=>rej(tx.error);
+
+}
+);
+
+}
+
+async function addURL(){
+
+const name=
+norm(
+$('srcName').value
+)
+||
+'Playlist M3U';
+
+const url=
+norm(
+$('srcUrl').value
+);
+
+if(
+!/^https?:\/\//i.test(url)
+){
+
+alert(
+'URL M3U invalide.'
+);
+
+return;
+
+}
+
+setStatus(
+'Chargement de la playlist…'
+);
+
+try{
+
+const r=
+await fetch(
+url,
+{
+cache:'no-store'
+}
+);
+
+if(!r.ok)
+throw new Error(
+'HTTP '+r.status
+);
+
+const text=
+await r.text();
+
+const s={
+
+id:
+'src-'+Date.now(),
+
+name,
+
+type:'M3U URL',
+
+url,
+
+enabled:true
+
+};
+
+s._items=
+dedupe(
+parseM3U(
+text,
+'user'
+)
+)
+.map(
+x=>({
+...x,
+source:s.id
+})
+);
+
+s.items=
+s._items.length;
+
+await dbPut({
+...s,
+text
+});
+
+state.sources.push(s);
+
+applyUserItems();
+
+render();
+
+setStatus('En ligne');
+
+alert(
+`${s.items} éléments importés.`
+);
+
+}catch(e){
+
+setStatus(
+'Erreur source'
+);
+
+alert(
+'Impossible de charger la playlist. Vérifiez URL, CORS et autorisation.'
+);
+
+}
+
+}
+
+async function addFile(){
+
+const f=
+$('srcFile')
+.files[0];
+
+if(!f){
+
+alert(
+'Sélectionnez un fichier M3U.'
+);
+
+return;
+
+}
+
+setStatus(
+'Import du fichier…'
+);
+
+const text=
+await f.text();
+
+const s={
+
+id:
+'src-'+Date.now(),
+
+name:
+norm(
+$('fileName').value
+)
+||
+f.name,
+
+type:'M3U local',
+
+enabled:true
+
+};
+
+s._items=
+dedupe(
+parseM3U(
+text,
+'user'
+)
+)
+.map(
+x=>({
+...x,
+source:s.id
+})
+);
+
+s.items=
+s._items.length;
+
+await dbPut({
+...s,
+text
+});
+
+state.sources.push(s);
+
+applyUserItems();
+
+render();
+
+setStatus('En ligne');
+
+alert(
+`${s.items} éléments importés.`
+);
+
+}
+
+function addDirect(){
+
+const name=
+norm(
+$('directName').value
+)
+||
+'Flux direct';
+
+const url=
+norm(
+$('directUrl').value
+);
+
+const kind=
+$('directKind').value;
+
+if(
+!/^https?:\/\//i.test(url)
+){
+
+alert(
+'URL de flux invalide.'
+);
+
+return;
+
+}
+
+const id=
+'src-'+Date.now();
+
+const s={
+
+id,
+
+name,
+
+type:'Flux direct',
+
+url,
+
+enabled:true,
+
+_items:[
+{
+
+id:
+id+'|'+url,
+
+name,
+
+logo:'',
+
+url,
+
+group:'',
+
+country:'',
+
+kind,
+
+genre:
+kind==='tv'
+?
+''
+:
+$('directGenre').value,
+
+source:id
+
+}
+],
+
+items:1
+
+};
+
+state.sources.push(s);
+
+dbPut({
+...s,
+text:''
+});
+
+applyUserItems();
+
+render();
+
+alert(
+'Flux ajouté.'
+);
+
+}
+
+function addXtream(){
+
+const name=
+norm(
+$('xtName').value
+)
+||
+'Profil Xtream';
+
+const server=
+norm(
+$('xtServer').value
+);
+
+const user=
+norm(
+$('xtUser').value
+);
+
+if(!server || !user){
+
+alert(
+'Serveur et identifiant requis.'
+);
+
+return;
+
+}
+
+const s={
+
+id:
+'src-'+Date.now(),
+
+name,
+
+type:'Xtream',
+
+url:server,
+
+user,
+
+enabled:true,
+
+items:0,
+
+_items:[]
+
+};
+
+state.sources.push(s);
+
+dbPut(s);
+
+render();
+
+alert(
+'Profil Xtream enregistré. Le catalogue VOD sera branché via le backend sécurisé.'
+);
+
+}
+
+function addStalker(){
+
+const name=
+norm(
+$('stName').value
+)
+||
+'Profil MAG';
+
+const portal=
+norm(
+$('stPortal').value
+);
+
+const mac=
+norm(
+$('stMac').value
+);
+
+if(!portal || !mac){
+
+alert(
+'Portail et adresse MAC requis.'
+);
+
+return;
+
+}
+
+if(
+!/^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/
+.test(mac)
+){
+
+alert(
+'Adresse MAC invalide. Exemple : 00:1A:79:12:34:56'
+);
+
+return;
+
+}
+
+const s={
+
+id:
+'src-'+Date.now(),
+
+name,
+
+type:'Stalker/MAG',
+
+url:portal,
+
+mac,
+
+model:
+$('stModel').value,
+
+enabled:true,
+
+items:0,
+
+_items:[]
+
+};
+
+state.sources.push(s);
+
+dbPut(s);
+
+render();
+
+alert(
+'Profil Stalker/MAG enregistré.'
+);
+
+}
+
+async function toggleSource(i){
+
+const s=
+state.sources[i];
+
+if(!s)return;
+
+s.enabled=
+s.enabled===false;
+
+await dbPut(s);
+
+applyUserItems();
+
+render();
+
+}
+
+async function deleteSource(i){
+
+const s=
+state.sources[i];
+
+if(!s)return;
+
+if(
+!confirm(
+'Supprimer cette source ?'
+)
+)return;
+
+state.sources.splice(i,1);
+
+await dbDel(s.id);
+
+applyUserItems();
+
+render();
+
+}
+
+async function loadSavedSources(){
+
+try{
+
+const arr=
+await dbAll();
+
+state.sources=arr;
+
+for(
+const s of state.sources
+){
+
+if(
+s.type==='M3U URL' ||
+s.type==='M3U local'
+){
+
+if(s.text){
+
+s._items=
+dedupe(
+parseM3U(
+s.text,
+'user'
+)
+)
+.map(
+x=>({
+...x,
+source:s.id
+})
+);
+
+}
+
+}
+
+if(
+s.type==='Flux direct' &&
+!s._items?.length &&
+s.url
+){
+
+s._items=[{
+
+id:
+s.id+'|'+s.url,
+
+name:s.name,
+
+url:s.url,
+
+logo:'',
+
+group:'',
+
+country:'',
+
+kind:'tv',
+
+genre:'',
+
+source:s.id
+
+}];
+
+}
+
+}
+
+applyUserItems();
+
+}catch(e){
+
+console.warn(
+'IndexedDB',
+e
+);
+
+}
+
+}
+
+function applyUserItems(){
+
+const active =
+state.sources
+.filter(
+s=>s.enabled!==false
+);
+
+const all =
+active.flatMap(
+s=>s._items || []
+);
+
+state.channels =
+state.channels
+.filter(
+x=>x.source==='world'
+);
+
+state.movies=[];
+
+state.series=[];
+
+for(
+const s of active
+){
+
+const items=
+s._items || [];
+
+state.channels.push(
+...items.filter(
+x=>x.kind==='tv'
+)
+);
+
+state.movies.push(
+...items.filter(
+x=>x.kind==='movie'
+)
+);
+
+state.series.push(
+...items.filter(
+x=>x.kind==='series'
+)
+);
+
+}
+
+state.channels=
+dedupe(
+state.channels
+);
+
+state.movies=
+dedupe(
+state.movies
+);
+
+state.series=
+dedupe(
+state.series
+);
+
+}
+
+async function loadCountries(){
+
+try{
+
+const r=
+await fetch(
+COUNTRIES_URL,
+{
+cache:'no-store'
+}
+);
+
+if(r.ok)
+state.countries=
+await r.json();
+
+}catch(e){
+
+state.countries=[];
+
+}
+
+renderTV();
+
+}
+
+async function loadWorld(){
+
+try{
+
+setStatus(
+'Chargement TV mondiale…'
+);
+
+const r=
+await fetch(
+WORLD_URL,
+{
+cache:'no-store'
+}
+);
+
+if(!r.ok)
+throw new Error(
+'HTTP '+r.status
+);
+
+const text=
+await r.text();
+
+state.channels=
+dedupe(
+parseM3U(
+text,
+'world'
+)
+);
+
+setStatus(
+'En ligne'
+);
+
+render();
+
+}catch(e){
+
+console.error(e);
+
+setStatus(
+'TV indisponible'
+);
+
+state.channels=[];
+
+render();
+
+}
+
+}
+
+$('tvSearch').oninput=e=>{
+
+state.tvSearch=
+e.target.value;
+
+state.tvPage=1;
+
+renderTV();
+
+};
+
+$('movieSearch').oninput=e=>{
+
+state.movieSearch=
+e.target.value;
+
+renderVOD('movie');
+
+};
+
+$('seriesSearch').oninput=e=>{
+
+state.seriesSearch=
+e.target.value;
+
+renderVOD('series');
+
+};
+
+document
+.querySelectorAll('.nav')
+.forEach(
+n=>
+n.onclick=
+()=>setPage(
+n.dataset.page
+)
+);
+
+async function boot(){
+
+loadLS();
+
+setStatus('Prêt');
+
+render();
+
+await loadSavedSources();
+
+render();
+
+loadCountries();
+
+loadWorld();
+
+}
+
+boot();
+
+</script>
+
+<!-- NEXWORLD — Firebase Authentication -->
+<script src="/firebase-auth.js"></script>
+
+</body>
+</html>
