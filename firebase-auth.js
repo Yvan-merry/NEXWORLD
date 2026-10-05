@@ -1,974 +1,1514 @@
 /* =========================================================
-   NEXWORLD — Firebase Authentication
-   Correction UI : fenêtre Compte FERMÉE au démarrage
-   Fichier : /firebase-auth.js
+   NEXWORLD — Firebase Authentication V2
+   =========================================================
+   Projet Firebase :
+   nexworld-tv
+
+   IMPORTANT :
+   - La clé API ci-dessous est la clé publique Web Firebase.
+   - Aucun mot de passe utilisateur n'est stocké.
+   - Aucun mot de passe Xtream n'est stocké.
+   - Les tokens Firebase sont utilisés uniquement en mémoire.
    ========================================================= */
 
-(function () {
-  'use strict';
+'use strict';
 
-  const FIREBASE_CONFIG = {
-    apiKey: 'AIzaSyDyxcMx0YK8XEI_Al-zF1LvlTBapDnbDXQ',
-    authDomain: 'nexworld-tv.firebaseapp.com',
-    projectId: 'nexworld-tv',
-    storageBucket: 'nexworld-tv.firebasestorage.app',
-    messagingSenderId: '262610525162',
-    appId: '1:262610525162:web:b49643340dcd0fb7bb7093'
-  };
 
-  const XTREAM_ENDPOINT =
-    '/.netlify/functions/xtream';
+/* =========================================================
+   CONFIGURATION FIREBASE WEB
+   ========================================================= */
 
-  const ADMIN_ENDPOINT =
-    '/.netlify/functions/bootstrap-admin';
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyDyxcMx0YK8XEI_Al-zF1LvlTBapDnbDXQ",
+  authDomain: "nexworld-tv.firebaseapp.com",
+  projectId: "nexworld-tv",
+  storageBucket: "nexworld-tv.firebasestorage.app",
+  messagingSenderId: "262610525162",
+  appId: "1:262610525162:web:b49643340dcd0fb7bb7093"
+};
 
-  let auth = null;
-  let accountPanel = null;
-  let accountButton = null;
 
-  /* ---------------------------------------------------------
-     Firebase
-     --------------------------------------------------------- */
+/* =========================================================
+   ETAT
+   ========================================================= */
 
-  function initFirebase() {
-    if (!window.firebase) {
-      console.error(
-        '[NEXWORLD] Firebase SDK introuvable.'
-      );
-      return false;
-    }
+let firebaseApp = null;
+let firebaseAuth = null;
+let firebaseReady = false;
 
-    try {
-      if (
-        window.firebase.apps &&
-        window.firebase.apps.length
-      ) {
-        window.firebase.app();
-      } else {
-        window.firebase.initializeApp(
-          FIREBASE_CONFIG
-        );
-      }
 
-      auth = window.firebase.auth();
+/* =========================================================
+   INITIALISATION FIREBASE
+   ========================================================= */
 
-      auth.onAuthStateChanged(
-        updateAccountState
-      );
+async function initFirebaseAuth(){
 
-      return true;
-
-    } catch (error) {
-      console.error(
-        '[NEXWORLD] Firebase:',
-        error
-      );
-
-      return false;
-    }
+  if(firebaseReady && firebaseAuth){
+    return firebaseAuth;
   }
 
-  /* ---------------------------------------------------------
-     UI
-     --------------------------------------------------------- */
-
-  function createStyles() {
-    if (document.getElementById(
-      'nexworld-account-styles'
-    )) {
-      return;
-    }
-
-    const style =
-      document.createElement('style');
-
-    style.id =
-      'nexworld-account-styles';
-
-    style.textContent = `
-
-      #nexworld-account-button {
-        position: fixed;
-        top: 14px;
-        right: 14px;
-        z-index: 9990;
-        border: 1px solid rgba(255,255,255,.14);
-        border-radius: 999px;
-        padding: 10px 15px;
-        background: rgba(15,23,42,.94);
-        color: #fff;
-        font: 700 14px system-ui,sans-serif;
-        box-shadow: 0 8px 28px rgba(0,0,0,.28);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-      }
-
-      #nexworld-account-panel {
-        position: fixed;
-        inset: 0;
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 18px;
-        background: rgba(2,6,23,.72);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-      }
-
-      #nexworld-account-panel.nx-hidden {
-        display: none !important;
-      }
-
-      #nexworld-account-card {
-        width: min(430px,100%);
-        max-height: 90vh;
-        overflow-y: auto;
-        box-sizing: border-box;
-        padding: 22px;
-        border: 1px solid rgba(255,255,255,.13);
-        border-radius: 26px;
-        background: #111a2d;
-        color: #fff;
-        box-shadow: 0 24px 80px rgba(0,0,0,.48);
-        font-family: system-ui,-apple-system,
-          BlinkMacSystemFont,"Segoe UI",sans-serif;
-      }
-
-      #nexworld-account-card h2 {
-        margin: 0 0 6px;
-        font-size: 26px;
-      }
-
-      #nexworld-account-card .nx-subtitle {
-        margin: 0 0 16px;
-        color: #aab5ca;
-      }
-
-      #nexworld-account-card input {
-        width: 100%;
-        box-sizing: border-box;
-        margin: 7px 0;
-        padding: 15px;
-        border-radius: 16px;
-        border: 1px solid rgba(255,255,255,.12);
-        background: #202b40;
-        color: #fff;
-        font-size: 16px;
-        outline: none;
-      }
-
-      #nexworld-account-card button {
-        width: 100%;
-        box-sizing: border-box;
-        margin-top: 9px;
-        padding: 14px;
-        border: 0;
-        border-radius: 15px;
-        font-size: 15px;
-        font-weight: 800;
-      }
-
-      #nx-login {
-        background: #11b9d5;
-        color: #06111c;
-      }
-
-      #nx-create,
-      #nx-reset,
-      #nx-logout,
-      #nx-close {
-        background: #29354c;
-        color: #fff;
-      }
-
-      #nx-admin {
-        background: #a855f7;
-        color: #fff;
-      }
-
-      #nx-status,
-      #nx-message {
-        margin-top: 12px;
-        padding: 12px 14px;
-        border-radius: 14px;
-        background: #202b40;
-        color: #e2e8f0;
-        font-size: 14px;
-      }
-
-      #nx-message {
-        display: none;
-      }
-
-    `;
-
-    document.head.appendChild(style);
+  if(!window.firebase){
+    throw new Error(
+      "Firebase n'est pas chargé."
+    );
   }
 
-  function createUI() {
-    if (
-      document.getElementById(
-        'nexworld-account-panel'
+  try{
+
+    /*
+     * Si Firebase a déjà été initialisé
+     * par un autre module, on réutilise
+     * l'application existante.
+     */
+
+    firebaseApp =
+      window.firebase.apps &&
+      window.firebase.apps.length
+        ? window.firebase.app()
+        : window.firebase.initializeApp(
+            FIREBASE_CONFIG
+          );
+
+    firebaseAuth =
+      window.firebase.auth(
+        firebaseApp
+      );
+
+    firebaseReady=true;
+
+    return firebaseAuth;
+
+  }catch(error){
+
+    console.error(
+      "NEXWORLD Firebase initialization:",
+      error
+    );
+
+    firebaseReady=false;
+
+    throw new Error(
+      "Impossible d'initialiser Firebase : "+
+      (
+        error?.message||
+        "configuration Firebase invalide."
       )
-    ) {
-      return;
-    }
-
-    createStyles();
-
-    accountButton =
-      document.createElement('button');
-
-    accountButton.id =
-      'nexworld-account-button';
-
-    accountButton.type = 'button';
-
-    accountButton.textContent =
-      '👤 Compte';
-
-    accountButton.addEventListener(
-      'click',
-      openAccount
-    );
-
-    document.body.appendChild(
-      accountButton
-    );
-
-    accountPanel =
-      document.createElement('div');
-
-    accountPanel.id =
-      'nexworld-account-panel';
-
-    /*
-      IMPORTANT :
-      la fenêtre est cachée dès sa création.
-    */
-    accountPanel.className =
-      'nx-hidden';
-
-    accountPanel.setAttribute(
-      'aria-hidden',
-      'true'
-    );
-
-    accountPanel.innerHTML = `
-
-      <div id="nexworld-account-card">
-
-        <h2>Compte NEXWORLD</h2>
-
-        <p class="nx-subtitle">
-          Connexion sécurisée
-        </p>
-
-        <input
-          id="nx-email"
-          type="email"
-          autocomplete="email"
-          placeholder="Adresse e-mail"
-        >
-
-        <input
-          id="nx-password"
-          type="password"
-          autocomplete="current-password"
-          placeholder="Mot de passe"
-        >
-
-        <button
-          id="nx-login"
-          type="button"
-        >
-          Se connecter
-        </button>
-
-        <button
-          id="nx-create"
-          type="button"
-        >
-          Créer un compte
-        </button>
-
-        <button
-          id="nx-reset"
-          type="button"
-        >
-          Mot de passe oublié
-        </button>
-
-        <button
-          id="nx-admin"
-          type="button"
-        >
-          Activer Super Admin
-        </button>
-
-        <button
-          id="nx-logout"
-          type="button"
-        >
-          Déconnexion
-        </button>
-
-        <div id="nx-status">
-          Aucun compte connecté.
-        </div>
-
-        <div id="nx-message"></div>
-
-        <button
-          id="nx-close"
-          type="button"
-        >
-          Fermer
-        </button>
-
-      </div>
-    `;
-
-    document.body.appendChild(
-      accountPanel
-    );
-
-    document
-      .getElementById('nx-login')
-      .addEventListener(
-        'click',
-        login
-      );
-
-    document
-      .getElementById('nx-create')
-      .addEventListener(
-        'click',
-        createAccount
-      );
-
-    document
-      .getElementById('nx-reset')
-      .addEventListener(
-        'click',
-        resetPassword
-      );
-
-    document
-      .getElementById('nx-admin')
-      .addEventListener(
-        'click',
-        activateAdmin
-      );
-
-    document
-      .getElementById('nx-logout')
-      .addEventListener(
-        'click',
-        logout
-      );
-
-    document
-      .getElementById('nx-close')
-      .addEventListener(
-        'click',
-        closeAccount
-      );
-
-    accountPanel.addEventListener(
-      'click',
-      function (event) {
-        if (
-          event.target === accountPanel
-        ) {
-          closeAccount();
-        }
-      }
-    );
-
-    /*
-      ESC ferme la fenêtre.
-    */
-    document.addEventListener(
-      'keydown',
-      function (event) {
-        if (event.key === 'Escape') {
-          closeAccount();
-        }
-      }
     );
   }
+}
 
-  function openAccount() {
-    if (!accountPanel) return;
 
-    accountPanel.classList.remove(
-      'nx-hidden'
+/* =========================================================
+   UTILITAIRE : MESSAGE FIREBASE
+   ========================================================= */
+
+function firebaseErrorMessage(error){
+
+  const code=
+    String(
+      error?.code||
+      ''
     );
 
-    accountPanel.setAttribute(
-      'aria-hidden',
-      'false'
-    );
-  }
-
-  function closeAccount() {
-    if (!accountPanel) return;
-
-    accountPanel.classList.add(
-      'nx-hidden'
+  const message=
+    String(
+      error?.message||
+      ''
     );
 
-    accountPanel.setAttribute(
-      'aria-hidden',
-      'true'
-    );
-  }
-
-  /* ---------------------------------------------------------
-     Messages
-     --------------------------------------------------------- */
-
-  function message(text, success) {
-    const box =
-      document.getElementById(
-        'nx-message'
-      );
-
-    if (!box) return;
-
-    box.textContent =
-      text || '';
-
-    box.style.display =
-      text ? 'block' : 'none';
-
-    box.style.border =
-      success
-        ? '1px solid rgba(52,211,153,.45)'
-        : '1px solid rgba(248,113,113,.4)';
-  }
-
-  /* ---------------------------------------------------------
-     Auth state
-     --------------------------------------------------------- */
-
-  function updateAccountState(user) {
-    const status =
-      document.getElementById(
-        'nx-status'
-      );
-
-    const logoutButton =
-      document.getElementById(
-        'nx-logout'
-      );
-
-    if (user) {
-
-      if (status) {
-        status.textContent =
-          'Connecté : ' +
-          (user.email || user.uid);
-      }
-
-      if (logoutButton) {
-        logoutButton.style.display =
-          'block';
-      }
-
-      if (accountButton) {
-        accountButton.textContent =
-          '👤 Compte ✓';
-      }
-
-    } else {
-
-      if (status) {
-        status.textContent =
-          'Aucun compte connecté.';
-      }
-
-      if (logoutButton) {
-        logoutButton.style.display =
-          'block';
-      }
-
-      if (accountButton) {
-        accountButton.textContent =
-          '👤 Compte';
-      }
-    }
-  }
-
-  /* ---------------------------------------------------------
-     Connexion
-     --------------------------------------------------------- */
-
-  async function login() {
-    if (!auth) {
-      message(
-        'Firebase n’est pas disponible.',
-        false
-      );
-      return;
-    }
-
-    const email =
-      document.getElementById(
-        'nx-email'
-      ).value.trim();
-
-    const password =
-      document.getElementById(
-        'nx-password'
-      ).value;
-
-    if (!email || !password) {
-      message(
-        'Saisissez votre e-mail et votre mot de passe.',
-        false
-      );
-      return;
-    }
-
-    message(
-      'Connexion…',
-      true
-    );
-
-    try {
-
-      await auth.signInWithEmailAndPassword(
-        email,
-        password
-      );
-
-      message(
-        'Connexion réussie.',
-        true
-      );
-
-    } catch (error) {
-
-      console.error(error);
-
-      message(
-        firebaseMessage(error),
-        false
-      );
-    }
-  }
-
-  /* ---------------------------------------------------------
-     Création de compte
-     --------------------------------------------------------- */
-
-  async function createAccount() {
-    if (!auth) return;
-
-    const email =
-      document.getElementById(
-        'nx-email'
-      ).value.trim();
-
-    const password =
-      document.getElementById(
-        'nx-password'
-      ).value;
-
-    if (!email || !password) {
-      message(
-        'Saisissez votre e-mail et votre mot de passe.',
-        false
-      );
-      return;
-    }
-
-    if (password.length < 6) {
-      message(
-        'Le mot de passe doit contenir au moins 6 caractères.',
-        false
-      );
-      return;
-    }
-
-    message(
-      'Création du compte…',
-      true
-    );
-
-    try {
-
-      await auth.createUserWithEmailAndPassword(
-        email,
-        password
-      );
-
-      message(
-        'Compte créé avec succès.',
-        true
-      );
-
-    } catch (error) {
-
-      console.error(error);
-
-      message(
-        firebaseMessage(error),
-        false
-      );
-    }
-  }
-
-  /* ---------------------------------------------------------
-     Mot de passe oublié
-     --------------------------------------------------------- */
-
-  async function resetPassword() {
-    if (!auth) return;
-
-    const email =
-      document.getElementById(
-        'nx-email'
-      ).value.trim();
-
-    if (!email) {
-      message(
-        'Saisissez votre adresse e-mail.',
-        false
-      );
-      return;
-    }
-
-    try {
-
-      await auth.sendPasswordResetEmail(
-        email
-      );
-
-      message(
-        'E-mail de réinitialisation envoyé.',
-        true
-      );
-
-    } catch (error) {
-
-      console.error(error);
-
-      message(
-        firebaseMessage(error),
-        false
-      );
-    }
-  }
-
-  /* ---------------------------------------------------------
-     Déconnexion
-     --------------------------------------------------------- */
-
-  async function logout() {
-    if (!auth) return;
-
-    try {
-
-      await auth.signOut();
-
-      message(
-        'Déconnexion effectuée.',
-        true
-      );
-
-    } catch (error) {
-
-      console.error(error);
-
-      message(
-        'Déconnexion impossible.',
-        false
-      );
-    }
-  }
-
-  /* ---------------------------------------------------------
-     Super Admin
-     --------------------------------------------------------- */
-
-  async function activateAdmin() {
-
-    if (!auth || !auth.currentUser) {
-
-      message(
-        'Connectez-vous d’abord avec votre compte administrateur.',
-        false
-      );
-
-      return;
-    }
-
-    const confirmed =
-      window.confirm(
-        'Activer les droits Super Admin pour ce compte ?'
-      );
-
-    if (!confirmed) return;
-
-    message(
-      'Vérification Super Admin…',
-      true
-    );
-
-    try {
-
-      const token =
-        await auth.currentUser.getIdToken(
-          true
-        );
-
-      const response =
-        await fetch(
-          ADMIN_ENDPOINT,
-          {
-            method: 'POST',
-
-            headers: {
-              'Content-Type':
-                'application/json',
-
-              'Authorization':
-                'Bearer ' + token
-            },
-
-            body: JSON.stringify({})
-          }
-        );
-
-      const data =
-        await response.json()
-          .catch(function () {
-            return {};
-          });
-
-      if (
-        !response.ok ||
-        data.ok === false
-      ) {
-        throw new Error(
-          data.error ||
-          'Activation Super Admin refusée.'
-        );
-      }
-
-      message(
-        data.message ||
-        'Super Admin activé.',
-        true
-      );
-
-    } catch (error) {
-
-      console.error(error);
-
-      message(
-        error.message ||
-        'Activation Super Admin impossible.',
-        false
-      );
-    }
-  }
-
-  /* ---------------------------------------------------------
-     Token Firebase pour Netlify
-     --------------------------------------------------------- */
-
-  async function getNexworldIdToken() {
-
-    if (
-      !auth ||
-      !auth.currentUser
-    ) {
-      throw new Error(
-        'Aucun compte NEXWORLD connecté.'
-      );
-    }
-
-    return auth.currentUser.getIdToken(
-      true
-    );
-  }
-
-  /* ---------------------------------------------------------
-     Requête Xtream sécurisée
-     --------------------------------------------------------- */
-
-  async function xtreamSecureRequest(
-    payload
-  ) {
-
-    const token =
-      await getNexworldIdToken();
-
-    const response =
-      await fetch(
-        XTREAM_ENDPOINT,
-        {
-          method: 'POST',
-
-          headers: {
-            'Content-Type':
-              'application/json',
-
-            'Authorization':
-              'Bearer ' + token
-          },
-
-          body: JSON.stringify(
-            payload || {}
-          )
-        }
-      );
-
-    const data =
-      await response.json()
-        .catch(function () {
-          return {
-            ok: false,
-            error:
-              'Réponse serveur invalide.'
-          };
-        });
-
-    if (
-      !response.ok ||
-      data.ok === false
-    ) {
-      throw new Error(
-        data.error ||
-        'Requête Xtream refusée.'
-      );
-    }
-
-    return data;
-  }
-
-  /* ---------------------------------------------------------
-     Messages Firebase
-     --------------------------------------------------------- */
-
-  function firebaseMessage(error) {
-
-    const code =
-      String(
-        error &&
-        error.code ||
-        ''
-      );
-
-    const messages = {
-
-      'auth/invalid-email':
-        'Adresse e-mail invalide.',
-
-      'auth/user-not-found':
-        'Compte introuvable.',
-
-      'auth/wrong-password':
-        'Mot de passe incorrect.',
-
-      'auth/invalid-credential':
-        'E-mail ou mot de passe incorrect.',
-
-      'auth/email-already-in-use':
-        'Cette adresse e-mail est déjà utilisée.',
-
-      'auth/weak-password':
-        'Mot de passe trop faible.',
-
-      'auth/too-many-requests':
-        'Trop de tentatives. Réessayez plus tard.'
-    };
+  if(
+    code.includes('api-key-not-valid')||
+    code.includes('invalid-api-key')
+  ){
 
     return (
-      messages[code] ||
-      (
-        error &&
-        error.message
-      ) ||
-      'Opération Firebase impossible.'
+      "La clé API Firebase utilisée par NEXWORLD "+
+      "est invalide ou n'est pas associée à la bonne "+
+      "application Web."
     );
   }
 
-  /* ---------------------------------------------------------
-     API publique NEXWORLD
-     --------------------------------------------------------- */
+  if(
+    code.includes('invalid-credential')||
+    code.includes('invalid-login-credentials')
+  ){
 
-  window.NEXWORLD_AUTH = {
+    return (
+      "Adresse e-mail ou mot de passe incorrect."
+    );
+  }
 
-    initFirebaseAuth:
-      initFirebase,
+  if(
+    code.includes('user-not-found')
+  ){
 
-    signInNexworld:
-      login,
+    return (
+      "Aucun compte Firebase ne correspond à cette adresse."
+    );
+  }
 
-    signOutNexworld:
-      logout,
+  if(
+    code.includes('wrong-password')||
+    code.includes('invalid-password')
+  ){
 
-    getNexworldIdToken:
-      getNexworldIdToken,
+    return (
+      "Mot de passe incorrect."
+    );
+  }
 
-    xtreamSecureRequest:
-      xtreamSecureRequest,
+  if(
+    code.includes('email-already-in-use')
+  ){
 
-    openAccount:
-      openAccount,
+    return (
+      "Cette adresse e-mail possède déjà un compte."
+    );
+  }
 
-    closeAccount:
-      closeAccount
+  if(
+    code.includes('weak-password')
+  ){
+
+    return (
+      "Le mot de passe est trop faible."
+    );
+  }
+
+  if(
+    code.includes('too-many-requests')
+  ){
+
+    return (
+      "Trop de tentatives. Réessayez plus tard."
+    );
+  }
+
+  if(
+    code.includes('network-request-failed')
+  ){
+
+    return (
+      "Connexion Internet indisponible."
+    );
+  }
+
+  return message||
+    "Une erreur Firebase est survenue.";
+}
+
+
+/* =========================================================
+   CONNEXION
+   ========================================================= */
+
+async function signInNexworld(
+  email,
+  password
+){
+
+  const auth=
+    await initFirebaseAuth();
+
+  const cleanEmail=
+    String(email||'').trim();
+
+  if(!cleanEmail){
+    throw new Error(
+      "Adresse e-mail requise."
+    );
+  }
+
+  if(!password){
+    throw new Error(
+      "Mot de passe requis."
+    );
+  }
+
+  try{
+
+    const result=
+      await auth.signInWithEmailAndPassword(
+        cleanEmail,
+        password
+      );
+
+    return result.user;
+
+  }catch(error){
+
+    console.error(
+      "NEXWORLD sign-in:",
+      error
+    );
+
+    throw new Error(
+      firebaseErrorMessage(error)
+    );
+  }
+}
+
+
+/* =========================================================
+   CREATION DE COMPTE
+   ========================================================= */
+
+async function createNexworldAccount(
+  email,
+  password
+){
+
+  const auth=
+    await initFirebaseAuth();
+
+  const cleanEmail=
+    String(email||'').trim();
+
+  if(!cleanEmail){
+    throw new Error(
+      "Adresse e-mail requise."
+    );
+  }
+
+  if(!password){
+    throw new Error(
+      "Mot de passe requis."
+    );
+  }
+
+  try{
+
+    const result=
+      await auth.createUserWithEmailAndPassword(
+        cleanEmail,
+        password
+      );
+
+    return result.user;
+
+  }catch(error){
+
+    console.error(
+      "NEXWORLD create account:",
+      error
+    );
+
+    throw new Error(
+      firebaseErrorMessage(error)
+    );
+  }
+}
+
+
+/* =========================================================
+   MOT DE PASSE OUBLIE
+   ========================================================= */
+
+async function resetNexworldPassword(
+  email
+){
+
+  const auth=
+    await initFirebaseAuth();
+
+  const cleanEmail=
+    String(email||'').trim();
+
+  if(!cleanEmail){
+    throw new Error(
+      "Entrez votre adresse e-mail."
+    );
+  }
+
+  try{
+
+    await auth.sendPasswordResetEmail(
+      cleanEmail
+    );
+
+  }catch(error){
+
+    console.error(
+      "NEXWORLD password reset:",
+      error
+    );
+
+    throw new Error(
+      firebaseErrorMessage(error)
+    );
+  }
+}
+
+
+/* =========================================================
+   DECONNEXION
+   ========================================================= */
+
+async function signOutNexworld(){
+
+  const auth=
+    await initFirebaseAuth();
+
+  await auth.signOut();
+}
+
+
+/* =========================================================
+   UTILITAIRE TOKEN FIREBASE
+   ========================================================= */
+
+async function getNexworldIdToken(){
+
+  const auth=
+    await initFirebaseAuth();
+
+  if(!auth.currentUser){
+
+    throw new Error(
+      "Aucune session NEXWORLD active."
+    );
+  }
+
+  try{
+
+    return await auth.currentUser.getIdToken(
+      true
+    );
+
+  }catch(error){
+
+    console.error(
+      "NEXWORLD token:",
+      error
+    );
+
+    throw new Error(
+      "Impossible de récupérer la session Firebase."
+    );
+  }
+}
+
+
+/* =========================================================
+   REQUETE XTREAM SECURISEE
+   ========================================================= */
+
+async function xtreamSecureRequest(
+  payload
+){
+
+  const token=
+    await getNexworldIdToken();
+
+  const response=
+    await fetch(
+      "/.netlify/functions/xtream",
+      {
+        method:"POST",
+
+        headers:{
+          "Content-Type":
+            "application/json",
+
+          "Authorization":
+            "Bearer "+token
+        },
+
+        body:JSON.stringify(
+          payload||{}
+        )
+      }
+    );
+
+  let data;
+
+  try{
+
+    data=
+      await response.json();
+
+  }catch{
+
+    throw new Error(
+      "Réponse invalide du backend NEXWORLD."
+    );
+  }
+
+  if(
+    !response.ok||
+    !data.ok
+  ){
+
+    throw new Error(
+      data.error||
+      "Requête Xtream refusée."
+    );
+  }
+
+  return data;
+}
+
+
+/* =========================================================
+   REQUETE STALKER SECURISEE
+   ========================================================= */
+
+async function stalkerSecureRequest(
+  payload
+){
+
+  const token=
+    await getNexworldIdToken();
+
+  const response=
+    await fetch(
+      "/.netlify/functions/stalker",
+      {
+        method:"POST",
+
+        cache:"no-store",
+
+        headers:{
+          "Content-Type":
+            "application/json",
+
+          "Authorization":
+            "Bearer "+token
+        },
+
+        body:JSON.stringify(
+          payload||{}
+        )
+      }
+    );
+
+  let data;
+
+  try{
+
+    data=
+      await response.json();
+
+  }catch{
+
+    throw new Error(
+      "Réponse invalide du backend Stalker."
+    );
+  }
+
+  if(
+    !response.ok||
+    !data.ok
+  ){
+
+    throw new Error(
+      data.error||
+      "Requête Stalker refusée."
+    );
+  }
+
+  return data;
+}
+
+
+/* =========================================================
+   UI COMPTE
+   ========================================================= */
+
+function createAuthUI(){
+
+  if(
+    document.getElementById(
+      "nexworldAccountButton"
+    )
+  ){
+    return;
+  }
+
+  const brand=
+    document.querySelector(
+      ".brand"
+    );
+
+  if(!brand)return;
+
+
+  /*
+   * BOUTON COMPTE
+   */
+
+  const button=
+    document.createElement(
+      "button"
+    );
+
+  button.id=
+    "nexworldAccountButton";
+
+  button.type=
+    "button";
+
+  button.innerHTML=
+    "👤 <span>Compte</span>";
+
+  button.style.cssText=`
+    margin-left:auto;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    background:rgba(15,23,42,.55);
+    color:#f4f7fb;
+    border:1px solid #263653;
+    border-radius:999px;
+    padding:10px 16px;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    white-space:nowrap;
+  `;
+
+
+  /*
+   * Le status existant ne doit pas
+   * empêcher l'affichage du bouton.
+   */
+
+  const status=
+    document.getElementById(
+      "status"
+    );
+
+  if(status){
+    brand.insertBefore(
+      button,
+      status
+    );
+  }else{
+    brand.appendChild(
+      button
+    );
+  }
+
+
+  /*
+   * PANNEAU
+   */
+
+  const panel=
+    document.createElement(
+      "div"
+    );
+
+  panel.id=
+    "nexworldAuthPanel";
+
+  panel.innerHTML=`
+
+    <div class="nex-auth-backdrop"
+         data-auth-close></div>
+
+    <div class="nex-auth-sheet">
+
+      <button
+        type="button"
+        class="nex-auth-close"
+        data-auth-close>
+        Fermer
+      </button>
+
+      <h2>Connexion sécurisée</h2>
+
+      <p class="nex-auth-subtitle">
+        Accédez à votre compte NEXWORLD.
+      </p>
+
+      <label>
+        Adresse e-mail
+      </label>
+
+      <input
+        id="nexAuthEmail"
+        type="email"
+        autocomplete="email"
+        placeholder="vous@example.com">
+
+      <label>
+        Mot de passe
+      </label>
+
+      <input
+        id="nexAuthPassword"
+        type="password"
+        autocomplete="current-password"
+        placeholder="Mot de passe">
+
+      <button
+        id="nexAuthLogin"
+        class="nex-auth-primary">
+        Se connecter
+      </button>
+
+      <button
+        id="nexAuthCreate"
+        class="nex-auth-secondary">
+        Créer un compte
+      </button>
+
+      <button
+        id="nexAuthReset"
+        class="nex-auth-secondary">
+        Mot de passe oublié
+      </button>
+
+      <button
+        id="nexAuthSuperAdmin"
+        class="nex-auth-super"
+        style="display:none">
+        Activer Super Admin
+      </button>
+
+      <button
+        id="nexAuthLogout"
+        class="nex-auth-secondary"
+        style="display:none">
+        Déconnexion
+      </button>
+
+      <div
+        id="nexAuthState"
+        class="nex-auth-state">
+        Aucun compte connecté.
+      </div>
+
+      <div
+        id="nexAuthMessage"
+        class="nex-auth-message">
+      </div>
+
+    </div>
+  `;
+
+  document.body.appendChild(
+    panel
+  );
+
+
+  /*
+   * STYLES
+   */
+
+  const style=
+    document.createElement(
+      "style"
+    );
+
+  style.textContent=`
+
+    #nexworldAuthPanel{
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+    }
+
+    #nexworldAuthPanel.show{
+      display:flex;
+    }
+
+    .nex-auth-backdrop{
+      position:absolute;
+      inset:0;
+      background:rgba(2,6,23,.84);
+      backdrop-filter:blur(12px);
+    }
+
+    .nex-auth-sheet{
+      position:relative;
+      z-index:2;
+      width:min(520px,100%);
+      max-height:94vh;
+      overflow:auto;
+      background:#101b2f;
+      border:1px solid #263653;
+      border-radius:24px;
+      padding:22px;
+      box-shadow:0 30px 90px rgba(0,0,0,.5);
+    }
+
+    .nex-auth-sheet h2{
+      margin:4px 0 5px;
+      font-size:24px;
+    }
+
+    .nex-auth-subtitle{
+      margin:0 0 18px;
+      color:#94a3b8;
+      font-size:13px;
+    }
+
+    .nex-auth-sheet label{
+      display:block;
+      margin:11px 0 6px;
+      color:#94a3b8;
+      font-size:12px;
+    }
+
+    .nex-auth-sheet input{
+      width:100%;
+      padding:13px;
+      border-radius:14px;
+      border:1px solid #263653;
+      background:#0b1325;
+      color:#f4f7fb;
+      outline:none;
+      font-size:14px;
+    }
+
+    .nex-auth-sheet input:focus{
+      border-color:#22d3ee;
+    }
+
+    .nex-auth-primary,
+    .nex-auth-secondary,
+    .nex-auth-super{
+      width:100%;
+      border:0;
+      border-radius:14px;
+      padding:13px;
+      margin-top:10px;
+      font-size:14px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .nex-auth-primary{
+      background:#22d3ee;
+      color:#07111f;
+    }
+
+    .nex-auth-secondary{
+      background:#263653;
+      color:#f4f7fb;
+    }
+
+    .nex-auth-super{
+      background:#a855f7;
+      color:white;
+    }
+
+    .nex-auth-close{
+      float:right;
+      border:1px solid #263653;
+      background:#1c2a43;
+      color:#f4f7fb;
+      border-radius:10px;
+      padding:7px 10px;
+      cursor:pointer;
+    }
+
+    .nex-auth-state{
+      margin-top:14px;
+      padding:12px;
+      background:#16233b;
+      border:1px solid #263653;
+      border-radius:14px;
+      color:#c5cfdd;
+      font-size:13px;
+    }
+
+    .nex-auth-message{
+      margin-top:10px;
+      padding:11px;
+      border-radius:14px;
+      background:rgba(251,113,133,.06);
+      border:1px solid rgba(251,113,133,.35);
+      color:#fb7185;
+      font-size:12px;
+      line-height:1.45;
+      display:none;
+    }
+
+    .nex-auth-message.show{
+      display:block;
+    }
+
+    @media(max-width:580px){
+
+      #nexworldAccountButton span{
+        display:none;
+      }
+
+      #nexworldAccountButton{
+        padding:10px 13px!important;
+      }
+
+      .nex-auth-sheet{
+        padding:18px;
+        border-radius:22px;
+      }
+    }
+  `;
+
+  document.head.appendChild(
+    style
+  );
+
+
+  /*
+   * EVENEMENTS
+   */
+
+  button.onclick=()=>{
+    panel.classList.add(
+      "show"
+    );
+
+    updateAuthUI();
   };
 
-  /* ---------------------------------------------------------
-     Démarrage
-     --------------------------------------------------------- */
+  panel
+    .querySelectorAll(
+      "[data-auth-close]"
+    )
+    .forEach(el=>{
+      el.onclick=()=>{
+        panel.classList.remove(
+          "show"
+        );
+      };
+    });
 
-  function boot() {
 
-    createUI();
+  document
+    .getElementById(
+      "nexAuthLogin"
+    )
+    .onclick=
+      handleLogin;
 
-    /*
-      SÉCURITÉ UI :
-      toujours fermé au démarrage.
-    */
-    closeAccount();
 
-    initFirebase();
+  document
+    .getElementById(
+      "nexAuthCreate"
+    )
+    .onclick=
+      handleCreateAccount;
 
-    /*
-      Vérification supplémentaire :
-      si un autre script tente d'afficher
-      la fenêtre immédiatement, elle reste
-      fermée au démarrage.
-    */
-    setTimeout(
-      closeAccount,
-      0
+
+  document
+    .getElementById(
+      "nexAuthReset"
+    )
+    .onclick=
+      handleResetPassword;
+
+
+  document
+    .getElementById(
+      "nexAuthLogout"
+    )
+    .onclick=
+      handleLogout;
+
+
+  document
+    .getElementById(
+      "nexAuthSuperAdmin"
+    )
+    .onclick=
+      handleSuperAdmin;
+
+
+  /*
+   * ENTREE CLAVIER
+   */
+
+  [
+    "nexAuthEmail",
+    "nexAuthPassword"
+  ].forEach(id=>{
+
+    const el=
+      document.getElementById(id);
+
+    if(el){
+
+      el.addEventListener(
+        "keydown",
+        e=>{
+
+          if(
+            e.key==="Enter"
+          ){
+            handleLogin();
+          }
+
+        }
+      );
+    }
+  });
+}
+
+
+/* =========================================================
+   MESSAGE UI
+   ========================================================= */
+
+function authMessage(
+  text,
+  error=true
+){
+
+  const el=
+    document.getElementById(
+      "nexAuthMessage"
+    );
+
+  if(!el)return;
+
+  el.textContent=
+    text||"";
+
+  el.classList.toggle(
+    "show",
+    Boolean(text)
+  );
+
+  if(!error){
+
+    el.style.color=
+      "#34d399";
+
+    el.style.borderColor=
+      "rgba(52,211,153,.35)";
+
+    el.style.background=
+      "rgba(52,211,153,.06)";
+
+  }else{
+
+    el.style.color=
+      "#fb7185";
+
+    el.style.borderColor=
+      "rgba(251,113,133,.35)";
+
+    el.style.background=
+      "rgba(251,113,133,.06)";
+  }
+}
+
+
+/* =========================================================
+   UI ETAT COMPTE
+   ========================================================= */
+
+function updateAuthUI(
+  user=null
+){
+
+  const stateEl=
+    document.getElementById(
+      "nexAuthState"
+    );
+
+  const logout=
+    document.getElementById(
+      "nexAuthLogout"
+    );
+
+  const superAdmin=
+    document.getElementById(
+      "nexAuthSuperAdmin"
+    );
+
+  const login=
+    document.getElementById(
+      "nexAuthLogin"
+    );
+
+  const create=
+    document.getElementById(
+      "nexAuthCreate"
+    );
+
+  const reset=
+    document.getElementById(
+      "nexAuthReset"
+    );
+
+  const password=
+    document.getElementById(
+      "nexAuthPassword"
+    );
+
+
+  if(!user){
+
+    if(stateEl)
+      stateEl.textContent=
+        "Aucun compte connecté.";
+
+    if(logout)
+      logout.style.display=
+        "none";
+
+    if(superAdmin)
+      superAdmin.style.display=
+        "none";
+
+    if(login)
+      login.style.display=
+        "block";
+
+    if(create)
+      create.style.display=
+        "block";
+
+    if(reset)
+      reset.style.display=
+        "block";
+
+    if(password)
+      password.disabled=
+        false;
+
+    return;
+  }
+
+
+  if(stateEl){
+
+    stateEl.innerHTML=
+      `<b>Compte connecté</b><br>`+
+      `${escapeAuthHTML(user.email||'')}`;
+  }
+
+
+  if(logout)
+    logout.style.display=
+      "block";
+
+  /*
+   * Super Admin est accessible uniquement
+   * lorsqu'une session Firebase existe.
+   */
+  if(superAdmin)
+    superAdmin.style.display=
+      "block";
+
+  if(login)
+    login.style.display=
+      "none";
+
+  if(create)
+    create.style.display=
+      "none";
+
+  if(reset)
+    reset.style.display=
+      "none";
+
+  if(password)
+    password.disabled=
+      true;
+}
+
+
+/* =========================================================
+   ECHAPPEMENT UI
+   ========================================================= */
+
+function escapeAuthHTML(value){
+
+ return String(value||'')
+  .replace(/[&<>"']/g,c=>({
+   "&":"&amp;",
+   "<":"&lt;",
+   ">":"&gt;",
+   '"':"&quot;",
+   "'":"&#39;"
+  }[c]));
+}
+
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+async function handleLogin(){
+
+ const email=
+  document
+   .getElementById(
+    "nexAuthEmail"
+   )
+   ?.value||
+  "";
+
+ const password=
+  document
+   .getElementById(
+    "nexAuthPassword"
+   )
+   ?.value||
+  "";
+
+ authMessage(
+  "Connexion en cours…",
+  false
+ );
+
+ try{
+
+  const user=
+    await signInNexworld(
+      email,
+      password
+    );
+
+  authMessage(
+    "Connexion réussie.",
+    false
+  );
+
+  updateAuthUI(
+    user
+  );
+
+  if(
+    window.NEXWORLD_AUTH_ON_LOGIN
+  ){
+    window.NEXWORLD_AUTH_ON_LOGIN(
+      user
     );
   }
 
-  if (
-    document.readyState ===
-    'loading'
-  ) {
+ }catch(error){
 
-    document.addEventListener(
-      'DOMContentLoaded',
-      boot,
-      { once: true }
+  authMessage(
+    error?.message||
+    "Connexion impossible.",
+    true
+  );
+ }
+}
+
+
+/* =========================================================
+   CREATION COMPTE
+   ========================================================= */
+
+async function handleCreateAccount(){
+
+ const email=
+  document
+   .getElementById(
+    "nexAuthEmail"
+   )
+   ?.value||
+  "";
+
+ const password=
+  document
+   .getElementById(
+    "nexAuthPassword"
+   )
+   ?.value||
+  "";
+
+ if(
+  password.length<6
+ ){
+
+  authMessage(
+   "Utilisez un mot de passe d'au moins 6 caractères.",
+   true
+  );
+
+  return;
+ }
+
+ authMessage(
+  "Création du compte…",
+  false
+ );
+
+ try{
+
+  const user=
+   await createNexworldAccount(
+    email,
+    password
+   );
+
+  authMessage(
+   "Compte créé avec succès.",
+   false
+  );
+
+  updateAuthUI(
+   user
+  );
+
+ }catch(error){
+
+  authMessage(
+   error?.message||
+   "Création impossible.",
+   true
+  );
+ }
+}
+
+
+/* =========================================================
+   RESET MOT DE PASSE
+   ========================================================= */
+
+async function handleResetPassword(){
+
+ const email=
+  document
+   .getElementById(
+    "nexAuthEmail"
+   )
+   ?.value||
+  "";
+
+ try{
+
+  await resetNexworldPassword(
+   email
+  );
+
+  authMessage(
+   "E-mail de réinitialisation envoyé.",
+   false
+  );
+
+ }catch(error){
+
+  authMessage(
+   error?.message||
+   "Impossible d'envoyer l'e-mail.",
+   true
+  );
+ }
+}
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+async function handleLogout(){
+
+ try{
+
+  await signOutNexworld();
+
+  authMessage(
+   "Déconnexion réussie.",
+   false
+  );
+
+  updateAuthUI(
+   null
+  );
+
+ }catch(error){
+
+  authMessage(
+   error?.message||
+   "Déconnexion impossible.",
+   true
+  );
+ }
+}
+
+
+/* =========================================================
+   SUPER ADMIN
+   ========================================================= */
+
+async function handleSuperAdmin(){
+
+ /*
+  * Le bootstrap-admin est volontairement appelé
+  * uniquement avec une session Firebase valide.
+  */
+
+ try{
+
+  const token=
+    await getNexworldIdToken();
+
+  const response=
+    await fetch(
+      "/.netlify/functions/bootstrap-admin",
+      {
+        method:"POST",
+
+        headers:{
+          "Content-Type":
+            "application/json",
+
+          "Authorization":
+            "Bearer "+token
+        },
+
+        body:JSON.stringify({})
+      }
     );
 
-  } else {
+  let data={};
 
-    boot();
+  try{
+    data=
+      await response.json();
+  }catch{}
+
+  if(
+    !response.ok||
+    data.ok===false
+  ){
+
+    throw new Error(
+      data.error||
+      `Activation Super Admin refusée (HTTP ${response.status}).`
+    );
   }
 
-})();
+  authMessage(
+    data.message||
+    "Super Admin activé avec succès.",
+    false
+  );
+
+ }catch(error){
+
+  console.error(
+    "NEXWORLD Super Admin:",
+    error
+  );
+
+  authMessage(
+    error?.message||
+    "Activation Super Admin impossible.",
+    true
+  );
+ }
+}
+
+
+/* =========================================================
+   ECOUTE SESSION FIREBASE
+   ========================================================= */
+
+async function listenFirebaseAuth(){
+
+ try{
+
+  const auth=
+    await initFirebaseAuth();
+
+  auth.onAuthStateChanged(
+    user=>{
+
+      updateAuthUI(
+        user||null
+      );
+
+      if(
+        window.NEXWORLD_AUTH_ON_STATE
+      ){
+
+        window.NEXWORLD_AUTH_ON_STATE(
+          user||null
+        );
+      }
+    }
+  );
+
+ }catch(error){
+
+  console.error(
+    "NEXWORLD Firebase listener:",
+    error
+  );
+
+  updateAuthUI(
+    null
+  );
+
+  authMessage(
+    error?.message||
+    "Firebase indisponible.",
+    true
+  );
+ }
+}
+
+
+/* =========================================================
+   API PUBLIQUE
+   ========================================================= */
+
+window.NEXWORLD_AUTH={
+
+  initFirebaseAuth,
+
+  signInNexworld,
+
+  createNexworldAccount,
+
+  resetNexworldPassword,
+
+  signOutNexworld,
+
+  getNexworldIdToken,
+
+  xtreamSecureRequest,
+
+  stalkerSecureRequest
+
+};
+
+
+/* =========================================================
+   DEMARRAGE
+   ========================================================= */
+
+function startNexworldAuth(){
+
+  createAuthUI();
+
+  listenFirebaseAuth();
+
+}
+
+
+/*
+ * firebase-auth.js est chargé à la fin de index.html.
+ * DOMContentLoaded peut donc déjà être passé.
+ */
+
+if(
+ document.readyState==="loading"
+){
+
+ document.addEventListener(
+  "DOMContentLoaded",
+  startNexworldAuth,
+  {once:true}
+ );
+
+}else{
+
+ startNexworldAuth();
+
+}
