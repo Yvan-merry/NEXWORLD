@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0F172A">
-<title>NEXWORLD V7.3 — Version consolidée</title>
+<title>NEXWORLD V7.4 — Stalker / MAG sécurisé</title>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
@@ -103,7 +103,9 @@ border:1px solid var(--line);border-radius:12px;padding:11px;outline:none}
 .btn{background:#1b2b47;color:var(--text);border:1px solid #334765;
 border-radius:12px;padding:10px 13px;cursor:pointer}
 .btn.primary{background:rgba(34,211,238,.12);border-color:rgba(34,211,238,.5);color:var(--accent)}
+.btn.success{background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.4);color:var(--green)}
 .btn.danger{color:var(--danger);border-color:rgba(251,113,133,.35)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
 .source-list{display:grid;gap:9px;margin-top:12px}
 .source-item{background:var(--panel);border:1px solid var(--line);border-radius:15px;
 padding:12px;display:flex;align-items:center;gap:10px}
@@ -112,6 +114,10 @@ padding:12px;display:flex;align-items:center;gap:10px}
 .source-item small{color:var(--muted);font-size:10px}
 .notice{background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);
 border-radius:14px;padding:11px;color:#d8c28a;font-size:11px;line-height:1.5;margin-top:10px}
+.connector-status{margin-top:10px;padding:10px;border-radius:12px;font-size:11px;
+background:#0b1325;border:1px solid var(--line);color:var(--muted)}
+.connector-status.ok{border-color:rgba(52,211,153,.4);color:var(--green)}
+.connector-status.error{border-color:rgba(251,113,133,.4);color:var(--danger)}
 
 .pagination{display:flex;justify-content:center;gap:8px;margin:16px 0}
 .modal{position:fixed;inset:0;z-index:100;background:rgba(2,6,23,.82);
@@ -240,6 +246,8 @@ const PAGE_SIZE=48;
 const DB_NAME='nexworld_v72';
 const DB_STORE='sources';
 
+const STALKER_FUNCTION='/.netlify/functions/stalker';
+
 const GENRES=[
  'Tous','Action','Aventure','Comédie','Drame','Romance','Thriller','Horreur',
  'Science-fiction','Animation','Documentaire','Policier','Famille',
@@ -275,7 +283,8 @@ const state={
  seriesGenre:'Tous',
  tvPage:1,
  sourceMode:'url',
- xtreamSessions:{}
+ xtreamSessions:{},
+ stalkerSessions:{}
 };
 
 const $=id=>document.getElementById(id);
@@ -333,12 +342,6 @@ function classify(a,name,group){
  return 'tv';
 }
 
-/*
- IMPORTANT :
- Le moteur mondial reste basé sur index.country.m3u.
- Pour le pays, IPTV-org utilise principalement tvg-country.
- On conserve également les anciens attributs en secours.
-*/
 function parseM3U(text,source='user'){
  const lines=String(text||'').split(/\r?\n/);
  const out=[];
@@ -363,11 +366,6 @@ function parseM3U(text,source='user'){
    const name=norm(a['tvg-name']||meta.title||'Sans titre');
    const group=norm(a['group-title']||'');
 
-   /*
-    NE PAS remplacer par une autre source.
-    Pour le catalogue mondial :
-    source === world => TV uniquement.
-   */
    const kind=source==='world'?'tv':classify(a,name,group);
 
    const countryValue=
@@ -404,10 +402,14 @@ function parseM3U(text,source='user'){
 
 function dedupe(arr){
  const m=new Map();
+
  for(const x of arr){
   const k=(x.url||'')+'|'+x.name+'|'+x.kind;
-  if(!m.has(k))m.set(k,x);
+
+  if(!m.has(k))
+   m.set(k,x);
  }
+
  return [...m.values()];
 }
 
@@ -426,10 +428,13 @@ function loadLS(){
  }
 }
 
-function isFav(x){return state.favorites.includes(x.id)}
+function isFav(x){
+ return state.favorites.includes(x.id);
+}
 
 function toggleFav(x,e){
  if(!x)return;
+
  e?.stopPropagation();
 
  if(isFav(x))
@@ -442,33 +447,47 @@ function toggleFav(x,e){
 }
 
 function addHistory(x){
- state.history=[x.id,...state.history.filter(id=>id!==x.id)].slice(0,100);
+ state.history=[
+  x.id,
+  ...state.history.filter(id=>id!==x.id)
+ ].slice(0,100);
+
  saveLS();
 }
 
 function findById(id){
- return [...state.channels,...state.movies,...state.series].find(x=>x.id===id);
+ return [
+  ...state.channels,
+  ...state.movies,
+  ...state.series
+ ].find(x=>x.id===id);
 }
 
 function card(x){
  const poster=x.logo||'';
 
  return `<article class="card" data-id="${esc(x.id)}">
+
  <button class="fav ${isFav(x)?'on':''}" data-fav="${esc(x.id)}">
   ${isFav(x)?'★':'☆'}
  </button>
+
  <div class="poster">
-  ${poster?`<img loading="lazy" src="${esc(poster)}" alt="">`:
-  '<span class="tiny">NEXWORLD</span>'}
+  ${poster
+   ?`<img loading="lazy" src="${esc(poster)}" alt="">`
+   :'<span class="tiny">NEXWORLD</span>'}
  </div>
+
  <div class="cardbody">
   <div class="title">${esc(x.name)}</div>
+
   <div class="meta">
    ${esc(x.genre||x.group||x.country||'')}
    ${x.year?' • '+esc(x.year):''}
    ${x.rating?' • ★ '+esc(x.rating):''}
   </div>
  </div>
+
  </article>`;
 }
 
@@ -488,20 +507,14 @@ function bindGrid(id,arr){
  el.querySelectorAll('.card').forEach(c=>{
   c.addEventListener('click',e=>{
    if(e.target.closest('[data-fav]'))return;
+
    const x=findById(c.dataset.id);
+
    if(x)openItem(x);
   });
  });
 }
 
-/*
- CORRECTION DÉFINITIVE DU FILTRE PAYS :
- - accepte FR
- - accepte fr
- - accepte FR;BE
- - accepte FR,BE
- - compare toujours en majuscules
-*/
 function countryCodes(value){
  return String(value??'')
  .split(/[;,]/)
@@ -511,13 +524,12 @@ function countryCodes(value){
 
 function countryMatches(x,code){
  const target=String(code||'').trim().toUpperCase();
+
  if(!target)return true;
 
  const itemCodes=countryCodes(x?.country);
 
- if(itemCodes.includes(target))return true;
-
- return false;
+ return itemCodes.includes(target);
 }
 
 function regionMatches(x,codes){
@@ -582,11 +594,6 @@ function renderRegions(){
  el.querySelectorAll('[data-region]').forEach(b=>{
   b.onclick=()=>{
    state.region=b.dataset.region;
-
-   /*
-    Changer de région réinitialise le pays :
-    cela évite les combinaisons impossibles.
-   */
    state.country='';
    state.countrySearch='';
    state.countryOpen=false;
@@ -603,6 +610,7 @@ function renderRegions(){
 
 function countryName(code){
  const c=String(code||'').toUpperCase();
+
  if(!c)return '';
 
  try{
@@ -653,6 +661,7 @@ function countriesFromChannels(){
 
 function renderCountries(){
  const host=$('countries');
+
  if(!host)return;
 
  let allCountries=normalizeCountries(state.countries);
@@ -752,6 +761,7 @@ function renderCountries(){
  if(toggle){
   toggle.onclick=()=>{
    state.countryOpen=!state.countryOpen;
+
    renderCountries();
 
    if(state.countryOpen){
@@ -759,6 +769,7 @@ function renderCountries(){
 
     if(input){
      input.focus();
+
      input.setSelectionRange(
       input.value.length,
       input.value.length
@@ -773,12 +784,14 @@ function renderCountries(){
  if(search){
   search.oninput=e=>{
    state.countrySearch=e.target.value;
+
    renderCountries();
 
    const input=$('countrySearch');
 
    if(input){
     input.focus();
+
     input.setSelectionRange(
      input.value.length,
      input.value.length
@@ -800,12 +813,9 @@ function renderCountries(){
    state.tvPage=1;
 
    const q=$('tvSearch');
+
    if(q)q.value='';
 
-   /*
-    Le pays est choisi MANUELLEMENT.
-    Aucune géolocalisation automatique.
-   */
    if(code){
     const region=Object.entries(REGIONS)
      .find(([name,codes])=>
@@ -893,6 +903,7 @@ function renderTV(){
 
 function genreBar(id,type){
  const el=$(id);
+
  const sel=
   type==='movie'
    ?state.movieGenre
@@ -1034,17 +1045,549 @@ function resolvePlaybackURL(x){
  return '';
 }
 
-function openPlayer(x){
- const url=resolvePlaybackURL(x);
+/* =========================
+   FIREBASE / STALKER
+   ========================= */
 
- if(!url){
-  alert(
-   x?.xtreamType
-   ?'Cette session Xtream n’est plus active. Reconnectez le fournisseur pour lire ce contenu.'
-   :'Aucune URL de lecture valide n’est fournie par cette source.'
+async function getFirebaseIdToken(){
+
+ if(!window.firebase?.auth){
+  throw new Error(
+   'Firebase Auth n’est pas disponible.'
   );
+ }
+
+ const user=firebase.auth().currentUser;
+
+ if(!user){
+  throw new Error(
+   'Connectez-vous à votre compte NEXWORLD avant d’utiliser Stalker/MAG.'
+  );
+ }
+
+ try{
+  return await user.getIdToken(true);
+ }catch{
+  throw new Error(
+   'Impossible de récupérer votre session Firebase.'
+  );
+ }
+}
+
+async function stalkerRequest(payload){
+
+ const token=await getFirebaseIdToken();
+
+ const response=await fetch(
+  STALKER_FUNCTION,
+  {
+   method:'POST',
+   cache:'no-store',
+   headers:{
+    'Content-Type':'application/json',
+    'Authorization':'Bearer '+token
+   },
+   body:JSON.stringify(payload)
+  }
+ );
+
+ let data={};
+
+ try{
+  data=await response.json();
+ }catch{
+  throw new Error(
+   `Réponse Stalker invalide (HTTP ${response.status}).`
+  );
+ }
+
+ if(!response.ok||!data.ok){
+  throw new Error(
+   data.error||
+   `Erreur Stalker HTTP ${response.status}.`
+  );
+ }
+
+ return data;
+}
+
+function stalkerFormValues(){
+
+ const name=
+  norm($('stName')?.value)||
+  'Profil MAG';
+
+ const portal=
+  norm($('stPortal')?.value);
+
+ const mac=
+  norm($('stMac')?.value)
+   .toUpperCase()
+   .replace(/-/g,':');
+
+ const model=
+  norm($('stModel')?.value)||
+  'MAG 254';
+
+ if(!portal||!mac){
+  throw new Error(
+   'Portail et adresse MAC requis.'
+  );
+ }
+
+ if(!/^https?:\/\//i.test(portal)){
+  throw new Error(
+   'Le portail doit commencer par http:// ou https://.'
+  );
+ }
+
+ if(!/^([0-9A-F]{2}:){5}[0-9A-F]{2}$/.test(mac)){
+  throw new Error(
+   'Adresse MAC invalide. Exemple : 00:1A:79:12:34:56'
+  );
+ }
+
+ return{
+  name,
+  portal:portal.replace(/\/+$/,''),
+  mac,
+  model
+ };
+}
+
+function getStalkerStatus(){
+ return $('stalkerStatus');
+}
+
+function setStalkerStatus(text,type=''){
+ const el=getStalkerStatus();
+
+ if(!el)return;
+
+ el.className='connector-status '+type;
+ el.textContent=text;
+}
+
+function extractStalkerRows(data){
+
+ const candidates=[
+  data?.js,
+  data?.js?.data,
+  data?.data,
+  data
+ ];
+
+ for(const candidate of candidates){
+
+  if(Array.isArray(candidate))
+   return candidate;
+
+  if(candidate&&Array.isArray(candidate.data))
+   return candidate.data;
+
+  if(candidate&&Array.isArray(candidate.items))
+   return candidate.items;
+ }
+
+ return [];
+}
+
+function normalizeStalkerChannel(raw,sourceId,index){
+
+ const id=
+  raw?.id||
+  raw?.ch_id||
+  raw?.stream_id||
+  raw?.tv_id||
+  raw?.number||
+  index;
+
+ const name=
+  norm(
+   raw?.name||
+   raw?.title||
+   raw?.channel_name||
+   `Chaîne ${index+1}`
+  );
+
+ const logo=
+  norm(
+   raw?.logo||
+   raw?.logo_2||
+   raw?.icon||
+   raw?.tv_genre_icon||
+   ''
+  );
+
+ const category=
+  norm(
+   raw?.tv_genre_name||
+   raw?.category_name||
+   raw?.genre_name||
+   raw?.tv_genre_id||
+   ''
+  );
+
+ return{
+  id:`${sourceId}-channel-${id}-${index}`,
+  name,
+  logo,
+  url:'',
+  group:category,
+  country:'',
+  kind:'tv',
+  genre:genreFrom(category+' '+name),
+  source:sourceId,
+
+  stalker:true,
+  stalkerStreamId:String(
+   raw?.cmd_id||
+   raw?.stream_id||
+   raw?.ch_id||
+   raw?.id||
+   raw?.number||
+   id
+  ),
+
+  number:norm(raw?.number||''),
+  rawStalkerId:String(id)
+ };
+}
+
+async function testStalker(){
+
+ let cfg;
+
+ try{
+  cfg=stalkerFormValues();
+ }catch(e){
+  setStalkerStatus(e.message,'error');
+  alert(e.message);
   return;
  }
+
+ setStalkerStatus(
+  'Vérification du portail et de la MAC…'
+ );
+
+ setStatus('Test Stalker/MAG…');
+
+ try{
+
+  const result=await stalkerRequest({
+   action:'handshake',
+   portal:cfg.portal,
+   mac:cfg.mac
+  });
+
+  const key=
+   'pending-'+cfg.portal+'|'+cfg.mac;
+
+  state.stalkerSessions[key]={
+   portal:cfg.portal,
+   mac:cfg.mac,
+   model:cfg.model
+  };
+
+  setStalkerStatus(
+   'Connexion Stalker/MAG réussie. Le portail a accepté la session.',
+   'ok'
+  );
+
+  setStatus('Stalker connecté');
+
+  return result;
+
+ }catch(e){
+
+  console.error('Stalker test:',e);
+
+  setStalkerStatus(
+   e?.message||
+   'Connexion Stalker/MAG impossible.',
+   'error'
+  );
+
+  setStatus('Erreur Stalker');
+
+  alert(
+   'Test Stalker/MAG impossible :\n\n'+
+   (e?.message||'Erreur inconnue.')
+  );
+
+  return null;
+ }
+}
+
+async function loadStalkerChannels(){
+
+ let cfg;
+
+ try{
+  cfg=stalkerFormValues();
+ }catch(e){
+  setStalkerStatus(e.message,'error');
+  alert(e.message);
+  return;
+ }
+
+ setStalkerStatus(
+  'Connexion au portail et chargement des chaînes…'
+ );
+
+ setStatus('Chargement Stalker/MAG…');
+
+ try{
+
+  /*
+   Le backend effectue le handshake côté serveur
+   puis récupère le catalogue.
+   La MAC ne passe jamais dans une URL publique.
+  */
+  const result=await stalkerRequest({
+   action:'channels',
+   portal:cfg.portal,
+   mac:cfg.mac,
+   category:'*',
+   page:1
+  });
+
+  const rows=
+   extractStalkerRows(result.data);
+
+  if(!rows.length){
+   throw new Error(
+    'Le portail a répondu, mais aucune chaîne Stalker n’a été trouvée.'
+   );
+  }
+
+  const sourceId=
+   state.sources.find(s=>
+    s.type==='Stalker/MAG'&&
+    s.url===cfg.portal&&
+    s.mac===cfg.mac
+   )?.id||
+   'src-stalker-'+Date.now();
+
+  const items=
+   rows
+   .map((raw,index)=>
+    normalizeStalkerChannel(
+     raw,
+     sourceId,
+     index
+    )
+   )
+   .filter(x=>x.name);
+
+  const existing=
+   state.sources.find(
+    s=>s.id===sourceId
+   );
+
+  const source=existing||{
+   id:sourceId,
+   name:cfg.name,
+   type:'Stalker/MAG',
+   url:cfg.portal,
+   mac:cfg.mac,
+   model:cfg.model,
+   enabled:true,
+   items:0,
+   _items:[]
+  };
+
+  source.name=cfg.name;
+  source.url=cfg.portal;
+  source.mac=cfg.mac;
+  source.model=cfg.model;
+  source.enabled=true;
+  source._items=items;
+  source.items=items.length;
+
+  if(!existing)
+   state.sources.push(source);
+
+  state.stalkerSessions[sourceId]={
+   portal:cfg.portal,
+   mac:cfg.mac,
+   model:cfg.model
+  };
+
+  await dbPut(source);
+
+  applyUserItems();
+  render();
+
+  setStatus('Stalker/MAG connecté');
+
+  setStalkerStatus(
+   `${items.length.toLocaleString('fr-FR')} chaîne(s) Stalker chargée(s).`,
+   'ok'
+  );
+
+  alert(
+   `Stalker/MAG connecté avec succès.\n\n`+
+   `${items.length.toLocaleString('fr-FR')} chaîne(s) chargée(s).`
+  );
+
+ }catch(e){
+
+  console.error('Stalker channels:',e);
+
+  setStalkerStatus(
+   e?.message||
+   'Impossible de charger les chaînes.',
+   'error'
+  );
+
+  setStatus('Erreur Stalker');
+
+  alert(
+   'Chargement Stalker/MAG impossible :\n\n'+
+   (e?.message||'Erreur inconnue.')
+  );
+ }
+}
+
+async function saveStalker(){
+
+ let cfg;
+
+ try{
+  cfg=stalkerFormValues();
+ }catch(e){
+  setStalkerStatus(e.message,'error');
+  alert(e.message);
+  return;
+ }
+
+ /*
+  On teste d'abord le portail.
+  Aucun profil Stalker n'est enregistré si
+  le portail n'accepte pas la connexion.
+ */
+ const test=await testStalker();
+
+ if(!test)return;
+
+ const sourceId='src-stalker-'+Date.now();
+
+ const source={
+  id:sourceId,
+  name:cfg.name,
+  type:'Stalker/MAG',
+  url:cfg.portal,
+  mac:cfg.mac,
+  model:cfg.model,
+  enabled:true,
+  items:0,
+  _items:[]
+ };
+
+ state.sources.push(source);
+
+ state.stalkerSessions[sourceId]={
+  portal:cfg.portal,
+  mac:cfg.mac,
+  model:cfg.model
+ };
+
+ await dbPut(source);
+
+ render();
+
+ setStalkerStatus(
+  'Profil enregistré. Vous pouvez maintenant charger les chaînes.',
+  'ok'
+ );
+
+ alert(
+  'Profil Stalker/MAG enregistré.\n\n'+
+  'Cliquez maintenant sur « Charger les chaînes ».'
+ );
+}
+
+async function playStalker(x){
+
+ if(!x?.stalker){
+  return false;
+ }
+
+ const source=
+  state.sources.find(
+   s=>s.id===x.source
+  );
+
+ if(!source){
+  alert(
+   'La source Stalker/MAG associée à cette chaîne est introuvable.'
+  );
+  return true;
+ }
+
+ let session=
+  state.stalkerSessions[source.id];
+
+ if(!session){
+  session={
+   portal:source.url,
+   mac:source.mac,
+   model:source.model
+  };
+
+  state.stalkerSessions[source.id]=session;
+ }
+
+ setStatus('Création du lien Stalker…');
+
+ try{
+
+  const result=await stalkerRequest({
+   action:'create_link',
+   portal:session.portal,
+   mac:session.mac,
+   stream_id:x.stalkerStreamId
+  });
+
+  const url=
+   result?.data?._playUrl||
+   result?.data?.js?.cmd||
+   result?.data?.cmd||
+   result?.data?.stream_url||
+   result?.data?.js?.stream_url||
+   '';
+
+  if(!url){
+   throw new Error(
+    'Le portail n’a pas fourni de lien de lecture.'
+   );
+  }
+
+  openPlayerURL(
+   x,
+   url,
+   'Stalker / MAG'
+  );
+
+  setStatus('En ligne');
+
+ }catch(e){
+
+  console.error('Stalker playback:',e);
+
+  setStatus('Erreur lecture');
+
+  alert(
+   'Impossible de créer le lien de lecture Stalker :\n\n'+
+   (e?.message||'Erreur inconnue.')
+  );
+ }
+
+ return true;
+}
+
+function openPlayerURL(x,url,sourceLabel){
 
  $('modalContent').innerHTML=`
   <h3>${esc(x.name)}</h3>
@@ -1058,6 +1601,7 @@ function openPlayer(x){
   </video>
 
   <div class="actions">
+
    <button class="btn primary" id="retry">
     Relancer
    </button>
@@ -1067,17 +1611,11 @@ function openPlayer(x){
      ?'★ Retirer des favoris'
      :'☆ Ajouter aux favoris'}
    </button>
+
   </div>
 
   <p class="tiny">
-   Source :
-   ${
-    x.source==='world'
-     ?'Catalogue mondial'
-     :x.xtreamType
-      ?'Xtream'
-      :'Mes sources'
-   }
+   Source : ${esc(sourceLabel||'Mes sources')}
   </p>
  `;
 
@@ -1086,6 +1624,7 @@ function openPlayer(x){
  const v=$('player');
 
  v.src=url;
+
  v.play().catch(()=>{});
 
  $('retry').onclick=()=>{
@@ -1095,8 +1634,41 @@ function openPlayer(x){
 
  $('favModal').onclick=()=>{
   toggleFav(x);
-  openPlayer(x);
+  openPlayerURL(
+   x,
+   url,
+   sourceLabel
+  );
  };
+}
+
+async function openPlayer(x){
+
+ if(x?.stalker){
+  await playStalker(x);
+  return;
+ }
+
+ const url=resolvePlaybackURL(x);
+
+ if(!url){
+  alert(
+   x?.xtreamType
+   ?'Cette session Xtream n’est plus active. Reconnectez le fournisseur pour lire ce contenu.'
+   :'Aucune URL de lecture valide n’est fournie par cette source.'
+  );
+  return;
+ }
+
+ openPlayerURL(
+  x,
+  url,
+  x.source==='world'
+   ?'Catalogue mondial'
+   :x.xtreamType
+    ?'Xtream'
+    :'Mes sources'
+ );
 }
 
 function seriesEpisodes(series){
@@ -1115,6 +1687,7 @@ function seriesEpisodes(series){
 }
 
 function openDetails(x){
+
  const eps=
   x.kind==='series'
    ?seriesEpisodes(x)
@@ -1135,6 +1708,7 @@ function openDetails(x){
    </div>
 
    <div>
+
     <h3>${esc(x.name)}</h3>
 
     <div class="meta">
@@ -1158,8 +1732,8 @@ function openDetails(x){
     <button class="btn" id="favMain">
      ${isFav(x)?'★':'☆'} Favori
     </button>
-   </div>
 
+   </div>
   </div>
 
   ${
@@ -1201,7 +1775,9 @@ function openDetails(x){
  .forEach(e=>{
   e.onclick=()=>{
    const ep=findById(e.dataset.ep);
-   if(ep)openPlayer(ep);
+
+   if(ep)
+    openPlayer(ep);
   };
  });
 }
@@ -1252,6 +1828,7 @@ function formHTML(mode){
     <input id="fileName" placeholder="Playlist locale">
 
     <label>Fichier M3U</label>
+
     <input
      id="srcFile"
      type="file"
@@ -1277,6 +1854,7 @@ function formHTML(mode){
     <input id="directUrl" placeholder="https://…/stream.m3u8">
 
     <label>Type</label>
+
     <select id="directKind">
      <option value="tv">TV Live</option>
      <option value="movie">Film</option>
@@ -1284,6 +1862,7 @@ function formHTML(mode){
     </select>
 
     <label>Genre</label>
+
     <select id="directGenre">
      ${GENRES.slice(1).map(g=>
       `<option>${esc(g)}</option>`
@@ -1334,15 +1913,26 @@ function formHTML(mode){
   <div class="form">
 
    <label>Nom du profil</label>
-   <input id="stName" placeholder="Mon portail MAG">
+
+   <input
+    id="stName"
+    placeholder="Mon portail MAG">
 
    <label>URL du portail</label>
-   <input id="stPortal" placeholder="http://…/c/">
+
+   <input
+    id="stPortal"
+    placeholder="http://…/c/">
 
    <label>Adresse MAC</label>
-   <input id="stMac" placeholder="00:1A:79:XX:XX:XX">
+
+   <input
+    id="stMac"
+    placeholder="00:1A:79:XX:XX:XX"
+    autocapitalize="characters">
 
    <label>Modèle MAG</label>
+
    <select id="stModel">
     <option>MAG 254</option>
     <option>MAG 256</option>
@@ -1353,14 +1943,38 @@ function formHTML(mode){
    </select>
 
    <div class="actions">
-    <button class="btn primary" id="addStalker">
+
+    <button
+     class="btn primary"
+     id="testStalker">
+     Tester la connexion
+    </button>
+
+    <button
+     class="btn success"
+     id="loadStalker">
+     Charger les chaînes
+    </button>
+
+    <button
+     class="btn"
+     id="addStalker">
      Enregistrer le profil
     </button>
+
+   </div>
+
+   <div
+    id="stalkerStatus"
+    class="connector-status">
+    Prêt. Connectez-vous à votre compte NEXWORLD puis testez votre portail autorisé.
    </div>
 
    <div class="notice">
-    La MAC et le portail sont conservés comme configuration.
-    L'authentification Stalker/MAG réelle doit passer par un backend sécurisé.
+    <b>Stalker / MAG sécurisé</b><br>
+    Le portail et la MAC sont envoyés uniquement à votre backend
+    Netlify sécurisé. Le navigateur ne contacte pas directement le portail.
+    Utilisez uniquement une MAC et un portail auxquels vous êtes autorisé à accéder.
    </div>
 
   </div>
@@ -1391,13 +2005,15 @@ function renderSources(){
     `<div class="source-item">
 
       <div class="grow">
+
        <strong>${esc(s.name)}</strong>
+
        <small>
         ${esc(s.type)}
         ${s.url?' • '+esc(s.url):''}
-        ${s.mac?' • MAC '+esc(s.mac):''}
         ${s.items?` • ${s.items} éléments`:''}
        </small>
+
       </div>
 
       <button
@@ -1426,15 +2042,33 @@ document.querySelectorAll('.source-tab')
 });
 
 function bindSourceForm(){
- if($('addUrl'))$('addUrl').onclick=addURL;
- if($('addFile'))$('addFile').onclick=addFile;
- if($('addDirect'))$('addDirect').onclick=addDirect;
- if($('addXtream'))$('addXtream').onclick=addXtream;
- if($('addStalker'))$('addStalker').onclick=addStalker;
+
+ if($('addUrl'))
+  $('addUrl').onclick=addURL;
+
+ if($('addFile'))
+  $('addFile').onclick=addFile;
+
+ if($('addDirect'))
+  $('addDirect').onclick=addDirect;
+
+ if($('addXtream'))
+  $('addXtream').onclick=addXtream;
+
+ if($('testStalker'))
+  $('testStalker').onclick=testStalker;
+
+ if($('loadStalker'))
+  $('loadStalker').onclick=loadStalkerChannels;
+
+ if($('addStalker'))
+  $('addStalker').onclick=saveStalker;
 }
 
 function openDB(){
+
  return new Promise((res,rej)=>{
+
   const r=indexedDB.open(DB_NAME,1);
 
   r.onupgradeneeded=()=>{
@@ -1448,10 +2082,15 @@ function openDB(){
 }
 
 async function dbPut(x){
+
  const db=await openDB();
 
  return new Promise((res,rej)=>{
-  const tx=db.transaction(DB_STORE,'readwrite');
+
+  const tx=db.transaction(
+   DB_STORE,
+   'readwrite'
+  );
 
   tx.objectStore(DB_STORE).put(x);
 
@@ -1461,11 +2100,18 @@ async function dbPut(x){
 }
 
 async function dbAll(){
+
  const db=await openDB();
 
  return new Promise((res,rej)=>{
-  const tx=db.transaction(DB_STORE,'readonly');
-  const r=tx.objectStore(DB_STORE).getAll();
+
+  const tx=db.transaction(
+   DB_STORE,
+   'readonly'
+  );
+
+  const r=
+   tx.objectStore(DB_STORE).getAll();
 
   r.onsuccess=()=>res(r.result||[]);
   r.onerror=()=>rej(r.error);
@@ -1473,10 +2119,15 @@ async function dbAll(){
 }
 
 async function dbDel(id){
+
  const db=await openDB();
 
  return new Promise((res,rej)=>{
-  const tx=db.transaction(DB_STORE,'readwrite');
+
+  const tx=db.transaction(
+   DB_STORE,
+   'readwrite'
+  );
 
   tx.objectStore(DB_STORE).delete(id);
 
@@ -1487,8 +2138,12 @@ async function dbDel(id){
 
 async function addURL(){
 
- const name=norm($('srcName').value)||'Playlist M3U';
- const url=norm($('srcUrl').value);
+ const name=
+  norm($('srcName').value)||
+  'Playlist M3U';
+
+ const url=
+  norm($('srcUrl').value);
 
  if(!/^https?:\/\//i.test(url)){
   alert('URL M3U invalide.');
@@ -1498,10 +2153,17 @@ async function addURL(){
  setStatus('Chargement de la playlist…');
 
  try{
-  const r=await fetch(url,{cache:'no-store'});
+
+  const r=
+   await fetch(
+    url,
+    {cache:'no-store'}
+   );
 
   if(!r.ok)
-   throw new Error('HTTP '+r.status);
+   throw new Error(
+    'HTTP '+r.status
+   );
 
   const text=await r.text();
 
@@ -1514,12 +2176,19 @@ async function addURL(){
   };
 
   s._items=
-   dedupe(parseM3U(text,'user'))
-   .map(x=>({...x,source:s.id}));
+   dedupe(
+    parseM3U(text,'user')
+   ).map(x=>({
+    ...x,
+    source:s.id
+   }));
 
   s.items=s._items.length;
 
-  await dbPut({...s,text});
+  await dbPut({
+   ...s,
+   text
+  });
 
   state.sources.push(s);
 
@@ -1528,7 +2197,9 @@ async function addURL(){
 
   setStatus('En ligne');
 
-  alert(`${s.items} éléments importés.`);
+  alert(
+   `${s.items} éléments importés.`
+  );
 
  }catch(e){
 
@@ -1542,31 +2213,46 @@ async function addURL(){
 
 async function addFile(){
 
- const f=$('srcFile').files[0];
+ const f=
+  $('srcFile').files[0];
 
  if(!f){
-  alert('Sélectionnez un fichier M3U.');
+  alert(
+   'Sélectionnez un fichier M3U.'
+  );
   return;
  }
 
- setStatus('Import du fichier…');
+ setStatus(
+  'Import du fichier…'
+ );
 
- const text=await f.text();
+ const text=
+  await f.text();
 
  const s={
   id:'src-'+Date.now(),
-  name:norm($('fileName').value)||f.name,
+  name:
+   norm($('fileName').value)||
+   f.name,
   type:'M3U local',
   enabled:true
  };
 
  s._items=
-  dedupe(parseM3U(text,'user'))
-  .map(x=>({...x,source:s.id}));
+  dedupe(
+   parseM3U(text,'user')
+  ).map(x=>({
+   ...x,
+   source:s.id
+  }));
 
  s.items=s._items.length;
 
- await dbPut({...s,text});
+ await dbPut({
+  ...s,
+  text
+ });
 
  state.sources.push(s);
 
@@ -1575,17 +2261,27 @@ async function addFile(){
 
  setStatus('En ligne');
 
- alert(`${s.items} éléments importés.`);
+ alert(
+  `${s.items} éléments importés.`
+ );
 }
 
 function addDirect(){
 
- const name=norm($('directName').value)||'Flux direct';
- const url=norm($('directUrl').value);
- const kind=$('directKind').value;
+ const name=
+  norm($('directName').value)||
+  'Flux direct';
+
+ const url=
+  norm($('directUrl').value);
+
+ const kind=
+  $('directKind').value;
 
  if(!/^https?:\/\//i.test(url)){
-  alert('URL de flux invalide.');
+  alert(
+   'URL de flux invalide.'
+  );
   return;
  }
 
@@ -1597,6 +2293,7 @@ function addDirect(){
   type:'Flux direct',
   url,
   enabled:true,
+
   _items:[{
    id:id+'|'+url,
    name,
@@ -1605,31 +2302,50 @@ function addDirect(){
    group:'',
    country:'',
    kind,
-   genre:kind==='tv'?'':$('directGenre').value,
+   genre:
+    kind==='tv'
+     ?''
+     :$('directGenre').value,
    source:id
   }],
+
   items:1
  };
 
  state.sources.push(s);
 
- dbPut({...s,text:''});
+ dbPut({
+  ...s,
+  text:''
+ });
 
  applyUserItems();
  render();
 
- alert('Flux ajouté.');
+ alert(
+  'Flux ajouté.'
+ );
 }
 
 async function addXtream(){
 
- const name=norm($('xtName').value)||'Profil Xtream';
- const server=norm($('xtServer').value);
- const user=norm($('xtUser').value);
- const pass=norm($('xtPass').value);
+ const name=
+  norm($('xtName').value)||
+  'Profil Xtream';
+
+ const server=
+  norm($('xtServer').value);
+
+ const user=
+  norm($('xtUser').value);
+
+ const pass=
+  norm($('xtPass').value);
 
  if(!server||!user||!pass){
-  alert('Serveur, identifiant et mot de passe sont requis.');
+  alert(
+   'Serveur, identifiant et mot de passe sont requis.'
+  );
   return;
  }
 
@@ -1640,7 +2356,9 @@ async function addXtream(){
   return;
  }
 
- setStatus('Connexion Xtream sécurisée…');
+ setStatus(
+  'Connexion Xtream sécurisée…'
+ );
 
  try{
 
@@ -1651,7 +2369,8 @@ async function addXtream(){
    password:pass
   });
 
-  const srcId='src-'+Date.now();
+  const srcId=
+   'src-'+Date.now();
 
   const src={
    id:srcId,
@@ -1666,87 +2385,198 @@ async function addXtream(){
   };
 
   state.xtreamSessions[srcId]={
-   server:server.replace(/\/+$/,''),
+   server:
+    server.replace(/\/+$/,''),
    user,
    password:pass
   };
 
-  const [liveRes,vodRes,seriesRes]=
-   await Promise.all([
-    window.NEXWORLD_AUTH.xtreamSecureRequest({
-     action:'live',
-     server,
-     username:user,
-     password:pass
-    }),
-    window.NEXWORLD_AUTH.xtreamSecureRequest({
-     action:'vod',
-     server,
-     username:user,
-     password:pass
-    }),
-    window.NEXWORLD_AUTH.xtreamSecureRequest({
-     action:'series',
-     server,
-     username:user,
-     password:pass
-    })
-   ]);
+  const[
+   liveRes,
+   vodRes,
+   seriesRes
+  ]=await Promise.all([
+
+   window.NEXWORLD_AUTH.xtreamSecureRequest({
+    action:'live',
+    server,
+    username:user,
+    password:pass
+   }),
+
+   window.NEXWORLD_AUTH.xtreamSecureRequest({
+    action:'vod',
+    server,
+    username:user,
+    password:pass
+   }),
+
+   window.NEXWORLD_AUTH.xtreamSecureRequest({
+    action:'series',
+    server,
+    username:user,
+    password:pass
+   })
+
+  ]);
 
   const live=
-   (Array.isArray(liveRes.data)?liveRes.data:[])
+   (Array.isArray(liveRes.data)
+    ?liveRes.data
+    :[])
    .map((x,i)=>({
-    id:`${srcId}-live-${x.stream_id||i}`,
-    name:norm(x.name)||'Chaîne',
-    logo:norm(x.stream_icon),
+
+    id:
+     `${srcId}-live-${x.stream_id||i}`,
+
+    name:
+     norm(x.name)||
+     'Chaîne',
+
+    logo:
+     norm(x.stream_icon),
+
     url:'',
-    group:norm(x.category_name||x.category_id||''),
+
+    group:
+     norm(
+      x.category_name||
+      x.category_id||
+      ''
+     ),
+
     country:'',
     kind:'tv',
     genre:'',
     source:srcId,
+
     streamId:x.stream_id,
     xtreamType:'live'
+
    }));
 
   const movies=
-   (Array.isArray(vodRes.data)?vodRes.data:[])
+   (Array.isArray(vodRes.data)
+    ?vodRes.data
+    :[])
    .map((x,i)=>({
-    id:`${srcId}-movie-${x.stream_id||i}`,
-    name:norm(x.name)||'Film',
-    logo:norm(x.stream_icon),
+
+    id:
+     `${srcId}-movie-${x.stream_id||i}`,
+
+    name:
+     norm(x.name)||
+     'Film',
+
+    logo:
+     norm(x.stream_icon),
+
     url:'',
-    group:norm(x.category_name||x.category_id||''),
+
+    group:
+     norm(
+      x.category_name||
+      x.category_id||
+      ''
+     ),
+
     country:'',
     kind:'movie',
-    genre:genreFrom(x.genre||x.category_name||''),
-    year:norm(x.year||''),
-    description:norm(x.plot||x.overview||''),
-    duration:norm(x.duration||''),
-    rating:norm(x.rating||''),
+
+    genre:
+     genreFrom(
+      x.genre||
+      x.category_name||
+      ''
+     ),
+
+    year:
+     norm(x.year||''),
+
+    description:
+     norm(
+      x.plot||
+      x.overview||
+      ''
+     ),
+
+    duration:
+     norm(x.duration||''),
+
+    rating:
+     norm(x.rating||''),
+
     source:srcId,
+
     streamId:x.stream_id,
+
     xtreamType:'movie',
-    container:norm(x.container_extension||'mp4')
+
+    container:
+     norm(
+      x.container_extension||
+      'mp4'
+     )
+
    }));
 
   const shows=
-   (Array.isArray(seriesRes.data)?seriesRes.data:[])
+   (Array.isArray(seriesRes.data)
+    ?seriesRes.data
+    :[])
    .map((x,i)=>({
-    id:`${srcId}-series-${x.series_id||i}`,
-    name:norm(x.name)||'Série',
-    logo:norm(x.cover||x.poster),
+
+    id:
+     `${srcId}-series-${x.series_id||i}`,
+
+    name:
+     norm(x.name)||
+     'Série',
+
+    logo:
+     norm(
+      x.cover||
+      x.poster
+     ),
+
     url:'',
-    group:norm(x.category_name||x.category_id||''),
+
+    group:
+     norm(
+      x.category_name||
+      x.category_id||
+      ''
+     ),
+
     country:'',
     kind:'series',
-    genre:genreFrom(x.genre||x.category_name||''),
-    year:norm(x.year||''),
-    description:norm(x.plot||x.overview||''),
-    rating:norm(x.rating||''),
+
+    genre:
+     genreFrom(
+      x.genre||
+      x.category_name||
+      ''
+     ),
+
+    year:
+     norm(x.year||''),
+
+    description:
+     norm(
+      x.plot||
+      x.overview||
+      ''
+     ),
+
+    rating:
+     norm(x.rating||''),
+
     source:srcId,
+
     seriesId:x.series_id,
+
     xtreamType:'series'
+
    }));
 
   src._items=[
@@ -1755,7 +2585,8 @@ async function addXtream(){
    ...shows
   ];
 
-  src.items=src._items.length;
+  src.items=
+   src._items.length;
 
   state.sources.push(src);
 
@@ -1764,7 +2595,9 @@ async function addXtream(){
   applyUserItems();
   render();
 
-  setStatus('Xtream connecté');
+  setStatus(
+   'Xtream connecté'
+  );
 
   alert(
    `Connexion Xtream réussie : ${live.length} TV, ${movies.length} films, ${shows.length} séries.`
@@ -1774,7 +2607,9 @@ async function addXtream(){
 
   console.error(e);
 
-  setStatus('Erreur Xtream');
+  setStatus(
+   'Erreur Xtream'
+  );
 
   alert(
    'Connexion Xtream impossible : '+
@@ -1783,50 +2618,14 @@ async function addXtream(){
  }
 }
 
-function addStalker(){
-
- const name=norm($('stName').value)||'Profil MAG';
- const portal=norm($('stPortal').value);
- const mac=norm($('stMac').value);
-
- if(!portal||!mac){
-  alert('Portail et adresse MAC requis.');
-  return;
- }
-
- if(!/^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/.test(mac)){
-  alert(
-   'Adresse MAC invalide. Exemple : 00:1A:79:12:34:56'
-  );
-  return;
- }
-
- const s={
-  id:'src-'+Date.now(),
-  name,
-  type:'Stalker/MAG',
-  url:portal,
-  mac,
-  model:$('stModel').value,
-  enabled:true,
-  items:0,
-  _items:[]
- };
-
- state.sources.push(s);
-
- dbPut(s);
- render();
-
- alert('Profil Stalker/MAG enregistré.');
-}
-
 async function toggleSource(i){
+
  const s=state.sources[i];
 
  if(!s)return;
 
- s.enabled=s.enabled===false;
+ s.enabled=
+  s.enabled===false;
 
  await dbPut(s);
 
@@ -1836,14 +2635,19 @@ async function toggleSource(i){
 
 async function deleteSource(i){
 
- const s=state.sources[i];
+ const s=
+  state.sources[i];
 
  if(!s)return;
 
- if(!confirm('Supprimer cette source ?'))
-  return;
+ if(!confirm(
+  'Supprimer cette source ?'
+ ))return;
 
  state.sources.splice(i,1);
+
+ delete state.stalkerSessions[s.id];
+ delete state.xtreamSessions[s.id];
 
  await dbDel(s.id);
 
@@ -1855,20 +2659,32 @@ async function loadSavedSources(){
 
  try{
 
-  const arr=await dbAll();
+  const arr=
+   await dbAll();
 
   state.sources=arr;
 
-  for(const s of state.sources){
+  for(
+   const s of state.sources
+  ){
 
    if(
     s.type==='M3U URL'||
     s.type==='M3U local'
    ){
+
     if(s.text){
+
      s._items=
-      dedupe(parseM3U(s.text,'user'))
-      .map(x=>({...x,source:s.id}));
+      dedupe(
+       parseM3U(
+        s.text,
+        'user'
+       )
+      ).map(x=>({
+       ...x,
+       source:s.id
+      }));
     }
    }
 
@@ -1877,6 +2693,7 @@ async function loadSavedSources(){
     !s._items?.length&&
     s.url
    ){
+
     s._items=[{
      id:s.id+'|'+s.url,
      name:s.name,
@@ -1889,12 +2706,33 @@ async function loadSavedSources(){
      source:s.id
     }];
    }
+
+   /*
+    Réhydrate la session Stalker en mémoire.
+    Le token Stalker n'est jamais conservé.
+   */
+   if(
+    s.type==='Stalker/MAG'&&
+    s.url&&
+    s.mac
+   ){
+
+    state.stalkerSessions[s.id]={
+     portal:s.url,
+     mac:s.mac,
+     model:s.model||''
+    };
+   }
   }
 
   applyUserItems();
 
  }catch(e){
-  console.warn('IndexedDB',e);
+
+  console.warn(
+   'IndexedDB',
+   e
+  );
  }
 }
 
@@ -1905,14 +2743,6 @@ function applyUserItems(){
    s=>s.enabled!==false
   );
 
- const all=
-  active.flatMap(
-   s=>s._items||[]
-  );
-
- /*
-  Le catalogue mondial reste intact.
- */
  state.channels=
   state.channels.filter(
    x=>x.source==='world'
@@ -1921,40 +2751,56 @@ function applyUserItems(){
  state.movies=[];
  state.series=[];
 
- for(const s of active){
+ for(
+  const s of active
+ ){
 
-  const items=s._items||[];
+  const items=
+   s._items||[];
 
   state.channels.push(
-   ...items.filter(x=>x.kind==='tv')
+   ...items.filter(
+    x=>x.kind==='tv'
+   )
   );
 
   state.movies.push(
-   ...items.filter(x=>x.kind==='movie')
+   ...items.filter(
+    x=>x.kind==='movie'
+   )
   );
 
   state.series.push(
-   ...items.filter(x=>x.kind==='series')
+   ...items.filter(
+    x=>x.kind==='series'
+   )
   );
  }
 
- state.channels=dedupe(state.channels);
- state.movies=dedupe(state.movies);
- state.series=dedupe(state.series);
+ state.channels=
+  dedupe(state.channels);
+
+ state.movies=
+  dedupe(state.movies);
+
+ state.series=
+  dedupe(state.series);
 }
 
 async function loadCountries(){
 
  try{
 
-  const r=await fetch(
-   COUNTRIES_URL,
-   {cache:'no-store'}
-  );
+  const r=
+   await fetch(
+    COUNTRIES_URL,
+    {cache:'no-store'}
+   );
 
   if(r.ok){
 
-   const data=await r.json();
+   const data=
+    await r.json();
 
    state.countries=
     normalizeCountries(data);
@@ -1969,40 +2815,50 @@ async function loadCountries(){
  }
 
  if(!state.countries.length)
-  state.countries=countriesFromChannels();
+  state.countries=
+   countriesFromChannels();
 
  renderTV();
 }
 
 /*
- MOTEUR TV V6.2 CONSERVÉ :
- même source mondiale,
- même téléchargement complet,
- même playlist,
- même pagination.
+ ==========================================================
+ MOTEUR TV V6.2 — CONSERVÉ
+ ==========================================================
 */
 async function loadWorld(){
 
  try{
 
-  setStatus('Chargement TV mondiale…');
-
-  const r=await fetch(
-   WORLD_URL,
-   {cache:'no-store'}
+  setStatus(
+   'Chargement TV mondiale…'
   );
 
-  if(!r.ok)
-   throw new Error('HTTP '+r.status);
+  const r=
+   await fetch(
+    WORLD_URL,
+    {cache:'no-store'}
+   );
 
-  const text=await r.text();
+  if(!r.ok)
+   throw new Error(
+    'HTTP '+r.status
+   );
+
+  const text=
+   await r.text();
 
   state.channels=
    dedupe(
-    parseM3U(text,'world')
+    parseM3U(
+     text,
+     'world'
+    )
    );
 
-  setStatus('En ligne');
+  setStatus(
+   'En ligne'
+  );
 
   render();
 
@@ -2010,7 +2866,9 @@ async function loadWorld(){
 
   console.error(e);
 
-  setStatus('TV indisponible');
+  setStatus(
+   'TV indisponible'
+  );
 
   state.channels=[];
 
@@ -2036,7 +2894,8 @@ $('seriesSearch').oninput=e=>{
 
 document.querySelectorAll('.nav')
 .forEach(n=>{
- n.onclick=()=>setPage(n.dataset.page);
+ n.onclick=()=>
+  setPage(n.dataset.page);
 });
 
 async function boot(){
