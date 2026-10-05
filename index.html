@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0F172A">
-<title>NEXWORLD V7.5</title>
+<title>NEXWORLD V7.6</title>
 
 <style>
 :root{
@@ -16,10 +16,13 @@
  --mut:#94a3b8;
  --c:#22d3ee;
  --g:#34d399;
- --a:#fbbf24
+ --a:#fbbf24;
+ --err:#fb7185
 }
 
-*{box-sizing:border-box}
+*{
+ box-sizing:border-box
+}
 
 body{
  margin:0;
@@ -28,7 +31,9 @@ body{
  font:14px system-ui,sans-serif
 }
 
-button,input,select{
+button,
+input,
+select{
  font:inherit
 }
 
@@ -83,7 +88,12 @@ header{
 
 .status{
  font-size:11px;
- color:var(--g)
+ color:var(--g);
+ text-align:right
+}
+
+.status.err{
+ color:var(--err)
 }
 
 main{
@@ -492,7 +502,7 @@ main{
   </div>
 
   <span id="status" class="status">
-   Initialisation...
+   Démarrage...
   </span>
 
  </div>
@@ -501,8 +511,6 @@ main{
 
 
 <main>
-
-<!-- ACCUEIL -->
 
 <section id="home" class="view">
 
@@ -533,17 +541,19 @@ main{
    </div>
 
    <div class="stat">
-    <b id="nSources">1</b>
+    <b id="nSources">0</b>
     <small>Sources</small>
    </div>
 
   </div>
 
   <div class="search">
+
    <input
     id="search"
     placeholder="Rechercher TV, film, série..."
    >
+
   </div>
 
  </div>
@@ -581,20 +591,27 @@ main{
  <div class="section">
 
   <div class="sectionhead">
+
    <h2>Continuer</h2>
+
    <span id="homeHistoryCount"></span>
+
   </div>
 
-  <div id="homeHistory" class="grid"></div>
+  <div
+   id="homeHistory"
+   class="grid"
+  ></div>
 
  </div>
 
 </section>
 
 
-<!-- TV -->
-
-<section id="tv" class="view hidden">
+<section
+ id="tv"
+ class="view hidden"
+>
 
  <div class="panel">
 
@@ -608,26 +625,44 @@ main{
 
   </div>
 
-  <div id="regions" class="chips"></div>
+  <div
+   id="regions"
+   class="chips"
+  ></div>
 
-  <div id="countries" class="chips"></div>
+  <div
+   id="countries"
+   class="chips"
+  ></div>
 
  </div>
 
 
  <div class="section">
 
-  <div id="tvGrid" class="grid"></div>
+  <div
+   id="tvGrid"
+   class="grid"
+  ></div>
 
   <div class="pager">
 
-   <button id="prev" class="btn">
+   <button
+    id="prev"
+    class="btn"
+   >
     ‹
    </button>
 
-   <button id="page" class="btn"></button>
+   <button
+    id="page"
+    class="btn"
+   ></button>
 
-   <button id="next" class="btn">
+   <button
+    id="next"
+    class="btn"
+   >
     ›
    </button>
 
@@ -638,9 +673,10 @@ main{
 </section>
 
 
-<!-- FILMS -->
-
-<section id="movies" class="view hidden">
+<section
+ id="movies"
+ class="view hidden"
+>
 
  <div class="panel">
 
@@ -673,9 +709,10 @@ main{
 </section>
 
 
-<!-- SERIES -->
-
-<section id="series" class="view hidden">
+<section
+ id="series"
+ class="view hidden"
+>
 
  <div class="panel">
 
@@ -708,8 +745,6 @@ main{
 </section>
 
 
-<!-- FAVORIS -->
-
 <section
  id="favorites"
  class="view hidden"
@@ -735,8 +770,6 @@ main{
 </section>
 
 
-<!-- HISTORIQUE -->
-
 <section
  id="history"
  class="view hidden"
@@ -761,8 +794,6 @@ main{
 
 </section>
 
-
-<!-- SOURCES -->
 
 <section
  id="sources"
@@ -821,8 +852,10 @@ main{
   </div>
 
 
-  <div id="form-url"
-       class="sourceform">
+  <div
+   id="form-url"
+   class="sourceform"
+  >
 
    <form
     id="urlForm"
@@ -1171,7 +1204,7 @@ const COUNTRIES =
 const PAGE = 40;
 
 const DB =
- 'nexworld_v75';
+ 'nexworld_v76';
 
 const STORE =
  'm3u';
@@ -1266,30 +1299,24 @@ const RMAP = {
 const S = {
 
  tv:[],
-
  movies:[],
-
  series:[],
-
  favorites:[],
-
  history:[],
-
  sources:[],
 
  country:'all',
-
  region:'all',
 
  movieGenre:'all',
-
  seriesGenre:'all',
 
  q:'',
-
  page:1,
 
- countries:new Map()
+ countries:new Map(),
+
+ booted:false
 
 };
 
@@ -1319,6 +1346,9 @@ function toast(x){
 
  const e =
   $('toast');
+
+ if(!e)
+  return;
 
  e.textContent =
   x;
@@ -1392,15 +1422,15 @@ function uid(){
 
 function attrs(s){
 
- let a = {};
+ const a = {};
 
- let r =
+ const r =
   /([\w-]+)="([^"]*)"/g;
 
  let m;
 
  while(
-  m = r.exec(s)
+  (m = r.exec(s))
  ){
 
   a[m[1]] =
@@ -1413,13 +1443,9 @@ function attrs(s){
 }
 
 
-/*
- * Transformation d'un texte de groupe
- * vers un genre contrôlé.
- */
 function normalizeGenre(s){
 
- let x =
+ const x =
   String(s || '')
    .toLowerCase()
    .normalize('NFD')
@@ -1487,20 +1513,6 @@ function normalizeGenre(s){
 }
 
 
-/*
- * IMPORTANT :
- *
- * La playlist mondiale IPTV-org est
- * exclusivement traitée comme TV.
- *
- * On ne transforme plus artificiellement
- * "Movie TV", "Series TV", etc. en films
- * ou séries.
- *
- * Pour une source personnelle :
- * - content-type/type/kind explicite
- * - ou groupe M3U explicite
- */
 function classifySourceKind(
  name,
  group,
@@ -1516,19 +1528,20 @@ function classifySourceKind(
 
  }
 
- let explicit =
-  (
+ const explicit =
+  String(
    a['content-type'] ||
-   a['type'] ||
-   a['kind'] ||
+   a.type ||
+   a.kind ||
    ''
-  )
-  .toLowerCase();
+  ).toLowerCase();
 
  if(
-  explicit === 'movie' ||
-  explicit === 'film' ||
-  explicit === 'vod'
+  [
+   'movie',
+   'film',
+   'vod'
+  ].includes(explicit)
  ){
 
   return 'movie';
@@ -1536,22 +1549,23 @@ function classifySourceKind(
  }
 
  if(
-  explicit === 'series' ||
-  explicit === 'serie' ||
-  explicit === 'série'
+  [
+   'series',
+   'serie',
+   'série'
+  ].includes(explicit)
  ){
 
   return 'series';
 
  }
 
- let x =
+ const x =
   (
    name +
    ' ' +
    group
-  )
-  .toLowerCase();
+  ).toLowerCase();
 
  if(
   /\b(vod|movies?|films?)\b/
@@ -1563,7 +1577,7 @@ function classifySourceKind(
  }
 
  if(
-  /\b(series?|series tv|séries?|seasons?|saisons?|episodes?)\b/
+  /\b(series?|séries?|seasons?|saisons?|episodes?)\b/
    .test(x)
  ){
 
@@ -1576,27 +1590,24 @@ function classifySourceKind(
 }
 
 
-/*
- * M3U
- */
 function parseM3U(
  text,
  source='world'
 ){
 
- let out = [];
+ const out = [];
 
  let cur = null;
 
  for(
-  let line of
+  const raw of
   String(text)
    .replace(/\r/g,'')
    .split('\n')
  ){
 
-  line =
-   line.trim();
+  const line =
+   raw.trim();
 
   if(!line)
    continue;
@@ -1607,24 +1618,24 @@ function parseM3U(
    )
   ){
 
-   let p =
+   const p =
     line.indexOf(',');
 
-   let a =
+   const a =
     attrs(
      p < 0
       ? line
       : line.slice(0,p)
     );
 
-   let name =
+   const name =
     p < 0
      ? 'Chaîne'
      : line
        .slice(p+1)
        .trim();
 
-   let group =
+   const group =
     a['group-title'] ||
     '';
 
@@ -1647,7 +1658,7 @@ function parseM3U(
 
     country:
      a['tvg-country'] ||
-     a['country'] ||
+     a.country ||
      (
       source === 'world'
        ? group
@@ -1656,7 +1667,7 @@ function parseM3U(
 
     language:
      a['tvg-language'] ||
-     a['language'] ||
+     a.language ||
      '',
 
     url:'',
@@ -1674,18 +1685,18 @@ function parseM3U(
 
     genre:
      normalizeGenre(
-      a['genre'] ||
+      a.genre ||
       group +
       ' ' +
       name
      ),
 
     year:
-     a['year'] ||
+     a.year ||
      '',
 
     description:
-     a['description'] ||
+     a.description ||
      ''
 
    };
@@ -1716,16 +1727,13 @@ function parseM3U(
 }
 
 
-/*
- * Pays
- */
 function cc(x){
 
- let raw =
+ const raw =
   String(x || '')
    .trim();
 
- let low =
+ const low =
   raw.toLowerCase();
 
  if(
@@ -1744,7 +1752,7 @@ function cc(x){
 
  }
 
- let n =
+ const n =
   low
    .normalize('NFD')
    .replace(
@@ -1762,11 +1770,11 @@ function cc(x){
    .trim();
 
  for(
-  let [k,v]
+  const [k,v]
   of S.countries
  ){
 
-  let z =
+  const z =
    String(v.name || '')
     .toLowerCase()
     .normalize('NFD')
@@ -1779,7 +1787,7 @@ function cc(x){
      ' '
     )
     .replace(
-     /\s+/g,
+     /\\s+/g,
      ' '
     )
     .trim();
@@ -1812,9 +1820,6 @@ function region(c){
 }
 
 
-/*
- * Classement
- */
 function addItems(items){
 
  for(
@@ -1862,18 +1867,21 @@ function dedupe(){
   ]
  ){
 
-  let m =
+  const m =
    new Map();
 
-  S[k].forEach(
-   c =>
-    m.set(
-     c.id +
-     '|' +
-     c.url,
-     c
-    )
-  );
+  for(
+   const c of S[k]
+  ){
+
+   m.set(
+    c.id +
+    '|' +
+    c.url,
+    c
+   );
+
+  }
 
   S[k] =
    [...m.values()];
@@ -1883,9 +1891,6 @@ function dedupe(){
 }
 
 
-/*
- * Filtres
- */
 function filtered(kind){
 
  let a =
@@ -1899,7 +1904,7 @@ function filtered(kind){
   S.q
  ){
 
-  let q =
+  const q =
    S.q
     .toLowerCase()
     .trim();
@@ -1989,9 +1994,6 @@ function filtered(kind){
 }
 
 
-/*
- * Favoris
- */
 function isFav(c){
 
  return S.favorites.some(
@@ -2003,9 +2005,6 @@ function isFav(c){
 }
 
 
-/*
- * Recherche globale
- */
 function find(k){
 
  return [
@@ -2026,15 +2025,12 @@ function find(k){
 }
 
 
-/*
- * Carte
- */
 function card(c){
 
- let f =
+ const f =
   isFav(c);
 
- let poster =
+ const poster =
   c.logo
    ? `<img
        src="${esc(c.logo)}"
@@ -2126,7 +2122,7 @@ function bind(root){
     b.onclick =
      () => {
 
-      let c =
+      const c =
        find(
         b.dataset.play
        );
@@ -2146,7 +2142,7 @@ function bind(root){
     b.onclick =
      () => {
 
-      let c =
+      const c =
        find(
         b.dataset.fav
        );
@@ -2167,8 +2163,11 @@ function grid(
  limit=80
 ){
 
- let e =
+ const e =
   $(id);
+
+ if(!e)
+  return;
 
  e.innerHTML =
   list.length
@@ -2190,20 +2189,23 @@ function grid(
 }
 
 
-/*
- * Genres
- */
 function genreBar(
  id,
  kind
 ){
 
- let current =
+ const current =
   kind === 'movie'
    ? S.movieGenre
    : S.seriesGenre;
 
- $(id).innerHTML =
+ const e =
+  $(id);
+
+ if(!e)
+  return;
+
+ e.innerHTML =
   GENRES
    .map(
     g =>
@@ -2222,54 +2224,67 @@ function genreBar(
    )
    .join('');
 
- $(id)
-  .querySelectorAll(
-   '[data-g]'
-  )
-  .forEach(
-   b =>
-    b.onclick =
-     () => {
+ e.querySelectorAll(
+  '[data-g]'
+ )
+ .forEach(
+  b =>
+   b.onclick =
+    () => {
 
-      if(
-       kind === 'movie'
-      ){
+     if(
+      kind === 'movie'
+     ){
 
-       S.movieGenre =
-        b.dataset.g;
-
-      }
-
-      else{
-
-       S.seriesGenre =
-        b.dataset.g;
-
-      }
-
-      render();
+      S.movieGenre =
+       b.dataset.g;
 
      }
-  );
+     else{
+
+      S.seriesGenre =
+       b.dataset.g;
+
+     }
+
+     render();
+
+    }
+ );
 
 }
 
 
-/*
- * Rendu
- */
 function render(){
 
- let tv =
+ const tv =
   filtered('tv');
 
- let mv =
+ const mv =
   filtered('movie');
 
- let se =
+ const se =
   filtered('series');
 
- let start =
+ const pages =
+  Math.max(
+   1,
+   Math.ceil(
+    tv.length /
+    PAGE
+   )
+  );
+
+ if(
+  S.page > pages
+ ){
+
+  S.page =
+   pages;
+
+ }
+
+ const start =
   (S.page - 1) *
   PAGE;
 
@@ -2337,8 +2352,8 @@ function render(){
    .toLocaleString('fr-FR');
 
  $('nSources').textContent =
-  1 +
-  S.sources.length;
+  S.sources.length +
+  1;
 
  $('tvCount').textContent =
   tv.length
@@ -2355,29 +2370,17 @@ function render(){
   S.history.length +
   ' élément(s)';
 
-
  $('page').textContent =
   'Page ' +
   S.page +
   ' / ' +
-  Math.max(
-   1,
-   Math.ceil(
-    tv.length /
-    PAGE
-   )
-  );
+  pages;
 
  $('prev').disabled =
   S.page <= 1;
 
  $('next').disabled =
-  S.page >=
-  Math.ceil(
-   tv.length /
-   PAGE
-  );
-
+  S.page >= pages;
 
  renderFilters();
 
@@ -2396,12 +2399,9 @@ function render(){
 }
 
 
-/*
- * Filtres TV
- */
 function renderFilters(){
 
- let r =
+ const r =
   $('regions');
 
  r.innerHTML =
@@ -2492,7 +2492,7 @@ function renderFilters(){
  }
 
 
- let c =
+ const c =
   $('countries');
 
  c.innerHTML =
@@ -2526,7 +2526,6 @@ function renderFilters(){
    )
    .join('');
 
-
  c.querySelectorAll(
   '[data-c]'
  )
@@ -2549,18 +2548,1444 @@ function renderFilters(){
 }
 
 
-/*
- * Favoris
- */
 function fav(c){
 
- let was =
+ const was =
   isFav(c);
 
- if(was){
+ S.favorites =
+  was
+   ? S.favorites.filter(
+      x =>
+       !(
+        x.id === c.id &&
+        x.url === c.url
+       )
+     )
+   : [
+      c,
+      ...S.favorites
+     ];
 
-  S.favorites =
-   S.favorites.filter(
+ save(
+  'nexworld_v76_fav',
+  S.favorites
+ );
+
+ toast(
+  was
+   ? 'Retiré des favoris'
+   : 'Ajouté aux favoris'
+ );
+
+ render();
+
+}
+
+
+function hist(c){
+
+ S.history =
+  [
+   c,
+   ...S.history.filter(
     x =>
      !(
-      x.id === c
+      x.id === c.id &&
+      x.url === c.url
+     )
+   )
+  ]
+  .slice(
+   0,
+   60
+  );
+
+ save(
+  'nexworld_v76_hist',
+  S.history
+ );
+
+}
+
+
+function play(c){
+
+ hist(c);
+
+ render();
+
+ $('ptitle').textContent =
+  c.name;
+
+ $('pinfo').textContent =
+  [
+   c.kind === 'tv'
+    ? 'TV en direct'
+    : c.kind === 'movie'
+     ? 'Film'
+     : 'Série',
+
+   c.genre ||
+   '',
+
+   c.country ||
+   ''
+  ]
+  .filter(Boolean)
+  .join(' • ');
+
+ const v =
+  $('video');
+
+ v.src =
+  c.url;
+
+ $('player')
+  .classList.add(
+   'show'
+  );
+
+ v.play()
+  .catch(
+   () =>
+    toast(
+     'Appuyez sur lecture pour démarrer'
+    )
+  );
+
+}
+
+
+function view(n){
+
+ document
+  .querySelectorAll(
+   '.view'
+  )
+  .forEach(
+   x =>
+    x.classList.toggle(
+     'hidden',
+     x.id !== n
+    )
+  );
+
+ document
+  .querySelectorAll(
+   '.nav'
+  )
+  .forEach(
+   x =>
+    x.classList.toggle(
+     'active',
+     x.dataset.view === n
+    )
+  );
+
+ window.scrollTo({
+  top:0,
+  behavior:'smooth'
+ });
+
+}
+
+
+function initUI(){
+
+ document
+  .querySelectorAll(
+   '.nav,[data-go]'
+  )
+  .forEach(
+   b =>
+    b.onclick =
+     () =>
+      view(
+       b.dataset.view ||
+       b.dataset.go
+      )
+  );
+
+
+ $('search').oninput =
+  e => {
+
+   S.q =
+    e.target.value;
+
+   S.page =
+    1;
+
+   render();
+
+  };
+
+
+ $('prev').onclick =
+  () => {
+
+   if(
+    S.page > 1
+   ){
+
+    S.page--;
+
+    render();
+
+   }
+
+  };
+
+
+ $('next').onclick =
+  () => {
+
+   const p =
+    Math.max(
+     1,
+     Math.ceil(
+      filtered('tv').length /
+      PAGE
+     )
+    );
+
+   if(
+    S.page < p
+   ){
+
+    S.page++;
+
+    render();
+
+   }
+
+  };
+
+
+ document
+  .querySelectorAll(
+   '.stype'
+  )
+  .forEach(
+   b =>
+    b.onclick =
+     () => {
+
+      document
+       .querySelectorAll(
+        '.stype'
+       )
+       .forEach(
+        x =>
+         x.classList.remove(
+          'active'
+         )
+       );
+
+      b.classList.add(
+       'active'
+      );
+
+      document
+       .querySelectorAll(
+        '.sourceform'
+       )
+       .forEach(
+        x =>
+         x.classList.add(
+          'hidden'
+         )
+       );
+
+      $('form-' +
+        b.dataset.type)
+       .classList.remove(
+        'hidden'
+       );
+
+     }
+  );
+
+
+ $('close').onclick =
+  () => {
+
+   $('video').pause();
+
+   $('video')
+    .removeAttribute(
+     'src'
+    );
+
+   $('video').load();
+
+   $('player')
+    .classList.remove(
+     'show'
+    );
+
+  };
+
+
+ $('full').onclick =
+  () => {
+
+   const v =
+    $('video');
+
+   if(
+    v.requestFullscreen
+   ){
+
+    v.requestFullscreen();
+
+   }
+
+   else if(
+    v.webkitEnterFullscreen
+   ){
+
+    v.webkitEnterFullscreen();
+
+   }
+
+  };
+
+
+ $('urlForm').onsubmit =
+  addURL;
+
+ $('fileForm').onsubmit =
+  addFile;
+
+ $('directForm').onsubmit =
+  direct;
+
+ $('xtreamForm').onsubmit =
+  xtream;
+
+ $('stalkerForm').onsubmit =
+  stalker;
+
+}
+
+
+async function fetchText(
+ url,
+ timeout=25000
+){
+
+ const ctl =
+  new AbortController();
+
+ const timer =
+  setTimeout(
+   () =>
+    ctl.abort(),
+   timeout
+  );
+
+ try{
+
+  const r =
+   await fetch(
+    url,
+    {
+     cache:'no-store',
+     signal:ctl.signal
+    }
+   );
+
+  if(!r.ok)
+   throw new Error(
+    'HTTP ' +
+    r.status
+   );
+
+  return await r.text();
+
+ }
+ finally{
+
+  clearTimeout(
+   timer
+  );
+
+ }
+
+}
+
+
+function openDB(){
+
+ return new Promise(
+  (ok,no) => {
+
+   if(
+    !('indexedDB' in window)
+   ){
+
+    no(
+     new Error(
+      'IndexedDB indisponible'
+     )
+    );
+
+    return;
+
+   }
+
+   const r =
+    indexedDB.open(
+     DB,
+     1
+    );
+
+   r.onupgradeneeded =
+    () => {
+
+     if(
+      !r.result
+       .objectStoreNames
+       .contains(STORE)
+     ){
+
+      r.result
+       .createObjectStore(
+        STORE,
+        {
+         keyPath:'id'
+        }
+       );
+
+     }
+
+    };
+
+   r.onsuccess =
+    () =>
+     ok(
+      r.result
+     );
+
+   r.onerror =
+    () =>
+     no(
+      r.error ||
+      new Error(
+       'IndexedDB'
+      )
+     );
+
+  }
+ );
+
+}
+
+
+async function dbPut(
+ id,
+ content
+){
+
+ try{
+
+  const d =
+   await openDB();
+
+  return new Promise(
+   (ok,no) => {
+
+    const t =
+     d.transaction(
+      STORE,
+      'readwrite'
+     );
+
+    t.objectStore(
+     STORE
+    )
+     .put({
+      id,
+      content
+     });
+
+    t.oncomplete =
+     () =>
+      ok();
+
+    t.onerror =
+     () =>
+      no(t.error);
+
+   }
+  );
+
+ }
+ catch(e){}
+
+}
+
+
+async function dbGet(id){
+
+ const d =
+  await openDB();
+
+ return new Promise(
+  (ok,no) => {
+
+   const r =
+    d.transaction(
+     STORE
+    )
+    .objectStore(
+     STORE
+    )
+    .get(id);
+
+   r.onsuccess =
+    () =>
+     ok(
+      r.result?.content ||
+      ''
+     );
+
+   r.onerror =
+    () =>
+     no(r.error);
+
+  }
+ );
+
+}
+
+
+async function dbDelete(id){
+
+ try{
+
+  const d =
+   await openDB();
+
+  return new Promise(
+   (ok,no) => {
+
+    const t =
+     d.transaction(
+      STORE,
+      'readwrite'
+     );
+
+    t.objectStore(
+     STORE
+    )
+     .delete(id);
+
+    t.oncomplete =
+     () =>
+      ok();
+
+    t.onerror =
+     () =>
+      no(t.error);
+
+   }
+  );
+
+ }
+ catch(e){}
+
+}
+
+
+async function addURL(e){
+
+ e.preventDefault();
+
+ const s = {
+
+  id:uid(),
+
+  name:
+   $('urlName')
+    .value
+    .trim(),
+
+  type:'url',
+
+  url:
+   $('urlValue')
+    .value
+    .trim(),
+
+  enabled:true,
+
+  count:0
+
+ };
+
+ try{
+
+  const text =
+   await fetchText(
+    s.url
+   );
+
+  const a =
+   parseM3U(
+    text,
+    s.id
+   );
+
+  s.count =
+   a.length;
+
+  await dbPut(
+   s.id,
+   text
+  );
+
+  S.sources.push(s);
+
+  addItems(a);
+
+  dedupe();
+
+  saveSources();
+
+  $('urlForm')
+   .reset();
+
+  render();
+
+  toast(
+   a.length +
+   ' contenu(s) chargé(s)'
+  );
+
+ }
+ catch(err){
+
+  toast(
+   err.name === 'AbortError'
+    ? 'Source trop lente'
+    : 'Source URL inaccessible (CORS, URL ou réseau)'
+  );
+
+ }
+
+}
+
+
+async function addFile(e){
+
+ e.preventDefault();
+
+ const f =
+  $('file').files[0];
+
+ if(!f)
+  return;
+
+ const id =
+  uid();
+
+ const text =
+  await f.text();
+
+ const a =
+  parseM3U(
+   text,
+   id
+  );
+
+ const s = {
+
+  id,
+
+  name:
+   $('fileName')
+    .value
+    .trim() ||
+   f.name,
+
+  type:'file',
+
+  enabled:true,
+
+  count:
+   a.length
+
+ };
+
+ S.sources.push(s);
+
+ await dbPut(
+  id,
+  text
+ );
+
+ addItems(a);
+
+ dedupe();
+
+ saveSources();
+
+ $('fileForm')
+  .reset();
+
+ render();
+
+ toast(
+  a.length +
+  ' contenu(s) importé(s)'
+ );
+
+}
+
+
+function direct(e){
+
+ e.preventDefault();
+
+ const id =
+  uid();
+
+ const kind =
+  $('directKind')
+   .value;
+
+ const name =
+  $('directName')
+   .value
+   .trim();
+
+ const url =
+  $('directUrl')
+   .value
+   .trim();
+
+ const logo =
+  $('directLogo')
+   .value
+   .trim();
+
+ const c = {
+
+  id,
+
+  name,
+
+  url,
+
+  logo,
+
+  kind,
+
+  sourceId:id,
+
+  genre:
+   normalizeGenre(
+    name
+   )
+
+ };
+
+ S.sources.push({
+
+  id,
+
+  name,
+
+  type:'direct',
+
+  enabled:true,
+
+  count:1,
+
+  url,
+
+  logo,
+
+  kind
+
+ });
+
+ addItems([
+  c
+ ]);
+
+ saveSources();
+
+ $('directForm')
+  .reset();
+
+ render();
+
+ toast(
+  'Contenu ajouté'
+ );
+
+}
+
+
+function xtream(e){
+
+ e.preventDefault();
+
+ S.sources.push({
+
+  id:uid(),
+
+  name:
+   $('xname')
+    .value
+    .trim(),
+
+  type:'xtream',
+
+  server:
+   $('xserver')
+    .value
+    .trim(),
+
+  username:
+   $('xuser')
+    .value
+    .trim(),
+
+  enabled:true,
+
+  count:0,
+
+  configured:true
+
+ });
+
+ saveSources();
+
+ $('xtreamForm')
+  .reset();
+
+ render();
+
+ toast(
+  'Profil Xtream enregistré'
+ );
+
+}
+
+
+function stalker(e){
+
+ e.preventDefault();
+
+ const mac =
+  $('smac')
+   .value
+   .trim()
+   .toUpperCase();
+
+ if(
+  !/^([0-9A-F]{2}:){5}[0-9A-F]{2}$/
+   .test(mac)
+ ){
+
+  toast(
+   'MAC invalide'
+  );
+
+  return;
+
+ }
+
+ S.sources.push({
+
+  id:uid(),
+
+  name:
+   $('sname')
+    .value
+    .trim(),
+
+  type:'stalker',
+
+  portal:
+   $('sportal')
+    .value
+    .trim(),
+
+  mac,
+
+  model:
+   $('smodel')
+    .value,
+
+  enabled:true,
+
+  count:0,
+
+  configured:true
+
+ });
+
+ saveSources();
+
+ $('stalkerForm')
+  .reset();
+
+ render();
+
+ toast(
+  'Profil Stalker/MAG enregistré'
+ );
+
+}
+
+
+function saveSources(){
+
+ save(
+  'nexworld_v76_sources',
+  S.sources
+ );
+
+}
+
+
+function removeSourceItems(id){
+
+ for(
+  const k of
+  [
+   'tv',
+   'movies',
+   'series'
+  ]
+ ){
+
+  S[k] =
+   S[k].filter(
+    x =>
+     x.sourceId !== id
+   );
+
+ }
+
+}
+
+
+async function loadSource(s){
+
+ if(
+  !s.enabled
+ )
+  return;
+
+ if(
+  s.type === 'direct'
+ ){
+
+  addItems([
+   {
+    id:s.id,
+    name:s.name,
+    url:s.url,
+    logo:s.logo || '',
+    kind:s.kind || 'tv',
+    sourceId:s.id,
+    genre:
+     normalizeGenre(
+      s.name
+     )
+   }
+  ]);
+
+  return;
+
+ }
+
+ if(
+  s.type === 'xtream' ||
+  s.type === 'stalker'
+ ){
+
+  return;
+
+ }
+
+ try{
+
+  const text =
+   await dbGet(
+    s.id
+   );
+
+  if(text){
+
+   addItems(
+    parseM3U(
+     text,
+     s.id
+    )
+   );
+
+  }
+
+  else if(
+   s.type === 'url' &&
+   s.url
+  ){
+
+   const fresh =
+    await fetchText(
+     s.url
+    );
+
+   await dbPut(
+    s.id,
+    fresh
+   );
+
+   addItems(
+    parseM3U(
+     fresh,
+     s.id
+    )
+   );
+
+  }
+
+ }
+ catch(e){}
+
+}
+
+
+async function loadSaved(){
+
+ S.favorites =
+  load(
+   'nexworld_v76_fav',
+   []
+  );
+
+ S.history =
+  load(
+   'nexworld_v76_hist',
+   []
+  );
+
+ S.sources =
+  load(
+   'nexworld_v76_sources',
+   []
+  )
+  .map(
+   x =>
+    ({
+     ...x,
+     enabled:
+      x.enabled !== false
+    })
+  );
+
+ for(
+  const s of S.sources
+ ){
+
+  await loadSource(s);
+
+ }
+
+ dedupe();
+
+}
+
+
+async function parseWorldProgressive(
+ text
+){
+
+ const lines =
+  String(text)
+   .replace(/\r/g,'')
+   .split('\n');
+
+ let cur =
+  null;
+
+ let batch =
+  [];
+
+ let count =
+  0;
+
+ for(
+  let i = 0;
+  i < lines.length;
+  i++
+ ){
+
+  const line =
+   lines[i].trim();
+
+  if(!line)
+   continue;
+
+  if(
+   line.startsWith(
+    '#EXTINF:'
+   )
+  ){
+
+   const p =
+    line.indexOf(',');
+
+   const a =
+    attrs(
+     p < 0
+      ? line
+      : line.slice(0,p)
+    );
+
+   const name =
+    p < 0
+     ? 'Chaîne'
+     : line
+       .slice(p+1)
+       .trim();
+
+   const group =
+    a['group-title'] ||
+    '';
+
+   cur = {
+
+    id:
+     a['tvg-id'] ||
+     a['channel-id'] ||
+     uid(),
+
+    name:
+     name ||
+     'Sans titre',
+
+    logo:
+     a['tvg-logo'] ||
+     '',
+
+    group,
+
+    country:
+     a['tvg-country'] ||
+     a.country ||
+     group,
+
+    language:
+     a['tvg-language'] ||
+     a.language ||
+     '',
+
+    url:'',
+
+    sourceId:'world',
+
+    kind:'tv',
+
+    genre:'',
+
+    year:
+     a.year ||
+     '',
+
+    description:
+     a.description ||
+     ''
+
+   };
+
+  }
+  else if(
+   line[0] !== '#' &&
+   cur
+  ){
+
+   cur.url =
+    line;
+
+   batch.push(
+    cur
+   );
+
+   cur =
+    null;
+
+   count++;
+
+   if(
+    batch.length >= 250
+   ){
+
+    addItems(
+     batch
+    );
+
+    batch =
+     [];
+
+    dedupe();
+
+    if(
+     count % 1000 === 0
+    ){
+
+     $('status').textContent =
+      'TV ' +
+      count.toLocaleString(
+       'fr-FR'
+      ) +
+      ' chargées...';
+
+     render();
+
+    }
+
+    await new Promise(
+     r =>
+      setTimeout(
+       r,
+       0
+      )
+    );
+
+   }
+
+  }
+
+ }
+
+ if(
+  batch.length
+ ){
+
+  addItems(
+   batch
+  );
+
+  dedupe();
+
+  render();
+
+ }
+
+ return count;
+
+}
+
+
+async function loadCountries(){
+
+ try{
+
+  const text =
+   await fetchText(
+    COUNTRIES,
+    10000
+   );
+
+  const ct =
+   JSON.parse(
+    text
+   );
+
+  if(
+   Array.isArray(ct)
+  ){
+
+   ct.forEach(
+    x => {
+
+     if(
+      x.code
+     ){
+
+      S.countries.set(
+       x.code.toUpperCase(),
+       x
+      );
+
+     }
+
+    }
+   );
+
+  }
+
+  render();
+
+ }
+ catch(e){
+
+  console.warn(
+   'Pays indisponibles',
+   e
+  );
+
+ }
+
+}
+
+
+async function loadWorld(){
+
+ try{
+
+  $('status').textContent =
+   'Catalogue TV...';
+
+  const text =
+   await fetchText(
+    WORLD,
+    30000
+   );
+
+  await parseWorldProgressive(
+   text
+  );
+
+  $('status').textContent =
+   'En ligne';
+
+  render();
+
+  return true;
+
+ }
+ catch(e){
+
+  console.error(e);
+
+  $('status').textContent =
+   'Prêt';
+
+  toast(
+   e.name === 'AbortError'
+    ? 'Catalogue TV trop lent'
+    : 'Catalogue TV indisponible'
+  );
+
+  return false;
+
+ }
+
+}
+
+
+async function boot(){
+
+ if(
+  S.booted
+ )
+  return;
+
+ S.booted =
+  true;
+
+ try{
+
+  /*
+   * IMPORTANT :
+   * L'interface devient utilisable
+   * AVANT les téléchargements réseau.
+   */
+
+  $('status').textContent =
+   'Prêt';
+
+  render();
+
+  await loadSaved();
+
+  render();
+
+  /*
+   * Les deux chargements sont indépendants.
+   * Une panne de l'un ne bloque pas l'autre.
+   */
+
+  loadCountries();
+
+  loadWorld();
+
+ }
+ catch(e){
+
+  console.error(e);
+
+  $('status').textContent =
+   'Prêt';
+
+  toast(
+   'NEXWORLD est prêt, une source n’a pas pu être restaurée'
+  );
+
+ }
+
+}
+
+
+function fatal(e){
+
+ console.error(e);
+
+ const st =
+  $('status');
+
+ if(st){
+
+  st.textContent =
+   'Prêt';
+
+  st.classList.add(
+   'err'
+  );
+
+ }
+
+ toast(
+  'NEXWORLD est prêt — une erreur a été isolée'
+ );
+
+}
+
+
+document.addEventListener(
+ 'DOMContentLoaded',
+ () => {
+
+  try{
+
+   initUI();
+
+   boot()
+    .catch(
+     fatal
+    );
+
+  }
+  catch(e){
+
+   fatal(e);
+
+  }
+
+ }
+);
+
+</script>
+
+</body>
+</html>
