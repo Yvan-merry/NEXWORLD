@@ -16,6 +16,12 @@
 #nwStaticAccountPanel button{background:#1b2b47;color:#f4f7fb;border:1px solid #334765;border-radius:10px;padding:9px 11px;margin:5px 4px 0 0;cursor:pointer}
 #nwStaticAccountPanel .primary{background:rgba(34,211,238,.12);border-color:rgba(34,211,238,.5);color:#22d3ee}
 #nwStaticAccountPanel small{display:block;color:#94a3b8;margin:7px 0;line-height:1.45}
+#nwSuperAdminBox{display:none;margin-top:12px;padding-top:12px;border-top:1px solid #263653}
+#nwSuperAdminBox.show{display:block}
+#nwSuperAdminTitle{font-weight:800;color:#fbbf24}
+#nwSuperAdminState{color:#94a3b8;font-size:11px;line-height:1.45;margin:6px 0}
+#nwSuperAdminActivate{display:none;background:rgba(251,191,36,.10);border-color:rgba(251,191,36,.45);color:#fbbf24}
+#nwSuperAdminActivate.show{display:inline-block}
 #nwAccountBtn,#nwAccount{display:none!important}
 @media(max-width:580px){#nwStaticAccountBtn{padding:8px 10px;font-size:11px}.brand{width:100%}.brand .status{margin-left:auto}}
 :root{--bg:#0F172A;--panel:#111c31;--panel2:#16233b;--line:#263653;--text:#f4f7fb;--muted:#94a3b8;--accent:#22d3ee;--green:#34d399;--amber:#fbbf24;--pink:#f472b6;--danger:#fb7185;--radius:18px}
@@ -167,24 +173,56 @@ boot();
   if(!btn)return;
   const panel=document.createElement('div');
   panel.id='nwStaticAccountPanel';
-  panel.innerHTML=`<strong>Compte NEXWORLD</strong><div id="nwStaticState"><small>Initialisation du compte…</small></div><input id="nwStaticEmail" type="email" autocomplete="email" placeholder="E-mail"><input id="nwStaticPassword" type="password" autocomplete="current-password" placeholder="Mot de passe"><div><button class="primary" id="nwStaticLogin">Se connecter</button><button id="nwStaticCreate">Créer un compte</button><button id="nwStaticReset">Mot de passe oublié</button><button id="nwStaticLogout" style="display:none">Déconnexion</button></div>`;
+  panel.innerHTML=`<strong>Compte NEXWORLD</strong><div id="nwStaticState"><small>Initialisation du compte…</small></div><input id="nwStaticEmail" type="email" autocomplete="email" placeholder="E-mail"><input id="nwStaticPassword" type="password" autocomplete="current-password" placeholder="Mot de passe"><div><button class="primary" id="nwStaticLogin">Se connecter</button><button id="nwStaticCreate">Créer un compte</button><button id="nwStaticReset">Mot de passe oublié</button><button id="nwStaticLogout" style="display:none">Déconnexion</button></div><div id="nwSuperAdminBox"><div id="nwSuperAdminTitle">🛡️ Super Admin</div><div id="nwSuperAdminState">Vérification des droits…</div><button id="nwSuperAdminActivate">Activer Super Admin</button></div>`;
   document.body.appendChild(panel);
   btn.onclick=()=>panel.classList.toggle('open');
   document.addEventListener('click',e=>{if(panel.classList.contains('open')&&!panel.contains(e.target)&&e.target!==btn)panel.classList.remove('open');});
   const state=$('nwStaticState'), email=$('nwStaticEmail'), pass=$('nwStaticPassword'), login=$('nwStaticLogin'), create=$('nwStaticCreate'), reset=$('nwStaticReset'), logout=$('nwStaticLogout');
+  const adminBox=$('nwSuperAdminBox'), adminState=$('nwSuperAdminState'), adminActivate=$('nwSuperAdminActivate');
   function msg(t){state.innerHTML='<small>'+String(t).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))+'</small>';}
   function render(u){
     const signed=!!u;
     email.style.display=signed?'none':'block';pass.style.display=signed?'none':'block';
     login.style.display=signed?'none':'inline-block';create.style.display=signed?'none':'inline-block';reset.style.display=signed?'none':'inline-block';logout.style.display=signed?'inline-block':'none';
+    adminBox.classList.toggle('show',signed);
+    adminActivate.classList.remove('show');
+    adminState.textContent=signed?'Vérification des droits Super Admin…':'Connectez-vous pour vérifier les droits Super Admin.';
     msg(signed?'Connecté : '+(u.email||'compte actif'):'Aucun compte connecté.');
     btn.textContent=signed?'👤 '+((u.email||'Compte').split('@')[0].slice(0,14)):'👤 Compte';
+    if(signed) checkAdmin();
   }
+  async function checkAdmin(){
+    adminActivate.classList.remove('show');
+    adminState.textContent='Vérification des droits Super Admin…';
+    try{
+      const r=await window.NEXWORLD_AUTH.checkSuperAdmin();
+      const isAdmin=!!(r?.isSuperAdmin||r?.superAdmin||r?.active);
+      const canActivate=!!(r?.canActivate||r?.can_activate||r?.eligible);
+      if(isAdmin){adminState.textContent='Super Admin actif sur ce compte.';return;}
+      if(canActivate){adminState.textContent='Ce compte peut être activé comme Super Admin.';adminActivate.classList.add('show');return;}
+      adminState.textContent=r?.message||'Ce compte n’est pas Super Admin.';
+    }catch(e){
+      adminState.textContent=e?.message||'Vérification Super Admin impossible.';
+    }
+  }
+  adminActivate.onclick=async()=>{
+    try{
+      adminActivate.classList.remove('show');
+      adminState.textContent='Activation Super Admin…';
+      const r=await window.NEXWORLD_AUTH.activateSuperAdmin();
+      try{await window.NEXWORLD_AUTH.getNexworldIdToken();}catch(_){}
+      adminState.textContent=r?.message||'Super Admin activé.';
+      await checkAdmin();
+    }catch(e){
+      adminState.textContent=e?.message||'Activation Super Admin impossible.';
+      adminActivate.classList.add('show');
+    }
+  };
   async function waitAuth(){
     for(let i=0;i<30;i++){if(window.NEXWORLD_AUTH?.initFirebaseAuth)return window.NEXWORLD_AUTH.initFirebaseAuth();await new Promise(r=>setTimeout(r,100));}
     throw new Error('Le module Firebase Auth n’est pas disponible. Vérifiez firebase-auth.js.');
   }
-  login.onclick=async()=>{try{msg('Connexion…');const a=await waitAuth();const u=await window.NEXWORLD_AUTH.signInNexworld(email.value,pass.value);render(u);msg('Connexion réussie : '+(u.email||'compte actif'));}catch(e){msg(e.message||'Connexion impossible.');}};
+  login.onclick=async()=>{try{msg('Connexion…');await waitAuth();const u=await window.NEXWORLD_AUTH.signInNexworld(email.value,pass.value);render(u);msg('Connexion réussie : '+(u.email||'compte actif'));}catch(e){msg(e.message||'Connexion impossible.');}};
   create.onclick=async()=>{try{msg('Création du compte…');await waitAuth();const u=await window.NEXWORLD_AUTH.createNexworldAccount(email.value,pass.value);render(u);msg('Compte créé et connecté : '+(u.email||'compte actif'));}catch(e){msg(e.message||'Création impossible.');}};
   reset.onclick=async()=>{try{await waitAuth();await window.NEXWORLD_AUTH.resetNexworldPassword(email.value);msg('E-mail de réinitialisation envoyé.');}catch(e){msg(e.message||'Impossible d’envoyer l’e-mail.');}};
   logout.onclick=async()=>{try{await waitAuth();await window.NEXWORLD_AUTH.signOutNexworld();render(null);}catch(e){msg(e.message||'Déconnexion impossible.');}};
