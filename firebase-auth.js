@@ -1,12 +1,10 @@
 /* =========================================================
    NEXWORLD — FIREBASE AUTH + BACKEND SÉCURISÉ
-   V7.4.3
-
-   Ce fichier fournit uniquement les services Firebase/Auth.
-   L'interface Compte est intégrée directement dans index.html.
+   V7.4.4
    ========================================================= */
 
 'use strict';
+
 
 const FIREBASE_CONFIG = {
   apiKey: 'AIzaSyDyxcMx0KX8EI_Al-zF1LvlTBapDnbDXQ',
@@ -17,13 +15,14 @@ const FIREBASE_CONFIG = {
   appId: '1:262610525162:web:b49643340dcd0fb7bb7093'
 };
 
+
 let firebaseApp = null;
 let firebaseAuth = null;
 let firebaseReady = false;
 
 
 /* =========================================================
-   INITIALISATION FIREBASE
+   INITIALISATION
    ========================================================= */
 
 async function initFirebaseAuth() {
@@ -35,31 +34,59 @@ async function initFirebaseAuth() {
     return firebaseAuth;
   }
 
+
   if (
     !window.firebase ||
     typeof window.firebase.initializeApp !== 'function'
   ) {
+
     throw new Error(
       'Firebase SDK n’est pas chargé.'
     );
+
   }
+
 
   try {
 
-    firebaseApp =
+    if (
       window.firebase.apps &&
       window.firebase.apps.length
-        ? window.firebase.app()
-        : window.firebase.initializeApp(
-            FIREBASE_CONFIG
-          );
+    ) {
+
+      firebaseApp =
+        window.firebase.app();
+
+    } else {
+
+      firebaseApp =
+        window.firebase.initializeApp(
+          FIREBASE_CONFIG
+        );
+
+    }
+
 
     firebaseAuth =
       window.firebase.auth(
         firebaseApp
       );
 
+
+    if (
+      !firebaseAuth ||
+      typeof firebaseAuth.onAuthStateChanged !== 'function'
+    ) {
+
+      throw new Error(
+        'Firebase Auth n’a pas pu être initialisé correctement.'
+      );
+
+    }
+
+
     firebaseReady = true;
+
 
     return firebaseAuth;
 
@@ -69,11 +96,13 @@ async function initFirebaseAuth() {
     firebaseAuth = null;
 
     console.error(
-      '[NEXWORLD] Initialisation Firebase impossible:',
+      '[NEXWORLD] Firebase Auth:',
       error
     );
 
+
     throw new Error(
+      error?.message ||
       'Initialisation Firebase impossible.'
     );
 
@@ -83,66 +112,46 @@ async function initFirebaseAuth() {
 
 
 /* =========================================================
-   MESSAGES D'ERREUR FIREBASE
+   ÉTAT FIREBASE AUTH
    ========================================================= */
 
-function firebaseMessage(
-  error,
-  fallback
+async function onAuthStateChangedNexworld(
+  callback
 ) {
 
-  const code =
-    String(
-      error?.code || ''
-    ).toLowerCase();
+  if (
+    typeof callback !== 'function'
+  ) {
+
+    throw new Error(
+      'Callback Firebase Auth invalide.'
+    );
+
+  }
 
 
-  const messages = {
-
-    'auth/invalid-email':
-      'Adresse e-mail invalide.',
-
-    'auth/user-disabled':
-      'Ce compte a été désactivé.',
-
-    'auth/user-not-found':
-      'Aucun compte ne correspond à cet e-mail.',
-
-    'auth/wrong-password':
-      'Mot de passe incorrect.',
-
-    'auth/invalid-credential':
-      'E-mail ou mot de passe incorrect.',
-
-    'auth/email-already-in-use':
-      'Cette adresse e-mail possède déjà un compte.',
-
-    'auth/weak-password':
-      'Le mot de passe est trop faible.',
-
-    'auth/too-many-requests':
-      'Trop de tentatives. Réessayez plus tard.',
-
-    'auth/network-request-failed':
-      'Erreur réseau. Vérifiez votre connexion Internet.',
-
-    'auth/operation-not-allowed':
-      'La connexion par e-mail/mot de passe n’est pas activée dans Firebase.',
-
-    'auth/api-key-not-valid':
-      'La clé API Firebase configurée est invalide.',
-
-    'auth/invalid-api-key':
-      'La clé API Firebase configurée est invalide.'
-
-  };
+  const auth =
+    await initFirebaseAuth();
 
 
-  return (
-    messages[code] ||
-    error?.message ||
-    fallback
+  return auth.onAuthStateChanged(
+    callback
   );
+
+}
+
+
+/* =========================================================
+   UTILISATEUR ACTUEL
+   ========================================================= */
+
+async function getCurrentNexworldUser() {
+
+  const auth =
+    await initFirebaseAuth();
+
+
+  return auth.currentUser || null;
 
 }
 
@@ -204,7 +213,7 @@ async function signInNexworld(
 
 
 /* =========================================================
-   CRÉATION DE COMPTE
+   CRÉATION
    ========================================================= */
 
 async function createNexworldAccount(
@@ -346,21 +355,6 @@ async function signOutNexworld() {
 
 
 /* =========================================================
-   UTILISATEUR ACTUEL
-   ========================================================= */
-
-async function getCurrentNexworldUser() {
-
-  const auth =
-    await initFirebaseAuth();
-
-
-  return auth.currentUser || null;
-
-}
-
-
-/* =========================================================
    TOKEN FIREBASE
    ========================================================= */
 
@@ -389,7 +383,72 @@ async function getNexworldIdToken() {
 
 
 /* =========================================================
-   BACKEND POST SÉCURISÉ
+   MESSAGES FIREBASE
+   ========================================================= */
+
+function firebaseMessage(
+  error,
+  fallback
+) {
+
+  const code =
+    String(
+      error?.code || ''
+    ).toLowerCase();
+
+
+  const messages = {
+
+    'auth/invalid-email':
+      'Adresse e-mail invalide.',
+
+    'auth/user-disabled':
+      'Ce compte a été désactivé.',
+
+    'auth/user-not-found':
+      'Aucun compte ne correspond à cet e-mail.',
+
+    'auth/wrong-password':
+      'Mot de passe incorrect.',
+
+    'auth/invalid-credential':
+      'E-mail ou mot de passe incorrect.',
+
+    'auth/email-already-in-use':
+      'Cette adresse e-mail possède déjà un compte.',
+
+    'auth/weak-password':
+      'Le mot de passe est trop faible.',
+
+    'auth/too-many-requests':
+      'Trop de tentatives. Réessayez plus tard.',
+
+    'auth/network-request-failed':
+      'Erreur réseau. Vérifiez votre connexion Internet.',
+
+    'auth/operation-not-allowed':
+      'La connexion par e-mail/mot de passe n’est pas activée dans Firebase.',
+
+    'auth/api-key-not-valid':
+      'La clé API Firebase configurée est invalide.',
+
+    'auth/invalid-api-key':
+      'La clé API Firebase configurée est invalide.'
+
+  };
+
+
+  return (
+    messages[code] ||
+    error?.message ||
+    fallback
+  );
+
+}
+
+
+/* =========================================================
+   BACKEND SÉCURISÉ
    ========================================================= */
 
 async function securedPost(
@@ -520,19 +579,16 @@ async function activateSuperAdmin() {
 
 
 /* =========================================================
-   API PUBLIQUE NEXWORLD
-   =========================================================
-
-   IMPORTANT :
-   Cette affectation est exécutée immédiatement.
-
-   index.html peut donc trouver NEXWORLD_AUTH dès que
-   ce fichier est chargé.
+   API PUBLIQUE
    ========================================================= */
 
 window.NEXWORLD_AUTH = Object.freeze({
 
   initFirebaseAuth,
+
+  onAuthStateChangedNexworld,
+
+  getCurrentNexworldUser,
 
   signInNexworld,
 
@@ -541,8 +597,6 @@ window.NEXWORLD_AUTH = Object.freeze({
   resetNexworldPassword,
 
   signOutNexworld,
-
-  getCurrentNexworldUser,
 
   getNexworldIdToken,
 
@@ -561,5 +615,5 @@ window.NEXWORLD_AUTH_READY = true;
 
 
 console.info(
-  '[NEXWORLD] Firebase Auth module chargé — V7.4.3'
+  '[NEXWORLD] Firebase Auth V7.4.4 chargé.'
 );
